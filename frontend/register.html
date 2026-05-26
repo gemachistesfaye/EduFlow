@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | EduFlow School Management</title>
+    <title>Register | EduFlow School Management</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -56,7 +56,7 @@
                 </svg>
             </div>
             <h1 class="text-2xl font-bold text-slate-800 dark:text-white">EduFlow MS</h1>
-            <p class="text-slate-500 dark:text-slate-400">Welcome back, please login to your account</p>
+            <p class="text-slate-500 dark:text-slate-400">Create your new account</p>
         </div>
 
         <!-- Login Card -->
@@ -65,6 +65,14 @@
             <div id="alert-box" class="hidden mb-6 p-4 rounded-xl text-sm border"></div>
 
             <form id="login-form" class="space-y-6">
+                <!-- Name Field -->
+                <div>
+                    <label for="fullname" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
+                    <input type="text" id="fullname" 
+                        class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all placeholder:text-slate-400"
+                        placeholder="John Doe">
+                </div>
+
                 <!-- Email Field -->
                 <div>
                     <label for="email" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
@@ -77,7 +85,6 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="password" class="text-sm font-semibold text-slate-700 dark:text-slate-300">Password</label>
-                        <a href="#" class="text-xs text-primary-600 hover:text-primary-700 font-medium">Forgot password?</a>
                     </div>
                     <input type="password" id="password" 
                         class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all placeholder:text-slate-400"
@@ -93,13 +100,13 @@
                 <!-- Login Button -->
                 <button type="submit" 
                     class="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-lg shadow-primary-200 dark:shadow-none transform transition active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-primary-500/50">
-                    Sign In
+                    Register
                 </button>
             </form>
 
             <!-- Footer Links -->
             <div class="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
-                Don't have an account? <a href="register.html" class="text-primary-600 hover:underline font-semibold">Register</a>
+                Already have an account? <a href="login.html" class="text-primary-600 hover:underline font-semibold">Login</a>
             </div>
         </div>
         
@@ -110,7 +117,7 @@
     <script>
 
         // --- Form Logic ---
-        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('login-form');
         const alertBox = document.getElementById('alert-box');
 
         function showAlert(message, type = 'error') {
@@ -124,29 +131,26 @@
             }
         }
 
-        loginForm.addEventListener('submit', function(e) {
+        registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const fullname = document.getElementById('fullname').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
 
-            // Simple validation
-            if (!email || !password) {
-                showAlert('Please enter both email and password.');
+            if (!fullname || !email || !password) {
+                showAlert('Please fill in all fields.');
                 return;
             }
 
-            // Mock success
-            showAlert('Login successful! Redirecting...', 'success');
+            showAlert('Registration successful! Redirecting to login...', 'success');
             
-            // Simulation of redirect
             setTimeout(() => {
-                window.location.href = 'pages/admin/dashboard.html';
+                window.location.href = 'login.html';
             }, 1000);
         });
 
-        // Initialize theme on load
-        initTheme();
+
     </script>
 </body>
 </html>

@@ -475,9 +475,15 @@
             if (document.documentElement.classList.contains('dark')) {
                 document.documentElement.classList.remove('dark');
                 localStorage.setItem('color-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                localStorage.setItem('darkMode', 'false');
+                localStorage.setItem('school_admin_theme', 'light');
             } else {
                 document.documentElement.classList.add('dark');
                 localStorage.setItem('color-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+                localStorage.setItem('school_admin_theme', 'dark');
             }
         });
 
