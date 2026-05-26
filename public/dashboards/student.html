@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard – EduFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: "#eff6ff",
+              100: "#dbeafe",
+              200: "#bfdbfe",
+              300: "#93c5fd",
+              400: "#60a5fa",
+              500: "#3b82f6",
+              600: "#2563eb",
+              700: "#1d4ed8",
+              800: "#1e40af",
+              900: "#1e3a8a",
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {font-family:"Inter",sans-serif;}
+    .card {@apply bg-gray-800 rounded-xl p-6 shadow-lg;}
+    .badge {@apply inline-block px-2 py-1 bg-primary-600 rounded-full text-xs;}
+    .grade-table {@apply w-full text-sm text-left text-gray-200;}
+    .grade-table th {@apply bg-gray-700 px-4 py-2;}
+    .grade-table td {@apply bg-gray-800 px-4 py-2 border-t border-gray-700;}
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen p-8">
+  <h1 class="text-3xl font-bold text-white mb-6">Student Dashboard</h1>
+
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="card text-center">
+      <p class="text-gray-400">Cumulative GPA</p>
+      <div id="gpa" class="text-4xl font-bold text-primary-500 mt-2">—</div>
+    </div>
+    <div class="card text-center">
+      <p class="text-gray-400">Attendance %</p>
+      <div id="attendance" class="text-4xl font-bold text-primary-500 mt-2">—</div>
+    </div>
+  </section>
+
+  <h2 class="text-xl font-semibold text-white mb-4">Continuous Assessment Grades</h2>
+  <table class="grade-table">
+    <thead>
+      <tr><th>Subject</th><th>CA 1</th><th>CA 2</th><th>Exam</th><th>Final</th></tr>
+    </thead>
+    <tbody id="grades-body"><!-- rows injected by JS --></tbody>
+  </table>
+
+  <script>
+    async function loadData() {
+      const res = await fetch('/api/student/profile-analytics');
+      const data = await res.json();
+      document.getElementById('gpa').textContent = data.gpa.toFixed(2);
+      document.getElementById('attendance').textContent = data.attendance + "%";
+      const tbody = document.getElementById('grades-body');
+      data.grades.forEach(g => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${g.subject}</td>` +
+                       `<td class="badge">${g.ca1 ?? '-'}</td>` +
+                       `<td class="badge">${g.ca2 ?? '-'}</td>` +
+                       `<td class="badge">${g.exam ?? '-'}</td>` +
+                       `<td class="badge">${g.final ?? '-'}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    loadData();
+  </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>School Admin Dashboard – EduFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {font-family:'Inter',sans-serif;}
+    .card {@apply bg-gray-800 rounded-xl p-6 shadow-lg;}
+    .form-input {@apply w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-primary-600;}
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen p-8">
+  <h1 class="text-3xl font-bold text-white mb-6">School Admin Dashboard</h1>
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="card"><p class="text-gray-400">Students Enrolled</p><p id="student-count" class="text-2xl font-semibold text-primary-500">—</p></div>
+    <div class="card"><p class="text-gray-400">Active Teachers</p><p id="teacher-count" class="text-2xl font-semibold text-primary-500">—</p></div>
+    <div class="card"><p class="text-gray-400">Tuition Collected</p><p id="fee-total" class="text-2xl font-semibold text-primary-500">—</p></div>
+  </section>
+  <h2 class="text-xl font-semibold text-white mb-4">Student‑Parent Cascading Registration</h2>
+  <form id="cascade-form" class="grid gap-4 max-w-2xl">
+    <input type="email" id="student-email" placeholder="Student Email" class="form-input" required />
+    <input type="text" id="student-name" placeholder="Student Full Name" class="form-input" required />
+    <input type="email" id="parent-email" placeholder="Parent Email" class="form-input" required />
+    <input type="text" id="parent-name" placeholder="Parent Full Name" class="form-input" required />
+    <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded">Create Student & Parent</button>
+    <div id="form-msg" class="mt-2 text-sm"></div>
+  </form>
+  <script>
+    async function loadMetrics(){
+      const res = await fetch('/api/admin/school-metrics');
+      const data = await res.json();
+      document.getElementById('student-count').textContent = data.students;
+      document.getElementById('teacher-count').textContent = data.teachers;
+      document.getElementById('fee-total').textContent = `$${data.fees_collected}`;
+    }
+    loadMetrics();
+
+    document.getElementById('cascade-form').addEventListener('submit', async e=>{
+      e.preventDefault();
+      const payload = {
+        student: { email:e.target['student-email'].value, name:e.target['student-name'].value },
+        parent: { email:e.target['parent-email'].value, name:e.target['parent-name'].value }
+      };
+      const res = await fetch('/api/admin/cascade-register', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      const msg = await res.json();
+      const el = document.getElementById('form-msg');
+      el.textContent = msg.message || 'Error';
+      el.className = res.ok ? 'text-green-400' : 'text-red-400';
+    });
+  </script>
+</body>
+</html>

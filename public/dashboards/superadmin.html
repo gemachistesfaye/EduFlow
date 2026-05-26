@@ -1,0 +1,81 @@
+< !DOCTYPE html >
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Super Admin Dashboard – EduFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .card { @apply bg-gray-800 rounded-xl p-6 shadow-lg; }
+    .grid-table { @apply w-full text-sm text-left text-gray-200; }
+    .grid-table th { @apply bg-gray-700 px-4 py-2; }
+    .grid-table td { @apply bg-gray-800 px-4 py-2 border-t border-gray-700; }
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen p-8">
+  <h1 class="text-3xl font-bold text-white mb-6">Super Admin Dashboard</h1>
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="card">
+      <p class="text-gray-400">Total Schools</p>
+      <p id="total-schools" class="text-2xl font-semibold text-primary-500">—</p>
+    </div>
+    <div class="card">
+      <p class="text-gray-400">Platform Revenue</p>
+      <p id="revenue" class="text-2xl font-semibold text-primary-500">—</p>
+    </div>
+    <div class="card">
+      <p class="text-gray-400">Server Uptime</p>
+      <p id="uptime" class="text-2xl font-semibold text-primary-500">—</p>
+    </div>
+  </section>
+  <h2 class="text-xl font-semibold text-white mb-4">School Branches</h2>
+  <table class="grid-table">
+    <thead>
+      <tr><th>Name</th><th>Location</th><th>Students</th><th>Actions</th></tr>
+    </thead>
+    <tbody id="branches-body">
+      <!-- rows injected via JS -->
+    </tbody>
+  </table>
+  <script>
+    async function loadData() {
+      const res = await fetch('/api/superadmin/system-overview');
+      const data = await res.json();
+      document.getElementById('total-schools').textContent = data.total_schools;
+      document.getElementById('revenue').textContent = `$${data.revenue}`;
+      document.getElementById('uptime').textContent = data.uptime;
+      const tbody = document.getElementById('branches-body');
+      data.branches.forEach(b => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${b.name}</td><td>${b.location}</td><td>${b.students}</td><td><button class="px-3 py-1 bg-primary-600 hover:bg-primary-500 text-white rounded">Add Campus</button></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    loadData();
+  </script>
+</body>
+</html>
