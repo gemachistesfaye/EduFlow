@@ -1,4 +1,4 @@
-< !DOCTYPE html >
+<!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
@@ -63,7 +63,15 @@
   </table>
   <script>
     async function loadData() {
-      const res = await fetch('/api/superadmin/system-overview');
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        window.location.href = '/login.html';
+        return;
+      }
+      const res = await fetch('/api/superadmin/system-overview', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) return;
       const data = await res.json();
       document.getElementById('total-schools').textContent = data.total_schools;
       document.getElementById('revenue').textContent = `$${data.revenue}`;

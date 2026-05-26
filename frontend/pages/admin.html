@@ -52,7 +52,11 @@
   </form>
   <script>
     async function loadMetrics(){
-      const res = await fetch('/api/admin/school-metrics');
+      const token = localStorage.getItem('access_token');
+      const res = await fetch('/api/admin/school-metrics', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) return;
       const data = await res.json();
       document.getElementById('student-count').textContent = data.students;
       document.getElementById('teacher-count').textContent = data.teachers;
@@ -66,9 +70,13 @@
         student: { email:e.target['student-email'].value, name:e.target['student-name'].value },
         parent: { email:e.target['parent-email'].value, name:e.target['parent-name'].value }
       };
+      const token = localStorage.getItem('access_token');
       const res = await fetch('/api/admin/cascade-register', {
         method:'POST',
-        headers:{'Content-Type':'application/json'},
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body:JSON.stringify(payload)
       });
       const msg = await res.json();

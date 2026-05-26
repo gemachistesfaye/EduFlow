@@ -10,6 +10,21 @@ bp = Blueprint('superadmin', __name__)
 def dashboard():
     return jsonify({"message": "Superadmin dashboard"})
 
+@bp.get('/system-overview')
+@rbac(100)
+def system_overview():
+    # Placeholder data for the Super Admin dashboard
+    return jsonify({
+        "total_schools": 3,
+        "revenue": "24,500.00",
+        "uptime": "99.9%",
+        "branches": [
+            {"name": "Main Campus", "location": "Downtown", "students": 1250},
+            {"name": "North Branch", "location": "Northside", "students": 840},
+            {"name": "West Wing", "location": "West End", "students": 620}
+        ]
+    })
+
 @bp.post('/create-user')
 @rbac(100)
 def create_user():

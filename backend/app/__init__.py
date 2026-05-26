@@ -5,7 +5,7 @@ from .routes import register_routes
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object("backend.app.config.Config")
+    app.config.from_object("app.config.Config")
 
     init_db(app)
     register_auth_middleware(app)
