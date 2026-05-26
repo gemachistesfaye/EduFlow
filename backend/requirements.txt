@@ -1,0 +1,9 @@
+Flask
+SQLAlchemy
+PyMySQL
+bcrypt
+PyJWT
+python-dotenv
+mysql-connector-python
+pandas
+reportlab

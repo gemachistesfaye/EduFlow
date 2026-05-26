@@ -117,17 +117,11 @@
             else document.documentElement.classList.remove('dark');
         })();
 
-        // ── Supabase client ────────────────────────────────────────────
-        const { createClient } = supabase;
-        const sb = createClient(
-            'https://agjkullgpuhknfillqfp.supabase.co',
-            'sb_publishable_HDyPnD1T3f7BkxbjN0tYkg_icBz6Eci'
-        );
-
         // ── Alert helper ───────────────────────────────────────────────
         function showAlert(msg, type = 'error') {
             const box = document.getElementById('alert-box');
             box.textContent = msg;
+            box.classList.remove('hidden');
             box.className = type === 'error'
                 ? 'mb-5 p-4 rounded-xl text-sm border bg-red-50 text-red-700 border-red-200'
                 : 'mb-5 p-4 rounded-xl text-sm border bg-green-50 text-green-700 border-green-200';
@@ -151,23 +145,41 @@
             btn.disabled = true;
             btn.textContent = 'Signing in…';
 
-            const { data, error } = await sb.auth.signInWithPassword({ email, password });
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
 
-            if (error) {
-                showAlert(error.message);
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showAlert(data.error || 'Login failed');
+                    btn.disabled = false;
+                    btn.textContent = 'Sign In';
+                    return;
+                }
+
+                // Store token
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('user_role', data.role);
+
+                // Redirect based on role
+                const routes = {
+                    superadmin: 'pages/superadmin.html',
+                    admin: 'pages/admin.html',
+                    school_director: 'pages/admin.html',
+                    teacher: 'pages/teacher.html',
+                    student: 'pages/student.html',
+                    parent: 'pages/parent.html'
+                };
+                window.location.href = routes[data.role] || 'pages/student.html';
+            } catch (err) {
+                showAlert('Network error. Is the server running?');
                 btn.disabled = false;
                 btn.textContent = 'Sign In';
-                return;
             }
-
-            // Redirect based on role in user metadata
-            const role = data.user?.user_metadata?.role || 'student';
-            const routes = {
-                admin:   'pages/admin/dashboard.html',
-                teacher: 'pages/teacher/dashboard.html',
-                student: 'pages/student/dashboard.html',
-            };
-            window.location.href = routes[role] || routes.student;
         });
     </script>
 </body>

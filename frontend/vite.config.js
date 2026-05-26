@@ -4,6 +4,15 @@ import { resolve } from 'path';
 export default defineConfig({
   root: '.',
   base: '/',
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  },
   build: {
     outDir: '../dist',
     emptyOutDir: true,
