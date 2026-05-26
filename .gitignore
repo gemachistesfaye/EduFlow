@@ -1,0 +1,12 @@
+# Gitignore for School Management System
+# Ignore environment files
+.env
+# Node modules
+node_modules/
+# Build output
+dist/
+# Logs
+*.log
+# OS files
+.DS_Store
+Thumbs.db
