@@ -118,42 +118,26 @@
             alertBox.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200', 'bg-green-50', 'text-green-700', 'border-green-200');
             
             if (type === 'error') {
-                alertBox.classList.add('bg-red-50', 'text-red-700', 'border-red-200', 'dark:bg-red-900/30', 'dark:text-red-400', 'dark:border-red-800/50');
-            } else {
-                alertBox.classList.add('bg-green-50', 'text-green-700', 'border-green-200', 'dark:bg-green-900/30', 'dark:text-green-400', 'dark:border-green-800/50');
-            }
-        }
-
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-
-            // Simple validation
-            if (!email || !password) {
-                showAlert('Please enter both email and password.');
-                return;
-            }
-
-            // Mock success
-            showAlert('Login successful! Redirecting...', 'success');
-            
-            // Simulation of redirect
-            setTimeout(() => {
-                window.location.href = 'pages/admin/dashboard.html';
-            }, 1000);
-        });
-
-        // Initialize theme on load
+        // Theme initialization (same logic as landing page)
         function initTheme() {
-            if (localStorage.getItem('color-theme') === 'dark' || localStorage.getItem('theme') === 'dark' || (!('color-theme' in localStorage) && !('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
+            const stored = localStorage.getItem('color-theme')
+                || localStorage.getItem('theme')
+                || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            if (stored === 'dark') document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
         }
         initTheme();
+
+        // Maintenance banner (visible only during Supabase pooler maintenance)
+        const start = new Date('2026-05-26T16:00:00+03:00');
+        const end = new Date(start.getTime() + 30 * 60 * 1000);
+        if (Date.now() >= start && Date.now() <= end) {
+            const banner = document.createElement('div');
+            banner.id = 'maintenance-banner';
+            banner.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.8); color:#fff; display:flex; align-items:center; justify-content:center; z-index:9999';
+            banner.innerHTML = '<p style="background:#2563eb;padding:1rem 2rem;border-radius:.5rem;">Supabase is undergoing scheduled maintenance. Some features may be temporarily unavailable.</p>';
+            document.body.appendChild(banner);
+        }
     </script>
 </body>
 </html>
