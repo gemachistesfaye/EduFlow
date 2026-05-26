@@ -150,7 +150,15 @@
             }, 1000);
         });
 
-
+        // Initialize theme on load
+        function initTheme() {
+            if (localStorage.getItem('color-theme') === 'dark' || localStorage.getItem('theme') === 'dark' || (!('color-theme' in localStorage) && !('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+        initTheme();
     </script>
 </body>
 </html>
