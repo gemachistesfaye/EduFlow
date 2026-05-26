@@ -73,32 +73,17 @@ navItems.forEach(item => {
 
         if (window.innerWidth < 1024) toggleSidebar();
 
+        const href = this.getAttribute('href');
+        if (href && href !== '#') {
+            window.location.href = href;
+            return;
+        }
+
         const pageName = this.getAttribute('data-page');
-        // Redirect to pages inside their folders
-        switch(pageName) {
-            case 'dashboard':
-                window.location.href = 'dashboard.html';
-                break;
-            case 'students':
-                window.location.href = 'students.html';
-                break;
-            case 'teachers':
-                window.location.href = 'teachers.html';
-                break;
-            case 'classes':
-                window.location.href = 'classes.html';
-                break;
-            case 'attendance':
-                window.location.href = 'attendance.html';
-                break;
-            case 'grades':
-                window.location.href = 'grades.html';
-                break;
-            case 'settings':
-                window.location.href = 'settings.html';
-                break;
-            default:
-                console.log('Unknown page:', pageName);
+        if (pageName) {
+            window.location.href = `${pageName}.html`;
+        } else {
+            console.log('Unknown page:', pageName);
         }
     });
 });
@@ -108,7 +93,7 @@ const logoutBtn = document.getElementById('logout-btn');
 logoutBtn?.addEventListener('click', () => {
     const confirmLogout = confirm("Are you sure you want to logout?");
     if (confirmLogout) {
-        window.location.href = '../login.html'; // adjust path depending on folder
+        window.location.href = '/login.html';
     }
 });
 
