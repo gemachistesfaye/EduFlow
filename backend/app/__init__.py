@@ -2,10 +2,11 @@ from flask import Flask
 from .database import init_db
 from .middleware.auth import register_auth_middleware
 from .routes import register_routes
+from .config import Config
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object("app.config.Config")
+    app.config.from_object(Config)  # load directly, no string import needed
 
     init_db(app)
     register_auth_middleware(app)

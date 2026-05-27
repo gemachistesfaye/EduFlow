@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ..middleware.auth import rbac
-from ..models import db, User, Role, Profile
+from ..models import db, User, Role, Profile, School
 from ..utils.security import hash_password
 
 bp = Blueprint('superadmin', __name__)
@@ -58,3 +58,32 @@ def create_user():
     db.session.commit()
 
     return jsonify({"message": f"User {full_name} created successfully as {role_name}"}), 201
+    # New endpoint: create a school branch and its director
+    @bp.post('/create-branch')
+    @rbac(100)
+    def create_branch():
+        data = request.json
+        required = ['campus_name', 'location', 'director_name', 'director_email', 'password']
+        if not all(k in data and data[k] for k in required):
+            return jsonify({"error": "Missing required fields"}), 400
+        # Create school
+        school = School(name=data['campus_name'], location=data['location'])
+        db.session.add(school)
+        db.session.flush()  # get school.id without committing
+        # Ensure director role exists
+        role = Role.query.filter_by(name='school_director').first()
+        if not role:
+            role = Role(name='school_director', level=80)
+            db.session.add(role)
+            db.session.flush()
+        # Create user for director
+        pwd_hash = hash_password(data['password'])
+        user = User(email=data['director_email'], password_hash=pwd_hash,
+                    role_id=role.id, school_id=school.id)
+        db.session.add(user)
+        db.session.flush()
+        # Create profile for director
+        profile = Profile(user_id=user.id, full_name=data['director_name'], school_id=school.id)
+        db.session.add(profile)
+        db.session.commit()
+        return jsonify({"message": f"School {school.name} and Director {data['director_name']} created."}), 201

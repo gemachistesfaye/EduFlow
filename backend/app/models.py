@@ -20,15 +20,27 @@ class Role(db.Model):
     def __repr__(self):
         return f"<Role {self.name} ({self.level})>"
 
+# New model for school branches
+class School(db.Model):
+    __tablename__ = "schools"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
+    location = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f"<School {self.name} ({self.location})>"
+
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
+    school_id = db.Column(db.Integer, db.ForeignKey('schools.id'))  # link director to school
 
     role = db.relationship('Role')
     profile = db.relationship('Profile', uselist=False, back_populates='user')
+    school = db.relationship('School', foreign_keys=[school_id])  # link user to school
 
     def __repr__(self):
         return f"<User {self.email} ({self.role.name})>"
