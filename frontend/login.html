@@ -167,12 +167,12 @@
 
                 // Redirect based on role
                 const routes = {
-                    superadmin: 'pages/superadmin.html',
-                    admin: 'pages/admin.html',
-                    school_director: 'pages/admin.html',
-                    teacher: 'pages/teacher.html',
-                    student: 'pages/student.html',
-                    parent: 'pages/parent.html'
+                    superadmin: 'pages/superadmin/dashboard.html',
+                    admin: 'pages/admin/dashboard.html',
+                    school_director: 'pages/admin/dashboard.html',
+                    teacher: 'pages/teacher/dashboard.html',
+                    student: 'pages/student/dashboard.html',
+                    parent: 'pages/parent/dashboard.html'
                 };
                 window.location.href = routes[data.role] || 'pages/student.html';
             } catch (err) {

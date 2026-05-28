@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parent Dashboard – EduFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: "#eff6ff",
+              100: "#dbeafe",
+              200: "#bfdbfe",
+              300: "#93c5fd",
+              400: "#60a5fa",
+              500: "#3b82f6",
+              600: "#2563eb",
+              700: "#1d4ed8",
+              800: "#1e40af",
+              900: "#1e3a8a",
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {font-family:"Inter",sans-serif;}
+    .card {@apply bg-gray-800 rounded-xl p-6 shadow-lg;}
+    .select {@apply w-full bg-gray-700 text-white p-2 rounded;}
+    .balance {@apply text-2xl font-bold text-primary-500;}
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen p-8">
+  <h1 class="text-3xl font-bold text-white mb-6">Parent Dashboard</h1>
+
+  <section class="mb-6">
+    <label class="block text-gray-400 mb-2">Select Child</label>
+    <select id="child-select" class="select"><option>Loading…</option></select>
+  </section>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="card">
+      <p class="text-gray-400">Outstanding Fees</p>
+      <p id="fees" class="balance">—</p>
+    </div>
+    <div class="card">
+      <p class="text-gray-400">Performance Trend</p>
+      <canvas id="trend-chart" class="w-full h-48"></canvas>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    async function loadChildren() {
+      const res = await fetch('/api/parent/children-tracker');
+      const data = await res.json();
+      const sel = document.getElementById('child-select');
+      sel.innerHTML = '';
+      data.children.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name;
+        sel.appendChild(opt);
+      });
+      sel.value = data.selected_child_id || (data.children[0]?.id ?? '');
+      loadChildData(sel.value);
+    }
+
+    async function loadChildData(childId) {
+      const res = await fetch(`/api/parent/children-tracker?child_id=${childId}`);
+      const d = await res.json();
+      document.getElementById('fees').textContent = `$${d.fees}`;
+      const ctx = document.getElementById('trend-chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: d.trend.map(p => p.month),
+          datasets: [{
+            label: 'Score',
+            data: d.trend.map(p => p.score),
+            borderColor: '#2563eb',
+            fill: false,
+          }]
+        },
+        options: {responsive:true, maintainAspectRatio:false}
+      });
+    }
+
+    document.getElementById('child-select').addEventListener('change', e => {
+      loadChildData(e.target.value);
+    });
+
+    loadChildren();
+  </script>
+</body>
+</html>

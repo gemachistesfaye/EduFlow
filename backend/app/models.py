@@ -1,4 +1,8 @@
-# backend/app/models.py
+    """SQLAlchemy ORM models for the School Management System.
++    Includes core entities: Role, User, Profile,
++    Student, Teacher, Class, Course, Enrollment, Attendance, Grade, Fee, Exam.
++    """
+
 """SQLAlchemy ORM models for the School Management System.
 Includes core entities: Role, User, Profile (generic user data),
 Student, Teacher, Class, Attendance, Grade, Fee, Exam.
@@ -37,6 +41,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'))  # link director to school
+    must_change_password = db.Column(db.Boolean, default=True, nullable=False)
 
     role = db.relationship('Role')
     profile = db.relationship('Profile', uselist=False, back_populates='user')
@@ -64,7 +69,19 @@ class Profile(db.Model):
 # ---------------------------------------------------------------------------
 # Core operational tables (9 modules)
 # ---------------------------------------------------------------------------
-class Class(db.Model):
+class Course(db.Model):
+    __tablename__ = "courses"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    code = db.Column(db.String(20), unique=True, nullable=False)
+    school_id = db.Column(db.Integer, db.ForeignKey('schools.id'))
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
+
+    school = db.relationship('School')
+    teacher = db.relationship('Teacher')
+
+    def __repr__(self):
+        return f"<Course {self.code} ({self.name})>"
     __tablename__ = "classes"
     id = db.Column(db.Integer, primary_key=True)
     class_name = db.Column(db.String(50), nullable=False)
@@ -118,6 +135,19 @@ class Attendance(db.Model):
         return f"<Attendance {self.student_id} {self.date} {self.status}>"
 
 class Grade(db.Model):
+    __tablename__ = "grades"
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
+    exam_type = db.Column(db.Enum('Quiz', 'Mid', 'Final', name='exam_type_enum'), nullable=False)
+    score = db.Column(db.Float, nullable=False)
+    total_marks = db.Column(db.Float, nullable=False)
+
+    student = db.relationship('Student')
+    course = db.relationship('Course')
+
+    def __repr__(self):
+        return f"<Grade student={self.student_id} course={self.course_id} {self.exam_type}>"
     __tablename__ = "grades"
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
