@@ -18,7 +18,7 @@
       theme: {
         extend: {
           colors: {
-            forest: { 500:'#2D6A4F', 600:'#1B4332', 700:'#132A20' },
+            forest: { 500:'#2D6A4F', 600:'#1B4332', 700:'#132A20', 800:'#0d1d16', 900:'#060e0a' },
             sage:   { 50:'#F4F6F0', 100:'#E6EAE0', 200:'#D0D8C5', 600:'#5A734E', 800:'#32422C' }
           },
           fontFamily: { sans: ['Inter','sans-serif'] }
@@ -28,12 +28,8 @@
   </script>
 
   <style>
-    /* active pill */
-    .pill-active { background:#fff; color:#1B4332; box-shadow:0 2px 8px rgba(0,0,0,.12); font-weight:700; }
-    .pill-inactive { color:rgba(255,255,255,.7); }
-    .pill-inactive:hover { color:#fff; }
     /* field focus ring */
-    input:focus { outline:none; border-color:#2D6A4F; box-shadow:0 0 0 3px rgba(45,106,79,.2); }
+    input:focus { outline:none; box-shadow:0 0 0 3px rgba(45,106,79,.2); }
   </style>
 </head>
 
@@ -42,70 +38,75 @@
   <!-- ══════════════════════════════════
        LEFT – Branding panel
   ══════════════════════════════════ -->
-  <div class="hidden md:flex w-5/12 bg-forest-600 text-white flex-col items-center justify-center p-12 relative overflow-hidden">
+  <div id="left-panel" class="hidden md:flex w-5/12 text-white flex-col justify-between p-12 relative overflow-hidden transition-colors duration-500 bg-forest-700">
     <!-- subtle grid decoration -->
     <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle,#fff 1px,transparent 1px);background-size:28px 28px;"></div>
-    <div class="relative text-center space-y-5 max-w-xs">
-      <!-- logo -->
-      <div class="mx-auto w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-3xl">🎓</div>
-      <div>
-        <p class="text-xs font-bold tracking-widest uppercase opacity-60 mb-1">EduFlow</p>
-        <h1 id="left-title" class="text-3xl font-extrabold leading-snug">Staff Portal</h1>
-        <p id="left-subtitle" class="text-sm opacity-80 mt-2">Manage classes, attendance and grades from one place.</p>
-      </div>
+    
+    <div class="relative z-10 w-full max-w-sm mx-auto flex flex-col h-full justify-center">
+      <!-- logo / icon -->
+      <div id="panel-icon" class="text-6xl mb-6 transition-transform duration-500 opacity-90"><i class="fa-solid fa-graduation-cap"></i></div>
+      
+      <p class="text-xs font-bold tracking-widest uppercase opacity-80 mb-1">EduFlow</p>
+      <h1 id="left-title" class="text-4xl font-extrabold leading-snug mb-4">Student Portal</h1>
+      <p id="left-subtitle" class="text-sm opacity-90 mb-8 leading-relaxed">Manage timetable, homework and grades easily.</p>
+      
+      <div class="w-full h-px bg-white/20 mb-8"></div>
+      
       <!-- feature bullets -->
-      <ul id="left-features" class="text-left text-sm space-y-2 mt-4"></ul>
+      <ul id="left-features" class="text-left text-sm space-y-4 font-medium opacity-90"></ul>
+    </div>
+    
+    <div class="relative z-10 text-xs font-semibold opacity-60 w-full max-w-sm mx-auto">
+      © 2026 EDUFLOW SYSTEMS
     </div>
   </div>
 
   <!-- ══════════════════════════════════
        RIGHT – Login card
   ══════════════════════════════════ -->
-  <div class="flex w-full md:w-7/12 items-center justify-center p-6 overflow-y-auto">
-    <div class="w-full max-w-md space-y-5">
+  <div class="flex flex-col w-full md:w-7/12 items-center justify-center p-6 overflow-y-auto bg-sage-50">
+    <div class="w-full max-w-md relative">
 
       <!-- Back to home -->
-      <a href="index.html" class="inline-flex items-center gap-2 text-xs font-semibold text-sage-600 hover:text-forest-600 transition-colors">
-        <i class="fa-solid fa-arrow-left text-xs"></i> Back to EduFlow
+      <a href="index.html" class="inline-flex items-center gap-2 text-sm font-semibold text-forest-700 hover:text-forest-900 transition-colors mb-6 ml-2">
+        <i class="fa-solid fa-arrow-left"></i> Back to EduFlow
       </a>
 
-      <!-- Portal tabs removed per user request to isolate login flows -->
-
       <!-- ── Login card ── -->
-      <div class="bg-white rounded-2xl shadow-xl border border-sage-100 p-8 space-y-5">
+      <div id="login-card" class="rounded-2xl shadow-xl p-8 space-y-6 transition-colors duration-500">
 
         <!-- heading -->
         <div>
-          <h2 id="form-heading" class="text-2xl font-extrabold text-forest-700">Welcome back</h2>
-          <p  id="form-subheading" class="text-sm text-sage-600 mt-1">Sign in to your staff account to continue</p>
+          <h2 id="form-heading" class="text-2xl font-extrabold transition-colors duration-500">Welcome back</h2>
+          <p id="form-subheading" class="text-sm opacity-90 mt-1">Sign in to your account.</p>
         </div>
 
         <!-- alert -->
         <div id="alert-box" class="hidden rounded-lg px-4 py-3 text-sm font-medium"></div>
 
         <!-- form -->
-        <form id="login-form" novalidate class="space-y-4">
+        <form id="login-form" novalidate class="space-y-5">
 
           <!-- email -->
           <div>
-            <label id="email-label" for="email" class="block text-xs font-semibold text-sage-800 mb-1">Staff Email Address</label>
+            <label id="email-label" for="email" class="block text-xs font-bold tracking-wider uppercase mb-2 opacity-90">Email Address</label>
             <input type="email" id="email" name="email" required
-                   placeholder="staff@school.edu"
+                   placeholder="Enter your email"
                    autocomplete="email"
-                   class="block w-full rounded-xl border border-sage-200 bg-sage-50 px-4 py-2.5 text-sm transition-all">
+                   class="block w-full rounded-xl border-none bg-sage-50 text-forest-900 px-4 py-3 text-sm transition-all focus:ring-2 focus:ring-sage-200">
           </div>
 
           <!-- password -->
           <div>
-            <label id="password-label" for="password" class="block text-xs font-semibold text-sage-800 mb-1">Password</label>
+            <label id="password-label" for="password" class="block text-xs font-bold tracking-wider uppercase mb-2 opacity-90">Password</label>
             <div class="relative">
               <input type="password" id="password" name="password" required
                      placeholder="••••••••"
                      autocomplete="current-password"
-                     class="block w-full rounded-xl border border-sage-200 bg-sage-50 px-4 py-2.5 pr-10 text-sm transition-all">
+                     class="block w-full rounded-xl border-none bg-sage-50 text-forest-900 px-4 py-3 pr-10 text-sm transition-all focus:ring-2 focus:ring-sage-200">
               <button type="button" id="toggle-pw"
-                      class="absolute right-3 top-1/2 -translate-y-1/2 text-sage-400 hover:text-sage-700">
-                <i class="fa-regular fa-eye text-sm"></i>
+                      class="absolute right-3 top-1/2 -translate-y-1/2 text-forest-600 hover:text-forest-800">
+                <i class="fa-regular fa-eye-slash text-sm"></i>
               </button>
             </div>
           </div>
@@ -115,16 +116,14 @@
 
           <!-- submit -->
           <button type="submit" id="submit-btn"
-                  class="w-full py-3 rounded-xl bg-forest-600 hover:bg-forest-500 text-white font-bold text-sm shadow-md transition-colors">
+                  class="w-full py-3.5 rounded-xl text-white font-bold text-sm shadow-md transition-all duration-300 mt-2">
             Sign In
           </button>
         </form>
 
-
-
         <!-- footer note -->
-        <p id="footer-note" class="text-center text-xs text-sage-400">
-          Authorised school staff only. Contact your administrator if you need access.
+        <p id="footer-note" class="text-center text-xs opacity-70 pt-2">
+          Authorised school access only.
         </p>
       </div>
     </div>
@@ -139,58 +138,73 @@
       staff: {
         title:         'Staff Portal',
         subtitle:      'Manage classes, attendance and grades from one place.',
-        formHeading:   'Welcome back',
-        formSub:       'Sign in to your staff account to continue',
-        emailLabel:    'Staff Email Address',
+        formHeading:   'Welcome back Staff',
+        formSub:       'Sign in to your staff account.',
+        emailLabel:    'STAFF EMAIL ADDRESS',
         emailPH:       'staff@school.edu',
-        passwordLabel: 'Password',
-        footerNote:    'Authorised school staff only. Contact your administrator if you need access.',
-        demoEmail:     'teacher@eduflow.com',
-        demoPass:      'StaffPass123',
+        passwordLabel: 'PASSWORD',
+        footerNote:    'Authorised school staff access only.',
+        icon:          '<i class="fa-solid fa-user-tie"></i>',
+        theme: {
+          bg: 'bg-forest-700',
+          cardBg: 'bg-white',
+          text: 'text-forest-900',
+          btn: ['bg-forest-700', 'hover:bg-forest-600']
+        },
         features: [
-          '📋 Class registers & attendance tracking',
-          '📊 Homework submission & live grade dashboards',
-          '🗓️  Conflict-free exam schedule builders',
-          '📣 Direct parent communication loops',
-          '📈 Real-time operational metric reports'
+          'Class registers & attendance tracking',
+          'Homework submission & live grade dashboards',
+          'Conflict-free exam schedule builders',
+          'Direct parent communication loops',
+          'Real-time operational metric reports'
         ]
       },
       student: {
         title:         'Student Portal',
-        subtitle:      'Access your timetable, homework and grade results easily.',
-        formHeading:   'Student Sign In',
-        formSub:       'Check homework boards, exam timetables and grade reports',
-        emailLabel:    'Student Email or ID',
+        subtitle:      'Manage timetable, homework and grades easily.',
+        formHeading:   'Welcome back Student',
+        formSub:       'Sign in to your student account.',
+        emailLabel:    'STUDENT ID / EMAIL ADDRESS',
         emailPH:       'student@school.edu',
-        passwordLabel: 'Password',
-        footerNote:    'Student portal issues? Ask your class teacher to confirm your credentials.',
-        demoEmail:     'student@eduflow.com',
-        demoPass:      'StudentPass123',
+        passwordLabel: 'PASSWORD',
+        footerNote:    'Authorised school student access only.',
+        icon:          '<i class="fa-solid fa-graduation-cap"></i>',
+        theme: {
+          bg: 'bg-forest-700',
+          cardBg: 'bg-white',
+          text: 'text-forest-900',
+          btn: ['bg-forest-700', 'hover:bg-forest-600']
+        },
         features: [
-          '🗓️  Conflict-free lecture timetables',
-          '📦 Homework delivery & resource drawers',
-          '📊 Interactive terminal grade reports',
-          '🎯 Co-curricular activity registers',
-          '💬 Secure student messaging directory'
+          'Class registers & attendance tracking',
+          'Homework submission & live grade dashboards',
+          'Interactive terminal grade reports',
+          'Co-curricular activity registers',
+          'Secure student messaging directory'
         ]
       },
       parent: {
         title:         'Parent Portal',
-        subtitle:      'Stay connected with your child\'s progress, reports, and notices.',
-        formHeading:   'Family Portal Sign In',
-        formSub:       'Access student profiles, parent diaries and report cards',
-        emailLabel:    'Parent Email Address',
+        subtitle:      'Stay connected with your child\'s progress.',
+        formHeading:   'Welcome back Parent',
+        formSub:       'Sign in to your parent account.',
+        emailLabel:    'PARENT EMAIL ADDRESS',
         emailPH:       'parent@school.edu',
-        passwordLabel: 'Password',
-        footerNote:    'Need help? Contact the school administrative office.',
-        demoEmail:     'parent@eduflow.com',
-        demoPass:      'ParentPass123',
+        passwordLabel: 'PASSWORD',
+        footerNote:    'Authorised school parent access only.',
+        icon:          '<i class="fa-solid fa-users"></i>',
+        theme: {
+          bg: 'bg-forest-700',
+          cardBg: 'bg-white',
+          text: 'text-forest-900',
+          btn: ['bg-forest-700', 'hover:bg-forest-600']
+        },
         features: [
-          '📅 Real-time attendance calendars',
-          '📄 Digital grade report sheets',
-          '🔔 Alerts for unexplained absences',
-          '💬 Direct messaging with teachers',
-          '📚 Homework lists & project milestones'
+          'Real-time attendance calendars',
+          'Digital grade report sheets',
+          'Alerts for unexplained absences',
+          'Direct messaging with teachers',
+          'Homework lists & project milestones'
         ]
       }
     };
@@ -210,8 +224,8 @@
       featList.innerHTML = '';
       cfg.features.forEach(f => {
         const li = document.createElement('li');
-        li.className = 'flex items-start gap-2 opacity-90';
-        li.textContent = f;
+        li.className = 'flex items-center gap-3';
+        li.innerHTML = `<i class="fa-regular fa-circle-check text-sage-200"></i> <span>${f}</span>`;
         featList.appendChild(li);
       });
 
@@ -223,8 +237,20 @@
       document.getElementById('password-label').textContent  = cfg.passwordLabel;
       document.getElementById('footer-note').textContent     = cfg.footerNote;
       document.getElementById('role-field').value            = portal;
+      
+      document.getElementById('panel-icon').innerHTML        = cfg.icon;
 
-      // Removed pill state logic because the UI pills were removed
+      // Update styling
+      const prevCfg = PORTAL_CONFIG[currentPortal];
+      if (prevCfg) {
+        document.getElementById('left-panel').classList.remove(prevCfg.theme.bg);
+        document.getElementById('login-card').classList.remove(prevCfg.theme.cardBg, prevCfg.theme.text);
+        document.getElementById('submit-btn').classList.remove(...prevCfg.theme.btn);
+      }
+      
+      document.getElementById('left-panel').classList.add(cfg.theme.bg);
+      document.getElementById('login-card').classList.add(cfg.theme.cardBg, cfg.theme.text);
+      document.getElementById('submit-btn').classList.add(...cfg.theme.btn);
 
       // Update browser URL (no page reload)
       const url = new URL(window.location);
@@ -242,8 +268,8 @@
       const box = document.getElementById('alert-box');
       box.textContent = msg;
       box.className = type === 'success'
-        ? 'rounded-lg px-4 py-3 text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-200'
-        : 'rounded-lg px-4 py-3 text-sm font-medium bg-red-50 text-red-800 border border-red-200';
+        ? 'rounded-lg px-4 py-3 text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 mb-4'
+        : 'rounded-lg px-4 py-3 text-sm font-medium bg-red-50 text-red-800 border border-red-200 mb-4';
       box.classList.remove('hidden');
     }
     function hideAlert() {
@@ -257,8 +283,6 @@
       pw.type = pw.type === 'password' ? 'text' : 'password';
       ico.className = pw.type === 'password' ? 'fa-regular fa-eye text-sm' : 'fa-regular fa-eye-slash text-sm';
     });
-
-
 
     // ── 7. Form submit ────────────────────────────────────────────────────
     document.getElementById('login-form').addEventListener('submit', async (e) => {
