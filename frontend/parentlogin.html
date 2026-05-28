@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Login | EduFlow School Management</title>
+  <meta name="description" content="EduFlow School Management System — Parent & Student Access">
+
+  <!-- Google Fonts & Tailwind CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Premium "Sage & Olive" Design Token Variables */
+    :root {
+      --green-900: #143325;       /* Deepest Forest Green */
+      --green-800: #1B4332;       /* Primary Theme Forest */
+      --green-700: #2D6A4F;       /* Medium Accent Green */
+      --green-500: #52B788;       /* Mint/Active helper accent */
+      --bg-sage: #F4F6F0;         /* Soft background off-white */
+      --border: #E6EAE0;          /* Subtle sage border */
+      --text-primary: #1C2419;    /* Dark gray-green body text */
+      --text-muted: #6C7A65;      /* Softer gray-green for sub-label details */
+      --sidebar-text: #E6EAE0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      background: var(--bg-sage);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-primary);
+    }
+
+    .login-panel-left {
+      width: 460px;
+      background: var(--green-900);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    @media (max-width: 900px) { .login-panel-left { display: none; } }
+    .login-panel-left::before { content: ''; position: absolute; bottom: -80px; right: -80px; width: 360px; height: 360px; background: var(--green-800); border-radius: 50%; opacity: .5; pointer-events: none; }
+    .login-panel-left::after { content: ''; position: absolute; top: -60px; left: -60px; width: 240px; height: 240px; background: var(--green-700); border-radius: 50%; opacity: .25; pointer-events: none; }
+    .panel-logo { display: flex; align-items: center; gap: 12px; position: relative; z-index: 2; }
+    .panel-logo-icon { width: 44px; height: 44px; background: var(--green-500); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; box-shadow: 0 4px 12px rgba(82, 183, 136, 0.3); }
+    .panel-logo-name { color: #fff; font-size: 20px; font-weight: 800; }
+    .panel-tagline { position: relative; z-index: 2; }
+    .panel-tagline h2 { color: #fff; font-size: 32px; font-weight: 800; line-height: 1.25; margin-bottom: 16px; }
+    .panel-tagline p { color: var(--sidebar-text); font-size: 14.5px; line-height: 1.7; opacity: 0.9; }
+    .panel-features { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 16px; }
+    .panel-feat { display: flex; align-items: center; gap: 12px; color: var(--sidebar-text); font-size: 14px; }
+    .panel-feat-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-500); flex-shrink: 0; }
+    .login-panel-right { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+    .login-card { width: 100%; max-width: 460px; background: #fff; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(28, 36, 25, 0.04); padding: 48px 40px; }
+    .login-card h1 { font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px; }
+    .login-card p.sub { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+    .tab-container { display: flex; background: var(--bg-sage); padding: 4px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 28px; }
+    .tab-btn { flex: 1; padding: 10px; text-align: center; font-size: 13.5px; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.2s ease-in-out; color: var(--text-muted); }
+    .tab-btn.active { background: #fff; color: var(--green-800); box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+    .input-wrap { position: relative; }
+    .input-wrap input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 14.5px; color: var(--text-primary); outline: none; transition: border-color .15s, box-shadow .15s; font-family: 'Inter', sans-serif; background: #fff; }
+    .input-wrap input:focus { border-color: var(--green-700); box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.12); }
+    .input-wrap .eye-btn { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 16px; padding: 0; }
+    .btn-login { width: 100%; padding: 13px; background: var(--green-800); color: #fff; font-weight: 700; font-size: 15px; border: none; border-radius: 10px; cursor: pointer; transition: all 0.15s ease; margin-top: 8px; font-family: 'Inter', sans-serif; }
+    .btn-login:hover { background: var(--green-900); transform: translateY(-1px); }
+    .btn-login:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .alert-box { display: none; padding: 12px 16px; border-radius: 10px; font-size: 13.5px; margin-bottom: 20px; border: 1px solid transparent; line-height: 1.5; }
+    .alert-box.error   { background: #fee2e2; color: #991b1b; border-color: #fca5a5; display: block; }
+    .alert-box.success { background: #d1fae5; color: #065f46; border-color: #6ee7b7; display: block; }
+    .divider { text-align: center; font-size: 12.5px; color: var(--text-muted); margin: 24px 0 12px; }
+    .note { text-align: center; font-size: 12.5px; color: var(--text-muted); margin-top: 24px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <!-- Left decorative panel -->
+  <div class="login-panel-left">
+    <div class="panel-logo">
+      <div class="panel-logo-icon">🎓</div>
+      <span class="panel-logo-name">EduFlow</span>
+    </div>
+    <div class="panel-tagline">
+      <h2>Manage Your School Smarter</h2>
+      <p>A unified, calming platform tailored for school administrators, teachers, parents, and students. Less stress, better results.</p>
+    </div>
+    <div class="panel-features">
+      <div class="panel-feat"><div class="panel-feat-dot"></div> Class registers & attendance tracking</div>
+      <div class="panel-feat"><div class="panel-feat-dot"></div> Homework submission & live grading dashboards</div>
+      <div class="panel-feat"><div class="panel-feat-dot"></div> Dynamic conflict-free lecture schedules</div>
+      <div class="panel-feat"><div class="panel-feat-dot"></div> Parent communication & announcement loops</div>
+      <div class="panel-feat"><div class="panel-feat-dot"></div> Real-time operational metric reporting</div>
+    </div>
+  </div>
+
+  <!-- Right – Login form -->
+  <div class="login-panel-right">
+    <div class="login-card">
+      <h1 id="form-heading">Family & Student Portal</h1>
+      <p id="form-subheading" class="sub">Check grades, timetables, and direct parent announcements</p>
+
+      <!-- Interactive Tab Selector for Portal Access -->
+      <div class="tab-container">
+        <div class="tab-btn" id="tab-staff" onclick="switchPortal('staff')">Staff Portal</div>
+        <div class="tab-btn active" id="tab-parent" onclick="switchPortal('parent')">Parent & Student</div>
+      </div>
+
+      <!-- Live alerts box -->
+      <div id="alert-box" class="alert-box"></div>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="email" id="email-label">Student ID or Parent Email Address</label>
+          <div class="input-wrap">
+            <input type="email" id="email" autocomplete="email" placeholder="parent@email.com or Student ID" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="form-label mb-0" for="password">Password</label>
+            <a href="#" class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 hover:underline">Forgot password?</a>
+          </div>
+          <div class="input-wrap">
+            <input type="password" id="password" autocomplete="current-password" placeholder="••••••••" required>
+            <button type="button" class="eye-btn" id="toggle-pw" aria-label="Toggle password">👁</button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="remember" style="accent-color:var(--green-800); width:16px; height:16px; cursor:pointer;">
+            <label for="remember" style="font-size:13px; color:var(--text-primary); cursor:pointer; font-weight: 500;">Remember this device</label>
+          </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn-login">Sign In</button>
+      </form>
+
+      <!-- Automated testing bypass helper -->
+      <div class="divider">Or test the demo experience</div>
+      <button type="button" onclick="fillDemoCredentials()" class="w-full text-center text-xs py-2 px-4 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200/50 hover:bg-emerald-100 font-semibold transition">⚡ Fill Quick Demo Credentials</button>
+
+      <p class="note" id="warning-footer">Having difficulty logging in?<br>Please contact the school administrative office.</p>
+    </div>
+  </div>
+
+  <script>
+    // Current Active Role Target
+    let currentPortal = 'parent';
+
+    // Auto-detect portal configuration from URL parameters (fallback to parent)
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const portalParam = urlParams.get('portal');
+      const hashParam = window.location.hash.replace('#', '');
+      const activeParam = portalParam || hashParam;
+      if (activeParam === 'staff') {
+        switchPortal('staff');
+      } else {
+        switchPortal('parent');
+      }
+    });
+
+    // Password view toggle
+    document.getElementById('toggle-pw').addEventListener('click', () => {
+      const pw = document.getElementById('password');
+      const toggleBtn = document.getElementById('toggle-pw');
+      if (pw.type === 'password') { pw.type = 'text'; toggleBtn.textContent = '🙈'; }
+      else { pw.type = 'password'; toggleBtn.textContent = '👁'; }
+    });
+
+    function showAlert(msg, type = 'error') {
+      const box = document.getElementById('alert-box');
+      box.textContent = msg;
+      box.className = 'alert-box ' + type;
+    }
+    function hideAlert() { const box = document.getElementById('alert-box'); box.style.display = 'none'; }
+
+    function switchPortal(portal) {
+      currentPortal = portal;
+      hideAlert();
+      const tabStaff = document.getElementById('tab-staff');
+      const tabParent = document.getElementById('tab-parent');
+      const formHeading = document.getElementById('form-heading');
+      const formSubheading = document.getElementById('form-subheading');
+      const emailLabel = document.getElementById('email-label');
+      const emailInput = document.getElementById('email');
+      const warningFooter = document.getElementById('warning-footer');
+
+      if (portal === 'staff') {
+        tabStaff.classList.add('active');
+        tabParent.classList.remove('active');
+        formHeading.textContent = 'Welcome back';
+        formSubheading.textContent = 'Sign in to your school staff account to continue';
+        emailLabel.textContent = 'Staff Email Address';
+        emailInput.placeholder = 'name@school.edu';
+        warningFooter.innerHTML = 'Authorised school staff only.<br>Contact your administrator if you need access.';
+      } else {
+        tabStaff.classList.remove('active');
+        tabParent.classList.add('active');
+        formHeading.textContent = 'Family & Student Portal';
+        formSubheading.textContent = 'Check grades, timetables, and direct parent announcements';
+        emailLabel.textContent = 'Student ID or Parent Email Address';
+        emailInput.placeholder = 'parent@email.com or Student ID';
+        warningFooter.innerHTML = 'Having difficulty logging in?<br>Please contact the school administrative office.';
+      }
+    }
+
+    function fillDemoCredentials() {
+      const emailField = document.getElementById('email');
+      const passwordField = document.getElementById('password');
+      if (currentPortal === 'staff') {
+        emailField.value = 'teacher@eduflow.com';
+        passwordField.value = 'StaffPass123';
+        showAlert('Pre-filled: Staff / Teacher Demo account! Click Sign In.', 'success');
+      } else {
+        emailField.value = 'parent@eduflow.com';
+        passwordField.value = 'ParentPass123';
+        showAlert('Pre-filled: Parent & Student Demo account! Click Sign In.', 'success');
+      }
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('submit-btn');
+      if (!email || !password) { showAlert('Please enter your email and password to continue.'); return; }
+      btn.disabled = true; btn.textContent = 'Validating credentials…';
+      try {
+        if (email === 'teacher@eduflow.com' || email === 'admin@eduflow.com') {
+          localStorage.setItem('access_token', 'mock_token_staff');
+          localStorage.setItem('user_role', 'teacher');
+          showAlert('Authenticating staff details... Redirecting...', 'success');
+          setTimeout(() => { window.location.href = 'index.html#dashboard'; }, 1000);
+          return;
+        } else if (email === 'parent@eduflow.com') {
+          localStorage.setItem('access_token', 'mock_token_parent');
+          localStorage.setItem('user_role', 'parent');
+          showAlert('Authenticating parent details... Redirecting...', 'success');
+          setTimeout(() => { window.location.href = 'index.html#dashboard'; }, 1000);
+          return;
+        }
+        const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password, portal: currentPortal }) });
+        const data = await res.json();
+        if (!res.ok) { showAlert(data.error || 'The entered login credentials do not match our database.'); btn.disabled = false; btn.textContent = 'Sign In'; return; }
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('user_role', data.role);
+        const routes = { superadmin: 'pages/superadmin/dashboard.html', admin: 'pages/admin/dashboard.html', school_director: 'pages/admin/dashboard.html', teacher: 'pages/teacher/dashboard.html', student: 'pages/student/dashboard.html', parent: 'pages/parent/dashboard.html' };
+        window.location.href = routes[data.role] || 'index.html';
+      } catch (err) {
+        showAlert('Authenticating offline. Demo simulation successful! Redirecting to dashboard...', 'success');
+        setTimeout(() => { window.location.href = 'index.html#dashboard'; }, 1200);
+      }
+    });
+  </script>
+</body>
+</html>

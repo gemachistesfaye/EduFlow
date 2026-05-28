@@ -1,11 +1,6 @@
-    """SQLAlchemy ORM models for the School Management System.
-+    Includes core entities: Role, User, Profile,
-+    Student, Teacher, Class, Course, Enrollment, Attendance, Grade, Fee, Exam.
-+    """
-
 """SQLAlchemy ORM models for the School Management System.
 Includes core entities: Role, User, Profile (generic user data),
-Student, Teacher, Class, Attendance, Grade, Fee, Exam.
+Student, Teacher, Class, Course, Enrollment, Attendance, Grade, Fee, Exam.
 All tables are linked via foreign keys where appropriate.
 """
 

@@ -1,101 +1,83 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parent Dashboard – EduFlow</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: {
-              50: "#eff6ff",
-              100: "#dbeafe",
-              200: "#bfdbfe",
-              300: "#93c5fd",
-              400: "#60a5fa",
-              500: "#3b82f6",
-              600: "#2563eb",
-              700: "#1d4ed8",
-              800: "#1e40af",
-              900: "#1e3a8a",
-            },
-          },
-        },
-      },
-    };
-  </script>
-  <style>
-    body {font-family:"Inter",sans-serif;}
-    .card {@apply bg-gray-800 rounded-xl p-6 shadow-lg;}
-    .select {@apply w-full bg-gray-700 text-white p-2 rounded;}
-    .balance {@apply text-2xl font-bold text-primary-500;}
-  </style>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Portal | EduFlow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
 </head>
-<body class="bg-gray-900 min-h-screen p-8">
-  <h1 class="text-3xl font-bold text-white mb-6">Parent Dashboard</h1>
-
-  <section class="mb-6">
-    <label class="block text-gray-400 mb-2">Select Child</label>
-    <select id="child-select" class="select"><option>Loading…</option></select>
-  </section>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="card">
-      <p class="text-gray-400">Outstanding Fees</p>
-      <p id="fees" class="balance">—</p>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">🎓</div>
+      <div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">Parent Portal</div></div>
     </div>
-    <div class="card">
-      <p class="text-gray-400">Performance Trend</p>
-      <canvas id="trend-chart" class="w-full h-48"></canvas>
+    <div class="sidebar-section-label">Navigation</div>
+    <nav>
+      <a href="dashboard.html" class="nav-item active">🏠 &nbsp;Dashboard</a>
+      <a href="students.html" class="nav-item">👥 &nbsp;My Children</a>
+      <a href="attendance.html" class="nav-item">📅 &nbsp;Attendance</a>
+      <a href="grades.html" class="nav-item">📈 &nbsp;Grades</a>
+      <a href="settings.html" class="nav-item">⚙️ &nbsp;Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Logout</button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-header">
+      <div class="header-search">🔍 <input placeholder="Search child…" type="text"></div>
+      <div class="header-right"><div class="header-user"><div class="header-avatar" style="background:var(--green-700);">P</div><span id="parent-name">Parent</span></div></div>
+    </header>
+
+    <div class="page-body">
+      <div class="page-title-row"><div><div class="page-title">Parent Dashboard</div><div class="page-subtitle">Overview of your children's progress</div></div></div>
+
+      <div class="grid-4" style="margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-card-icon icon-green">👧👦</div><div class="stat-card-value" id="cnt-children">—</div><div class="stat-card-label">Children</div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-blue">📚</div><div class="stat-card-value" id="avg-grade">—</div><div class="stat-card-label">Avg Grade</div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-amber">📅</div><div class="stat-card-value" id="overall-att">—</div><div class="stat-card-label">Attendance</div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-purple">💬</div><div class="stat-card-value" id="msg-count">0</div><div class="stat-card-label">Messages</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Children Details</div>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Class</th><th>Avg Grade</th><th>Attendance</th></tr></thead>
+            <tbody id="children-tbody">
+              <tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    async function loadChildren() {
-      const res = await fetch('/api/parent/children-tracker');
+<script>
+  const token = localStorage.getItem('access_token');
+  if (!token) window.location.href = '../../login.html';
+  document.getElementById('logout-btn').onclick = () => { localStorage.removeItem('access_token'); window.location.href='../../login.html'; };
+
+  async function loadData() {
+    try {
+      const res = await fetch('/api/parent/children', { headers:{ Authorization:'Bearer '+token } });
       const data = await res.json();
-      const sel = document.getElementById('child-select');
-      sel.innerHTML = '';
-      data.children.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = c.name;
-        sel.appendChild(opt);
-      });
-      sel.value = data.selected_child_id || (data.children[0]?.id ?? '');
-      loadChildData(sel.value);
-    }
-
-    async function loadChildData(childId) {
-      const res = await fetch(`/api/parent/children-tracker?child_id=${childId}`);
-      const d = await res.json();
-      document.getElementById('fees').textContent = `$${d.fees}`;
-      const ctx = document.getElementById('trend-chart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: d.trend.map(p => p.month),
-          datasets: [{
-            label: 'Score',
-            data: d.trend.map(p => p.score),
-            borderColor: '#2563eb',
-            fill: false,
-          }]
-        },
-        options: {responsive:true, maintainAspectRatio:false}
-      });
-    }
-
-    document.getElementById('child-select').addEventListener('change', e => {
-      loadChildData(e.target.value);
-    });
-
-    loadChildren();
-  </script>
+      const children = data.children || [];
+      document.getElementById('cnt-children').textContent = children.length;
+      const avg = children.reduce((a,c)=>a+(c.average_grade||0),0)/ (children.length||1);
+      document.getElementById('avg-grade').textContent = avg ? avg.toFixed(1)+'%' : '—';
+      const att = children.reduce((a,c)=>a+(c.attendance_rate||0),0)/ (children.length||1);
+      document.getElementById('overall-att').textContent = att ? att.toFixed(1)+'%' : '—';
+      const tb = document.getElementById('children-tbody');
+      if (!children.length) { tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">No children linked.</td></tr>'; return; }
+      tb.innerHTML = children.map(c => `<tr><td>${c.name}</td><td>${c.class_name}</td><td>${c.average_grade ? c.average_grade+'%' : '—'}</td><td>${c.attendance_rate ? c.attendance_rate+'%' : '—'}</td></tr>`).join('');
+    } catch { document.getElementById('children-tbody').innerHTML='<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">Failed to load.</td></tr>'; }
+  }
+  loadData();
+</script>
 </body>
 </html>
