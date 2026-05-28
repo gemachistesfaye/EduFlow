@@ -1,207 +1,304 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Settings | EduFlow Superadmin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            sage: { 50: '#F4F6F0', 100: '#E6EAE0', 600: '#5A734E', 800: '#32422C', 900: '#2A3624' },
+            forest: { 500: '#2D6A4F', 600: '#1B4332', 700: '#132A20' },
+            admin: { 800: '#1E293B' }
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
-<div class="app-shell">
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="sidebar-logo-icon">🎓</div>
-      <div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">Superadmin</div></div>
+<body class="bg-sage-50 text-sage-900 font-sans h-screen flex overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside class="w-[260px] bg-admin-800 text-white flex flex-col flex-shrink-0 shadow-xl">
+    <div class="p-6 border-b border-white/5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-emerald-700 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-900/20">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg tracking-tight">EduFlow</h1>
+          <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-semibold">Smart System</p>
+        </div>
+      </div>
     </div>
-    <div class="sidebar-section-label">Main</div>
-    <nav>
-      <a href="dashboard.html" class="nav-item">🏠 &nbsp;Dashboard</a>
-      <a href="branches.html" class="nav-item">🌐 &nbsp;Branches</a>
-      <a href="users.html" class="nav-item">👥 &nbsp;Users</a>
-      <a href="settings.html" class="nav-item active">⚙️ &nbsp;Settings</a>
+
+    <nav class="flex-1 px-4 py-6 space-y-1">
+      <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Systems Control</p>
+      <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl text-sm font-medium transition-all">
+        <i class="fa-solid fa-gauge-high w-5"></i> Dashboard
+      </a>
+      <a href="branches.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl text-sm font-medium transition-all">
+        <i class="fa-solid fa-building-user w-5"></i> Branches
+      </a>
+      <a href="users.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl text-sm font-medium transition-all">
+        <i class="fa-solid fa-users w-5"></i> User Management
+      </a>
+      <a href="settings.html" class="flex items-center gap-3 px-4 py-3 bg-white/10 rounded-xl text-sm font-semibold text-white transition-all">
+        <i class="fa-solid fa-gear w-5 text-emerald-400"></i> Settings
+      </a>
     </nav>
-    <div class="sidebar-footer">
-      <button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Logout</button>
+
+    <div class="p-6 border-t border-white/5">
+      <button id="logout-btn" class="flex items-center gap-3 text-sm text-slate-400 hover:text-white transition-colors w-full font-medium">
+        <i class="fa-solid fa-right-from-bracket w-5"></i> Logout
+      </button>
     </div>
   </aside>
 
-  <div class="main-content">
-    <header class="top-header">
-      <div class="header-search">🔍 <input placeholder="Search settings…" type="text"></div>
-      <div class="header-right">
-        <div class="header-user"><div class="header-avatar" style="background:var(--green-800);">S</div><span>Superadmin</span></div>
+  <main class="flex-1 flex flex-col h-full overflow-hidden">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-sage-100 px-8 py-4 flex items-center justify-between shadow-sm">
+      <div class="relative w-80">
+        <input type="text" placeholder="Search settings..." class="w-full pl-10 pr-4 py-2.5 bg-sage-50 border border-sage-100 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-sage-400 text-xs"></i>
+      </div>
+      <div class="flex items-center gap-6">
+        <span id="current-time" class="text-xs font-bold text-sage-500 uppercase tracking-wide"></span>
+        <div class="flex items-center gap-3 px-3 py-1.5 border border-sage-200 rounded-full cursor-pointer hover:bg-white transition-all">
+          <div class="w-7 h-7 rounded-full bg-admin-800 text-white flex items-center justify-center text-[10px] font-bold">SA</div>
+          <span class="text-sm font-bold text-slate-700 pr-2">Superadmin</span>
+        </div>
       </div>
     </header>
 
-    <div class="page-body">
-      <div class="page-title-row">
+    <div class="flex-1 overflow-auto p-8 relative">
+      
+      <!-- Toast Notification -->
+      <div id="toast" class="fixed top-8 right-8 z-50 hidden bg-white border border-slate-200 shadow-xl rounded-xl px-6 py-4 text-sm font-bold max-w-sm transition-all duration-300"></div>
+
+      <!-- Title Row -->
+      <div class="mb-8 flex items-center justify-between">
         <div>
-          <div class="page-title">System Settings</div>
-          <div class="page-subtitle">Manage platform configuration and superadmin account</div>
+          <h2 class="text-3xl font-extrabold text-slate-800">System Settings</h2>
+          <p class="text-sage-600 mt-1">Manage platform configuration and superadmin account</p>
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-
-        <!-- Change Password -->
-        <div class="card">
-          <div class="card-header">🔒 &nbsp;Change Password</div>
-          <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Update your superadmin account password.</p>
-          <form id="change-password-form">
-            <div class="form-group">
-              <label class="form-label">Current Password</label>
-              <input type="password" id="current-password" required placeholder="••••••••" class="form-input">
+      <!-- Main Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        
+        <!-- Left Column -->
+        <div class="space-y-8">
+          
+          <!-- Change Password -->
+          <div class="bg-white rounded-3xl border border-sage-100 shadow-sm p-8">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 rounded-full bg-admin-800 text-white flex items-center justify-center"><i class="fa-solid fa-lock text-sm"></i></div>
+              <h3 class="text-lg font-extrabold text-slate-800">Change Password</h3>
             </div>
-            <div class="form-group">
-              <label class="form-label">New Password</label>
-              <input type="password" id="new-password" required placeholder="••••••••" class="form-input">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Confirm New Password</label>
-              <input type="password" id="confirm-password" required placeholder="••••••••" class="form-input">
-            </div>
-            <button type="submit" id="change-pw-btn" class="btn btn-primary" style="width:100%;margin-top:8px;">Update Password</button>
-          </form>
-        </div>
-
-        <!-- Platform Info -->
-        <div class="card">
-          <div class="card-header">ℹ️ &nbsp;Platform Information</div>
-          <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">Current system environment and version details.</p>
-
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:8px;background:var(--bg-tertiary);">
-              <span style="font-size:13px;color:var(--text-muted);">Platform</span>
-              <span style="font-size:13px;font-weight:600;color:var(--text-primary);">EduFlow MS</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:8px;background:var(--bg-tertiary);">
-              <span style="font-size:13px;color:var(--text-muted);">Version</span>
-              <span style="font-size:13px;font-weight:600;color:var(--accent);">2.0-Alpha</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:8px;background:var(--bg-tertiary);">
-              <span style="font-size:13px;color:var(--text-muted);">Database</span>
-              <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Supabase PostgreSQL</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:8px;background:var(--bg-tertiary);">
-              <span style="font-size:13px;color:var(--text-muted);">Backend</span>
-              <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Python / Flask</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:8px;background:var(--bg-tertiary);">
-              <span style="font-size:13px;color:var(--text-muted);">Auth</span>
-              <span style="font-size:13px;font-weight:600;color:var(--text-primary);">JWT + bcrypt</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:8px;background:var(--bg-tertiary);">
-              <span style="font-size:13px;color:var(--text-muted);">Server Status</span>
-              <span id="server-status" style="font-size:13px;font-weight:700;color:#34d399;">● Online</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Danger Zone -->
-        <div class="card" style="border:1px solid rgba(239,68,68,.2);">
-          <div class="card-header" style="color:#f87171;">⚠️ &nbsp;Danger Zone</div>
-          <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Irreversible actions. Proceed with caution.</p>
-          <div style="display:flex;flex-direction:column;gap:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:8px;background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);">
+            <p class="text-xs text-sage-500 mb-6">Update your superadmin account password.</p>
+            
+            <form id="change-password-form" class="space-y-4">
               <div>
-                <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Clear All Sessions</div>
-                <div style="font-size:11px;color:var(--text-muted);">Force logout all active users</div>
+                <label class="block text-[10px] font-bold text-sage-500 uppercase mb-1.5">Current Password</label>
+                <input type="password" id="current-password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-sage-200 bg-sage-50 focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all text-sm">
               </div>
-              <button onclick="alert('This feature requires backend implementation.')" style="padding:6px 14px;border-radius:6px;border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.1);color:#f87171;font-size:12px;font-weight:600;cursor:pointer;">Execute</button>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:8px;background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);">
               <div>
-                <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Reset System Cache</div>
-                <div style="font-size:11px;color:var(--text-muted);">Clear all cached data from server</div>
+                <label class="block text-[10px] font-bold text-sage-500 uppercase mb-1.5">New Password</label>
+                <input type="password" id="new-password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-sage-200 bg-sage-50 focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all text-sm">
               </div>
-              <button onclick="alert('This feature requires backend implementation.')" style="padding:6px 14px;border-radius:6px;border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.1);color:#f87171;font-size:12px;font-weight:600;cursor:pointer;">Execute</button>
-            </div>
+              <div>
+                <label class="block text-[10px] font-bold text-sage-500 uppercase mb-1.5">Confirm New Password</label>
+                <input type="password" id="confirm-password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-sage-200 bg-sage-50 focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition-all text-sm">
+              </div>
+              
+              <div class="pt-4">
+                <button type="submit" id="change-pw-btn" class="w-full py-3 text-sm font-bold bg-admin-800 text-white rounded-xl hover:bg-slate-950 shadow-md transition-all">
+                  Update Password
+                </button>
+              </div>
+            </form>
           </div>
+
+          <!-- Session Info -->
+          <div class="bg-white rounded-3xl border border-sage-100 shadow-sm p-8">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-user-shield text-sm"></i></div>
+              <h3 class="text-lg font-extrabold text-slate-800">Current Session</h3>
+            </div>
+            <p class="text-xs text-sage-500 mb-6">Your active superadmin session details.</p>
+            
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3.5 bg-sage-50 rounded-xl border border-sage-100/50">
+                <span class="text-xs font-bold text-sage-500 uppercase">Role</span>
+                <span class="text-sm font-extrabold text-red-500">Superadmin</span>
+              </div>
+              <div class="flex items-center justify-between p-3.5 bg-sage-50 rounded-xl border border-sage-100/50">
+                <span class="text-xs font-bold text-sage-500 uppercase">Email</span>
+                <span id="session-email" class="text-sm font-extrabold text-slate-800">—</span>
+              </div>
+              <div class="flex items-center justify-between p-3.5 bg-sage-50 rounded-xl border border-sage-100/50">
+                <span class="text-xs font-bold text-sage-500 uppercase">Token Valid</span>
+                <span class="text-xs font-extrabold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-md">Yes</span>
+              </div>
+            </div>
+
+            <button id="logout-btn2" class="mt-6 w-full py-3 text-sm font-bold text-red-600 bg-red-50 border border-red-100 rounded-xl hover:bg-red-100 transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-door-open"></i> Sign Out Completely
+            </button>
+          </div>
+
         </div>
 
-        <!-- Session Info -->
-        <div class="card">
-          <div class="card-header">👤 &nbsp;Current Session</div>
-          <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">Your active superadmin session details.</p>
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div style="display:flex;justify-content:space-between;padding:10px 14px;border-radius:8px;background:var(--bg-tertiary);">
-              <span style="font-size:13px;color:var(--text-muted);">Role</span>
-              <span style="font-size:13px;font-weight:700;color:#f87171;">Superadmin</span>
+        <!-- Right Column -->
+        <div class="space-y-8">
+          
+          <!-- Platform Info -->
+          <div class="bg-white rounded-3xl border border-sage-100 shadow-sm p-8">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-circle-info text-sm"></i></div>
+              <h3 class="text-lg font-extrabold text-slate-800">Platform Information</h3>
             </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 14px;border-radius:8px;background:var(--bg-tertiary);">
-              <span style="font-size:13px;color:var(--text-muted);">Email</span>
-              <span id="session-email" style="font-size:13px;font-weight:600;color:var(--text-primary);">—</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;padding:10px 14px;border-radius:8px;background:var(--bg-tertiary);">
-              <span style="font-size:13px;color:var(--text-muted);">Token Valid</span>
-              <span style="font-size:13px;font-weight:700;color:#34d399;">● Yes</span>
+            <p class="text-xs text-sage-500 mb-6">Current system environment and version details.</p>
+
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3.5 bg-sage-50 rounded-xl border border-sage-100/50">
+                <span class="text-xs font-bold text-sage-500 uppercase">Platform</span>
+                <span class="text-sm font-extrabold text-slate-800">EduFlow MS</span>
+              </div>
+              <div class="flex items-center justify-between p-3.5 bg-sage-50 rounded-xl border border-sage-100/50">
+                <span class="text-xs font-bold text-sage-500 uppercase">Version</span>
+                <span class="text-sm font-extrabold text-emerald-600">2.0-Alpha</span>
+              </div>
+              <div class="flex items-center justify-between p-3.5 bg-sage-50 rounded-xl border border-sage-100/50">
+                <span class="text-xs font-bold text-sage-500 uppercase">Database</span>
+                <span class="text-sm font-extrabold text-slate-800">Supabase PostgreSQL</span>
+              </div>
+              <div class="flex items-center justify-between p-3.5 bg-sage-50 rounded-xl border border-sage-100/50">
+                <span class="text-xs font-bold text-sage-500 uppercase">Backend</span>
+                <span class="text-sm font-extrabold text-slate-800">Python / Flask</span>
+              </div>
+              <div class="flex items-center justify-between p-3.5 bg-sage-50 rounded-xl border border-sage-100/50">
+                <span class="text-xs font-bold text-sage-500 uppercase">Auth</span>
+                <span class="text-sm font-extrabold text-slate-800">JWT + bcrypt</span>
+              </div>
+              <div class="flex items-center justify-between p-3.5 bg-sage-50 rounded-xl border border-sage-100/50">
+                <span class="text-xs font-bold text-sage-500 uppercase">Server Status</span>
+                <span class="text-xs font-extrabold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-md"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Online</span>
+              </div>
             </div>
           </div>
-          <button id="logout-btn2" style="margin-top:16px;display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Sign Out</button>
-        </div>
 
+          <!-- Danger Zone -->
+          <div class="bg-red-50/50 rounded-3xl border border-red-200 shadow-sm p-8">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation text-sm"></i></div>
+              <h3 class="text-lg font-extrabold text-red-600">Danger Zone</h3>
+            </div>
+            <p class="text-xs text-red-400 mb-6 font-medium">Irreversible actions. Proceed with extreme caution.</p>
+
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 bg-white rounded-xl border border-red-100 shadow-sm">
+                <div>
+                  <div class="text-sm font-extrabold text-slate-800">Clear All Sessions</div>
+                  <div class="text-xs text-slate-500 mt-0.5">Force logout all active users</div>
+                </div>
+                <button onclick="alert('This feature requires backend implementation.')" class="px-4 py-2 text-xs font-bold text-red-600 bg-red-50 border border-red-100 hover:bg-red-100 rounded-lg transition-colors">
+                  Execute
+                </button>
+              </div>
+              <div class="flex items-center justify-between p-4 bg-white rounded-xl border border-red-100 shadow-sm">
+                <div>
+                  <div class="text-sm font-extrabold text-slate-800">Reset System Cache</div>
+                  <div class="text-xs text-slate-500 mt-0.5">Clear all cached data from server</div>
+                </div>
+                <button onclick="alert('This feature requires backend implementation.')" class="px-4 py-2 text-xs font-bold text-red-600 bg-red-50 border border-red-100 hover:bg-red-100 rounded-lg transition-colors">
+                  Execute
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </main>
 
-<!-- Toast -->
-<div id="toast" style="position:fixed;top:80px;right:24px;z-index:999;display:none;min-width:280px;padding:14px 18px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.4);"></div>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script>
+    // Auth & Clock Setup
+    const token = localStorage.getItem('access_token');
+    if (!token) window.location.href = '../../login.html';
 
-<script>
-  const token = localStorage.getItem('access_token');
-  if (!token) window.location.href = '../../login.html';
+    function signOut() {
+      localStorage.removeItem('access_token');
+      window.location.href = '../../login.html';
+    }
 
-  function signOut() {
-    localStorage.removeItem('access_token');
-    window.location.href = '../../login.html';
-  }
+    document.getElementById('logout-btn').addEventListener('click', signOut);
+    document.getElementById('logout-btn2').addEventListener('click', signOut);
 
-  document.getElementById('logout-btn').onclick = signOut;
-  document.getElementById('logout-btn2').onclick = signOut;
+    function setTime() {
+      document.getElementById('current-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    setTime();
+    setInterval(setTime, 60000);
 
-  function showToast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.style.display = 'block';
-    t.style.background = type === 'success' ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.15)';
-    t.style.border = type === 'success' ? '1px solid rgba(16,185,129,.4)' : '1px solid rgba(239,68,68,.4)';
-    t.style.color = type === 'success' ? '#34d399' : '#f87171';
-    setTimeout(() => t.style.display = 'none', 4000);
-  }
+    // Toast logic
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.innerHTML = `<div class="flex items-center gap-3">
+        <i class="fa-solid ${type==='success' ? 'fa-circle-check text-emerald-500' : 'fa-circle-exclamation text-red-500'}"></i>
+        <span class="${type==='success' ? 'text-emerald-800' : 'text-red-800'}">${msg}</span>
+      </div>`;
+      t.className = `fixed top-8 right-8 z-50 bg-white border border-slate-200 shadow-xl rounded-xl px-6 py-4 text-sm font-bold max-w-sm transition-all duration-300 transform translate-y-0 opacity-100 ${type === 'success' ? 'border-l-4 border-l-emerald-500' : 'border-l-4 border-l-red-500'}`;
+      t.classList.remove('hidden');
+      setTimeout(() => {
+        t.classList.add('opacity-0', 'translate-y-[-20px]');
+        setTimeout(() => t.classList.add('hidden'), 300);
+      }, 4000);
+    }
 
-  // Decode JWT to show email
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    document.getElementById('session-email').textContent = payload.sub || payload.email || '—';
-  } catch {}
-
-  // Change Password
-  document.getElementById('change-password-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const newPw = document.getElementById('new-password').value;
-    const confirmPw = document.getElementById('confirm-password').value;
-    if (newPw !== confirmPw) { showToast('Passwords do not match.', 'error'); return; }
-
-    const btn = document.getElementById('change-pw-btn');
-    btn.disabled = true;
-    btn.textContent = 'Updating…';
-
+    // Decode JWT to show email
     try {
-      const res = await fetch('/api/superadmin/change-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({
-          current_password: document.getElementById('current-password').value,
-          new_password: newPw
-        })
-      });
-      const result = await res.json();
-      if (!res.ok) showToast(result.error || 'Could not update password.', 'error');
-      else { showToast('Password updated successfully!', 'success'); e.target.reset(); }
-    } catch { showToast('Network error.', 'error'); }
-    finally { btn.disabled = false; btn.textContent = 'Update Password'; }
-  });
-</script>
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      document.getElementById('session-email').textContent = payload.sub || payload.email || '—';
+    } catch {}
+
+    // Change Password
+    document.getElementById('change-password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const newPw = document.getElementById('new-password').value;
+      const confirmPw = document.getElementById('confirm-password').value;
+      if (newPw !== confirmPw) { showToast('Passwords do not match.', 'error'); return; }
+
+      const btn = document.getElementById('change-pw-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Updating...';
+
+      try {
+        const res = await fetch('/api/superadmin/change-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({
+            current_password: document.getElementById('current-password').value,
+            new_password: newPw
+          })
+        });
+        const result = await res.json();
+        if (!res.ok) showToast(result.error || 'Could not update password.', 'error');
+        else { showToast('Password updated successfully!', 'success'); e.target.reset(); }
+      } catch { showToast('Network error.', 'error'); }
+      finally { 
+        btn.disabled = false; 
+        btn.textContent = 'Update Password'; 
+      }
+    });
+  </script>
 </body>
 </html>

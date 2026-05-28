@@ -1,277 +1,441 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Branches | EduFlow Superadmin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/theme.css">
-  <style>
-    /* ══ Superadmin Portal – unique dark/violet theme override ══
-       These override theme.css variables ONLY for superadmin pages.
-       Do NOT copy this block to other portals. */
-    :root {
-      --sidebar-bg:    #0d0b1e;
-      --sidebar-hover: #1e1a3a;
-      --sidebar-active:#1e1a3a;
-      --sidebar-text:  #c4b5fd;
-      --sidebar-label: #a78bfa;
-
-      --bg-main:    #0f0e1a;
-      --bg-card:    #16152a;
-      --bg-tertiary:#1e1a3a;
-      --bg-header:  #16152a;
-
-      --text-primary:   #e2e0f0;
-      --text-secondary: #9b96c4;
-      --text-muted:     #6b6894;
-
-      --accent:       #7c3aed;
-      --accent-light: rgba(124,58,237,.15);
-      --accent-hover: #6d28d9;
-
-      --border:      rgba(124,58,237,.18);
-      --border-color:rgba(124,58,237,.18);
-      --shadow-card: 0 2px 12px rgba(0,0,0,.4);
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            sage: { 50: '#F4F6F0', 100: '#E6EAE0', 600: '#5A734E', 800: '#32422C', 900: '#2A3624' },
+            forest: { 500: '#2D6A4F', 600: '#1B4332', 700: '#132A20' },
+            admin: { 800: '#1E293B' }
+          }
+        }
+      }
     }
-    body { background: var(--bg-main); color: var(--text-primary); }
-    .sidebar { background: var(--sidebar-bg); border-right: 1px solid rgba(124,58,237,.15); }
-    .sidebar-logo-icon { background: #7c3aed; }
-    .nav-item.active { background: #7c3aed; color: #fff; }
-    .nav-item:hover   { background: var(--sidebar-hover); color: #fff; }
-    .top-header { background: var(--bg-header); border-bottom-color: var(--border); }
-    .header-search { background: #1e1a3a; border-color: var(--border); color: var(--text-muted); }
-    .header-search input { color: var(--text-primary); }
-    .header-user { border-color: var(--border); color: var(--text-primary); }
-    .header-user:hover { background: #1e1a3a; }
-    .card { background: var(--bg-card); border-color: var(--border); }
-    .card-header { background: var(--bg-card); border-bottom-color: var(--border); color: var(--text-primary); }
-    .stat-card { background: var(--bg-card); border-color: var(--border); }
-    .stat-card-value { color: var(--text-primary); }
-    .data-table thead th { background: #1e1a3a; color: var(--text-muted); border-bottom-color: var(--border); }
-    .data-table tbody tr { border-bottom-color: var(--border); }
-    .data-table tbody tr:hover { background: #1e1a3a; }
-    .data-table tbody td { color: var(--text-primary); }
-    .form-input, .form-select { background: #1e1a3a; border-color: var(--border); color: var(--text-primary); }
-    .form-input:focus, .form-select:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.2); }
-    .form-label { color: var(--text-secondary); }
-    .btn-primary { background: #7c3aed; border-color: #7c3aed; }
-    .btn-primary:hover { background: #6d28d9; border-color: #6d28d9; }
-    .btn-secondary, .btn-outline { background: #1e1a3a; border-color: var(--border); color: var(--text-primary); }
-    .icon-blue   { background: rgba(96,165,250,.12);  color: #60a5fa; }
-    .icon-green  { background: rgba(52,211,153,.12);  color: #34d399; }
-    .icon-amber  { background: rgba(251,191,36,.12);  color: #fbbf24; }
-    .icon-purple { background: rgba(167,139,250,.12); color: #a78bfa; }
-    .page-title   { color: var(--text-primary); }
-    .page-subtitle{ color: var(--text-muted); }
-  </style>
+  </script>
 </head>
-<body>
-<div class="app-shell">
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="sidebar-logo-icon">🎓</div>
-      <div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">Superadmin</div></div>
+<body class="bg-sage-50 text-sage-900 font-sans h-screen flex overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside class="w-[260px] bg-admin-800 text-white flex flex-col flex-shrink-0 shadow-xl">
+    <div class="p-6 border-b border-white/5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-emerald-700 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-900/20">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg tracking-tight">EduFlow</h1>
+          <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-semibold">Smart System</p>
+        </div>
+      </div>
     </div>
-    <div class="sidebar-section-label">Main</div>
-    <nav>
-      <a href="dashboard.html" class="nav-item">🏠 &nbsp;Dashboard</a>
-      <a href="branches.html" class="nav-item active">🌐 &nbsp;Branches</a>
-      <a href="users.html" class="nav-item">👥 &nbsp;Users</a>
-      <a href="settings.html" class="nav-item">⚙️ &nbsp;Settings</a>
+
+    <nav class="flex-1 px-4 py-6 space-y-1">
+      <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Systems Control</p>
+      <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl text-sm font-medium transition-all">
+        <i class="fa-solid fa-gauge-high w-5"></i> Dashboard
+      </a>
+      <a href="branches.html" class="flex items-center gap-3 px-4 py-3 bg-white/10 rounded-xl text-sm font-semibold text-white transition-all">
+        <i class="fa-solid fa-building-user w-5 text-emerald-400"></i> Branches
+      </a>
+      <a href="users.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl text-sm font-medium transition-all">
+        <i class="fa-solid fa-users w-5"></i> User Management
+      </a>
+      <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl text-sm font-medium transition-all">
+        <i class="fa-solid fa-gear w-5"></i> Settings
+      </a>
     </nav>
-    <div class="sidebar-footer">
-      <button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Logout</button>
+
+    <div class="p-6 border-t border-white/5">
+      <button id="logout-btn" class="flex items-center gap-3 text-sm text-slate-400 hover:text-white transition-colors w-full font-medium">
+        <i class="fa-solid fa-right-from-bracket w-5"></i> Logout
+      </button>
     </div>
   </aside>
 
-  <div class="main-content">
-    <header class="top-header">
-      <div class="header-search">🔍 <input placeholder="Search branches…" type="text"></div>
-      <div class="header-right">
-        <div class="header-user"><div class="header-avatar" style="background:var(--green-800);">S</div><span>Superadmin</span></div>
+  <main class="flex-1 flex flex-col h-full overflow-hidden">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-sage-100 px-8 py-4 flex items-center justify-between shadow-sm">
+      <div class="relative w-80">
+        <input type="text" placeholder="Search branches..." class="w-full pl-10 pr-4 py-2.5 bg-sage-50 border border-sage-100 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-sage-400 text-xs"></i>
+      </div>
+      <div class="flex items-center gap-6">
+        <span id="current-time" class="text-xs font-bold text-sage-500 uppercase tracking-wide"></span>
+        <div class="flex items-center gap-3 px-3 py-1.5 border border-sage-200 rounded-full cursor-pointer hover:bg-white transition-all">
+          <div class="w-7 h-7 rounded-full bg-admin-800 text-white flex items-center justify-center text-[10px] font-bold">SA</div>
+          <span class="text-sm font-bold text-slate-700 pr-2">Superadmin</span>
+        </div>
       </div>
     </header>
 
-    <div class="page-body">
-      <div class="page-title-row">
+    <div class="flex-1 overflow-auto p-8 relative">
+      
+      <!-- Toast Notification -->
+      <div id="toast" class="fixed top-8 right-8 z-50 hidden bg-white border border-slate-200 shadow-xl rounded-xl px-6 py-4 text-sm font-bold max-w-sm transition-all duration-300"></div>
+
+      <!-- Title Row -->
+      <div class="mb-8 flex items-center justify-between">
         <div>
-          <div class="page-title">Branch Management</div>
-          <div class="page-subtitle">Create, view and delete school branches</div>
+          <h2 class="text-3xl font-extrabold text-slate-800">Branch Management</h2>
+          <p class="text-sage-600 mt-1">Create, view and delete school branches</p>
         </div>
-        <button onclick="loadDashboard()" class="btn btn-secondary">↻ &nbsp;Refresh</button>
+        <div class="flex gap-3">
+          <button onclick="toggleModal(true)" class="flex items-center gap-2 bg-admin-800 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-slate-950 transition-all shadow-sm">
+            <i class="fa-solid fa-plus"></i> New Branch
+          </button>
+          <button onclick="loadDashboard()" class="flex items-center gap-2 bg-white border border-sage-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-sage-50 transition-all shadow-sm">
+            <i class="fa-solid fa-rotate-right"></i> Refresh Data
+          </button>
+        </div>
       </div>
 
       <!-- Stats Row -->
-      <div class="grid-4" style="margin-bottom:24px;">
-        <div class="stat-card"><div class="stat-card-icon icon-blue">🏢</div><div class="stat-card-value" id="total-schools">—</div><div class="stat-card-label">Total Branches</div></div>
-        <div class="stat-card"><div class="stat-card-icon icon-green">💰</div><div class="stat-card-value" id="revenue">—</div><div class="stat-card-label">Platform Revenue</div></div>
-        <div class="stat-card"><div class="stat-card-icon icon-purple">⚡</div><div class="stat-card-value" id="uptime">—</div><div class="stat-card-label">Server Status</div></div>
-        <div class="stat-card"><div class="stat-card-icon icon-amber">👤</div><div class="stat-card-value" id="cnt-directors">—</div><div class="stat-card-label">Directors</div></div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-3xl border border-sage-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-building"></i></div>
+          <div><p class="text-[10px] font-bold text-sage-500 uppercase tracking-wider mb-1">Total Branches</p><h4 id="total-schools" class="text-2xl font-extrabold text-slate-800">—</h4></div>
+        </div>
+        <div class="bg-white p-6 rounded-3xl border border-sage-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-money-bill-wave"></i></div>
+          <div><p class="text-[10px] font-bold text-sage-500 uppercase tracking-wider mb-1">Platform Revenue</p><h4 id="revenue" class="text-2xl font-extrabold text-slate-800">—</h4></div>
+        </div>
+        <div class="bg-white p-6 rounded-3xl border border-sage-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-server"></i></div>
+          <div><p class="text-[10px] font-bold text-sage-500 uppercase tracking-wider mb-1">Server Status</p><h4 id="uptime" class="text-2xl font-extrabold text-slate-800">—</h4></div>
+        </div>
+        <div class="bg-white p-6 rounded-3xl border border-sage-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-user-tie"></i></div>
+          <div><p class="text-[10px] font-bold text-sage-500 uppercase tracking-wider mb-1">Directors</p><h4 id="cnt-directors" class="text-2xl font-extrabold text-slate-800">—</h4></div>
+        </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:flex-start;">
-
-        <!-- Branches Table -->
-        <div class="card">
-          <div class="card-header">Active School Branches</div>
-          <div style="overflow-x:auto;">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Branch Name</th>
-                  <th>Location</th>
-                  <th>Director</th>
-                  <th>Students</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="branches-body">
-                <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">Loading…</td></tr>
-              </tbody>
-            </table>
-          </div>
+      <!-- Main Layout: Table -->
+      <div class="bg-white rounded-3xl border border-sage-100 shadow-sm overflow-hidden">
+        <div class="px-8 py-6 border-b border-sage-100 flex items-center justify-between">
+          <h3 class="text-lg font-extrabold text-slate-800">Active School Branches</h3>
         </div>
-
-        <!-- Create Branch Form -->
-        <div class="card">
-          <div class="card-header">➕ &nbsp;Create New Branch</div>
-          <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Initialize a cloud school record and provision a Director account.</p>
-          <form id="create-branch-form">
-            <div class="form-group">
-              <label class="form-label">School / Campus Name</label>
-              <input type="text" id="campus-name" required placeholder="e.g. EduFlow Academy" class="form-input">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Campus Location</label>
-              <input type="text" id="location" required placeholder="e.g. Addis Ababa" class="form-input">
-            </div>
-            <div style="border-top:1px solid var(--border-color);margin:16px 0;padding-top:16px;">
-              <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Director Account</div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Director Full Name</label>
-              <input type="text" id="director-name" required placeholder="e.g. Dr. Sarah Jenkins" class="form-input">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Director Email</label>
-              <input type="email" id="director-email" required placeholder="director@school.com" class="form-input">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Temporary Password</label>
-              <input type="password" id="password" required placeholder="••••••••" class="form-input">
-            </div>
-            <button type="submit" id="submit-btn" class="btn btn-primary" style="width:100%;margin-top:8px;">Register Branch &amp; Director</button>
-          </form>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="bg-sage-50/50">
+              <tr>
+                <th class="px-8 py-4 text-[10px] font-bold text-sage-500 uppercase">Branch Name</th>
+                <th class="px-8 py-4 text-[10px] font-bold text-sage-500 uppercase">Location</th>
+                <th class="px-8 py-4 text-[10px] font-bold text-sage-500 uppercase">Director</th>
+                <th class="px-8 py-4 text-[10px] font-bold text-sage-500 uppercase text-center">Students</th>
+                <th class="px-8 py-4 text-[10px] font-bold text-sage-500 uppercase text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="branches-body" class="divide-y divide-sage-100 text-sm font-medium text-sage-600">
+              <tr><td colspan="5" class="px-8 py-10 text-center text-slate-400">Loading branch data...</td></tr>
+            </tbody>
+          </table>
         </div>
+      </div>
 
+    </div>
+  </main>
+
+  <!-- Create Branch Modal -->
+  <div id="branch-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl">
+      <h3 class="text-xl font-bold text-slate-800 mb-4">Add New Branch</h3>
+      <form id="create-branch-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-sage-500 uppercase mb-1">School Name</label>
+          <input type="text" id="campus-name" required placeholder="e.g. EduFlow Academy" class="w-full px-4 py-2 rounded-xl border border-sage-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-sage-500 uppercase mb-1">Location</label>
+          <input type="text" id="location" required placeholder="e.g. Addis Ababa" class="w-full px-4 py-2 rounded-xl border border-sage-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+        <div class="pt-4 border-t border-sage-100">
+          <label class="block text-xs font-bold text-emerald-600 uppercase mb-1">Director Account</label>
+        </div>
+        <div>
+          <input type="text" id="director-name" required placeholder="Director Full Name" class="w-full px-4 py-2 rounded-xl border border-sage-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+        <div>
+          <input type="email" id="director-email" required placeholder="director@school.com" class="w-full px-4 py-2 rounded-xl border border-sage-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+        <div>
+          <input type="password" id="password" required placeholder="Temp Password" class="w-full px-4 py-2 rounded-xl border border-sage-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+        <div class="flex gap-3 pt-4">
+          <button type="button" onclick="toggleModal(false)" class="flex-1 py-2 text-xs font-bold text-sage-600 hover:bg-sage-50 rounded-xl transition-all">Cancel</button>
+          <button type="submit" id="submit-btn" class="flex-1 py-2 text-xs font-bold bg-admin-800 text-white rounded-xl hover:bg-slate-950 transition-all">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Branch Modal -->
+  <div id="edit-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl">
+      <h3 class="text-xl font-bold text-slate-800 mb-4">Edit Branch</h3>
+      <form id="edit-branch-form" class="space-y-4">
+        <input type="hidden" id="edit-id">
+        <div>
+          <label class="block text-xs font-bold text-sage-500 uppercase mb-1">School Name</label>
+          <input type="text" id="edit-campus-name" required class="w-full px-4 py-2 rounded-xl border border-sage-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-sage-500 uppercase mb-1">Location</label>
+          <input type="text" id="edit-location" required class="w-full px-4 py-2 rounded-xl border border-sage-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+        <div class="pt-4 border-t border-sage-100">
+          <label class="block text-xs font-bold text-emerald-600 uppercase mb-1">Director Account</label>
+        </div>
+        <div>
+          <input type="text" id="edit-director-name" required placeholder="Director Full Name" class="w-full px-4 py-2 rounded-xl border border-sage-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+        <div>
+          <input type="email" id="edit-director-email" required placeholder="director@school.com" class="w-full px-4 py-2 rounded-xl border border-sage-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+        </div>
+        <div class="flex gap-3 pt-4">
+          <button type="button" onclick="toggleEditModal(false)" class="flex-1 py-2 text-xs font-bold text-sage-600 hover:bg-sage-50 rounded-xl transition-all">Cancel</button>
+          <button type="submit" id="edit-submit-btn" class="flex-1 py-2 text-xs font-bold bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div id="delete-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
+      <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-800 mb-2">Delete Branch?</h3>
+      <p class="text-sm text-slate-500 mb-6">This action cannot be undone. All data will be lost permanently.</p>
+      <div class="flex gap-3">
+        <button onclick="toggleDeleteModal(false)" class="flex-1 py-3 text-sm font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all">Cancel</button>
+        <button id="confirm-delete-btn" class="flex-1 py-3 text-sm font-bold bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all">Delete</button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Toast -->
-<div id="toast" style="position:fixed;top:80px;right:24px;z-index:999;display:none;min-width:280px;padding:14px 18px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.4);"></div>
+  <!-- Logout Confirm Modal -->
+  <div id="logout-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
+      <div class="w-16 h-16 bg-sage-100 text-sage-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-800 mb-2">Sign Out</h3>
+      <p class="text-sm text-slate-500 mb-6">Are you sure you want to log out of your session?</p>
+      <div class="flex gap-3">
+        <button onclick="toggleLogoutModal(false)" class="flex-1 py-3 text-sm font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all">Cancel</button>
+        <button onclick="confirmLogout()" class="flex-1 py-3 text-sm font-bold bg-admin-800 text-white rounded-xl hover:bg-slate-900 transition-all">Sign Out</button>
+      </div>
+    </div>
+  </div>
 
-<script>
-  const token = localStorage.getItem('access_token');
-  if (!token) window.location.href = '../../login.html';
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script>
+    // Auth setup
+    const token = localStorage.getItem('access_token');
+    if (!token) window.location.href = '../../login.html';
 
-  document.getElementById('logout-btn').onclick = () => {
-    localStorage.removeItem('access_token');
-    window.location.href = '../../login.html';
-  };
-
-  function showToast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.style.display = 'block';
-    t.style.background = type === 'success' ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.15)';
-    t.style.border = type === 'success' ? '1px solid rgba(16,185,129,.4)' : '1px solid rgba(239,68,68,.4)';
-    t.style.color = type === 'success' ? '#34d399' : '#f87171';
-    setTimeout(() => t.style.display = 'none', 4000);
-  }
-
-  async function loadDashboard() {
-    try {
-      const res = await fetch('/api/superadmin/system-overview', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem('access_token');
-        window.location.href = '../../login.html';
-        return;
-      }
-      if (!res.ok) { showToast('Could not load data.', 'error'); return; }
-      const data = await res.json();
-
-      document.getElementById('total-schools').textContent = data.total_schools ?? '—';
-      document.getElementById('revenue').textContent = data.revenue ? `$${data.revenue}` : '—';
-      document.getElementById('uptime').textContent = data.uptime ?? '—';
-
-      const tbody = document.getElementById('branches-body');
-      if (!data.branches || !data.branches.length) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">No active branches. Use the form to create one.</td></tr>`;
-        document.getElementById('cnt-directors').textContent = '0';
-        return;
-      }
-      document.getElementById('cnt-directors').textContent = data.branches.length;
-      tbody.innerHTML = data.branches.map(b => `
-        <tr>
-          <td><strong>${b.name}</strong><br><span style="font-size:11px;color:var(--text-muted);">ID: BR-${b.id}</span></td>
-          <td>${b.location}</td>
-          <td>${b.director_name}<br><span style="font-size:11px;color:var(--text-muted);">${b.director_email}</span></td>
-          <td style="text-align:center;">${b.students ?? 0}</td>
-          <td style="text-align:center;">
-            <button onclick="deleteBranch(${b.id},'${b.name}')" style="padding:5px 12px;border-radius:6px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.1);color:#f87171;font-size:12px;font-weight:600;cursor:pointer;">Delete</button>
-          </td>
-        </tr>`).join('');
-    } catch {
-      showToast('Network error loading data.', 'error');
+    function setTime() {
+      document.getElementById('current-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
-  }
+    setTime();
+    setInterval(setTime, 60000);
 
-  document.getElementById('create-branch-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Provisioning…';
-    try {
-      const res = await fetch('/api/superadmin/create-branch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({
-          campus_name: document.getElementById('campus-name').value.trim(),
-          location: document.getElementById('location').value.trim(),
-          director_name: document.getElementById('director-name').value.trim(),
-          director_email: document.getElementById('director-email').value.trim(),
-          password: document.getElementById('password').value
-        })
-      });
-      const result = await res.json();
-      if (!res.ok) showToast(result.error || 'Could not create branch.', 'error');
-      else {
-        showToast('Branch created successfully!', 'success');
-        e.target.reset();
-        loadDashboard();
+    // Toast logic
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.innerHTML = `<div class="flex items-center gap-3">
+        <i class="fa-solid ${type==='success' ? 'fa-circle-check text-emerald-500' : 'fa-circle-exclamation text-red-500'}"></i>
+        <span class="${type==='success' ? 'text-emerald-800' : 'text-red-800'}">${msg}</span>
+      </div>`;
+      t.className = `fixed top-8 right-8 z-50 bg-white border border-slate-200 shadow-xl rounded-xl px-6 py-4 text-sm font-bold max-w-sm transition-all duration-300 transform translate-y-0 opacity-100 ${type === 'success' ? 'border-l-4 border-l-emerald-500' : 'border-l-4 border-l-red-500'}`;
+      t.classList.remove('hidden');
+      setTimeout(() => {
+        t.classList.add('opacity-0', 'translate-y-[-20px]');
+        setTimeout(() => t.classList.add('hidden'), 300);
+      }, 4000);
+    }
+
+    function toggleModal(show) {
+      document.getElementById('branch-modal').classList.toggle('hidden', !show);
+    }
+
+    // App Logic
+    async function loadDashboard() {
+      try {
+        const res = await fetch('/api/superadmin/system-overview', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem('access_token');
+          window.location.href = '../../login.html';
+          return;
+        }
+        if (!res.ok) { showToast('Could not load data.', 'error'); return; }
+        const data = await res.json();
+
+        document.getElementById('total-schools').textContent = data.total_schools ?? '—';
+        document.getElementById('revenue').textContent = data.revenue ? `$${data.revenue}` : '—';
+        document.getElementById('uptime').textContent = data.uptime ?? '—';
+
+        const tbody = document.getElementById('branches-body');
+        if (!data.branches || !data.branches.length) {
+          tbody.innerHTML = `<tr><td colspan="5" class="px-8 py-10 text-center text-slate-400">No active branches. Use the form to create one.</td></tr>`;
+          document.getElementById('cnt-directors').textContent = '0';
+          return;
+        }
+        
+        document.getElementById('cnt-directors').textContent = data.branches.length;
+        tbody.innerHTML = data.branches.map(b => `
+          <tr class="hover:bg-sage-50 transition-colors group">
+            <td class="px-8 py-4">
+              <div class="font-extrabold text-slate-800">${b.name}</div>
+              <div class="text-[10px] text-sage-400 uppercase tracking-widest mt-0.5">ID: BR-${b.id}</div>
+            </td>
+            <td class="px-8 py-4 text-slate-600">${b.location}</td>
+            <td class="px-8 py-4">
+              <div class="font-bold text-slate-700">${b.director_name}</div>
+              <div class="text-xs text-sage-500">${b.director_email}</div>
+            </td>
+            <td class="px-8 py-4 text-center font-bold text-slate-700">${b.students ?? 0}</td>
+            <td class="px-8 py-4 text-center">
+              <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onclick="openEditModal(${b.id}, '${b.name}', '${b.location}', '${b.director_name}', '${b.director_email}')" class="text-xs font-bold text-blue-500 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-100 transition-colors">
+                  <i class="fa-solid fa-pen mr-1"></i> Edit
+                </button>
+                <button onclick="openDeleteModal(${b.id}, '${b.name}')" class="text-xs font-bold text-red-500 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-100 transition-colors">
+                  <i class="fa-solid fa-trash-can mr-1"></i> Delete
+                </button>
+              </div>
+            </td>
+          </tr>`).join('');
+      } catch {
+        showToast('Network error loading data.', 'error');
       }
-    } catch { showToast('Network error during creation.', 'error'); }
-    finally { btn.disabled = false; btn.textContent = 'Register Branch & Director'; }
-  });
+    }
 
-  async function deleteBranch(id, name) {
-    if (!confirm(`Delete branch "${name}"? This cannot be undone.`)) return;
-    try {
-      const res = await fetch(`/api/superadmin/delete-branch/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const result = await res.json();
-      if (!res.ok) showToast(result.error || 'Could not delete.', 'error');
-      else { showToast(`"${name}" deleted.`, 'success'); loadDashboard(); }
-    } catch { showToast('Network error during deletion.', 'error'); }
-  }
+    document.getElementById('create-branch-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Provisioning...';
+      try {
+        const res = await fetch('/api/superadmin/create-branch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({
+            campus_name: document.getElementById('campus-name').value.trim(),
+            location: document.getElementById('location').value.trim(),
+            director_name: document.getElementById('director-name').value.trim(),
+            director_email: document.getElementById('director-email').value.trim(),
+            password: document.getElementById('password').value
+          })
+        });
+        const result = await res.json();
+        if (!res.ok) showToast(result.error || 'Could not create branch.', 'error');
+        else {
+          showToast('Branch created successfully!', 'success');
+          e.target.reset();
+          toggleModal(false);
+          loadDashboard();
+        }
+      } catch { showToast('Network error during creation.', 'error'); }
+      finally { 
+        btn.disabled = false; 
+        btn.innerHTML = 'Register Branch & Director'; 
+      }
+    });
 
-  loadDashboard();
-</script>
+    function toggleModal(show) { document.getElementById('branch-modal').classList.toggle('hidden', !show); }
+    function toggleEditModal(show) { document.getElementById('edit-modal').classList.toggle('hidden', !show); }
+    function toggleDeleteModal(show) { document.getElementById('delete-modal').classList.toggle('hidden', !show); }
+    function toggleLogoutModal(show) { document.getElementById('logout-modal').classList.toggle('hidden', !show); }
+
+    document.getElementById('logout-btn').addEventListener('click', () => toggleLogoutModal(true));
+    function confirmLogout() {
+      localStorage.removeItem('access_token');
+      window.location.href = '../../login.html';
+    }
+
+    function openEditModal(id, name, location, dirName, dirEmail) {
+      document.getElementById('edit-id').value = id;
+      document.getElementById('edit-campus-name').value = name;
+      document.getElementById('edit-location').value = location;
+      document.getElementById('edit-director-name').value = dirName;
+      document.getElementById('edit-director-email').value = dirEmail;
+      toggleEditModal(true);
+    }
+
+    document.getElementById('edit-branch-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('edit-submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+      const id = document.getElementById('edit-id').value;
+      try {
+        const res = await fetch(`/api/superadmin/edit-branch/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({
+            campus_name: document.getElementById('edit-campus-name').value.trim(),
+            location: document.getElementById('edit-location').value.trim(),
+            director_name: document.getElementById('edit-director-name').value.trim(),
+            director_email: document.getElementById('edit-director-email').value.trim()
+          })
+        });
+        const result = await res.json();
+        if (!res.ok) showToast(result.error || 'Could not update branch.', 'error');
+        else {
+          showToast('Branch updated successfully!', 'success');
+          toggleEditModal(false);
+          loadDashboard();
+        }
+      } catch { showToast('Network error during update.', 'error'); }
+      finally { 
+        btn.disabled = false; 
+        btn.innerHTML = 'Save Changes'; 
+      }
+    });
+
+    let deleteId = null;
+    function openDeleteModal(id) {
+      deleteId = id;
+      toggleDeleteModal(true);
+    }
+
+    document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+      if (!deleteId) return;
+      const btn = document.getElementById('confirm-delete-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Deleting...';
+      try {
+        const res = await fetch(`/api/superadmin/delete-branch/${deleteId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const result = await res.json();
+        if (!res.ok) showToast(result.error || 'Could not delete.', 'error');
+        else { 
+          showToast('Branch deleted successfully.', 'success'); 
+          toggleDeleteModal(false);
+          loadDashboard(); 
+        }
+      } catch { showToast('Network error during deletion.', 'error'); }
+      finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Delete';
+      }
+    });
+
+    loadDashboard();
+  </script>
 </body>
 </html>

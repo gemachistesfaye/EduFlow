@@ -143,3 +143,33 @@ def delete_branch(school_id):
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
+@bp.put('/edit-branch/<int:school_id>')
+@rbac(100)
+def edit_branch(school_id):
+    data = request.json
+    school = School.query.get(school_id)
+    if not school:
+        return jsonify({"error": "Branch not found"}), 404
+        
+    try:
+        if 'campus_name' in data:
+            school.name = data['campus_name']
+        if 'location' in data:
+            school.location = data['location']
+            
+        # Update director if present
+        if 'director_name' in data or 'director_email' in data:
+            director_role = Role.query.filter_by(name='school_director').first()
+            if director_role:
+                director = User.query.filter_by(school_id=school_id, role_id=director_role.id).first()
+                if director:
+                    if 'director_email' in data:
+                        director.email = data['director_email']
+                    if 'director_name' in data and director.profile:
+                        director.profile.full_name = data['director_name']
+                        
+        db.session.commit()
+        return jsonify({"message": f"School branch '{school.name}' updated successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500

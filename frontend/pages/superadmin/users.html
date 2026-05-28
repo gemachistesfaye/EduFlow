@@ -1,171 +1,246 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Users | EduFlow Superadmin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            sage: { 50: '#F4F6F0', 100: '#E6EAE0', 600: '#5A734E', 800: '#32422C', 900: '#2A3624' },
+            forest: { 500: '#2D6A4F', 600: '#1B4332', 700: '#132A20' },
+            admin: { 800: '#1E293B' }
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
-<div class="app-shell">
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="sidebar-logo-icon">🎓</div>
-      <div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">Superadmin</div></div>
+<body class="bg-sage-50 text-sage-900 font-sans h-screen flex overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside class="w-[260px] bg-admin-800 text-white flex flex-col flex-shrink-0 shadow-xl">
+    <div class="p-6 border-b border-white/5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-emerald-700 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-900/20">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg tracking-tight">EduFlow</h1>
+          <p class="text-[9px] uppercase tracking-widest text-emerald-400 font-semibold">Smart System</p>
+        </div>
+      </div>
     </div>
-    <div class="sidebar-section-label">Main</div>
-    <nav>
-      <a href="dashboard.html" class="nav-item">🏠 &nbsp;Dashboard</a>
-      <a href="branches.html" class="nav-item">🌐 &nbsp;Branches</a>
-      <a href="users.html" class="nav-item active">👥 &nbsp;Users</a>
-      <a href="settings.html" class="nav-item">⚙️ &nbsp;Settings</a>
+
+    <nav class="flex-1 px-4 py-6 space-y-1">
+      <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Systems Control</p>
+      <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl text-sm font-medium transition-all">
+        <i class="fa-solid fa-gauge-high w-5"></i> Dashboard
+      </a>
+      <a href="branches.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl text-sm font-medium transition-all">
+        <i class="fa-solid fa-building-user w-5"></i> Branches
+      </a>
+      <a href="users.html" class="flex items-center gap-3 px-4 py-3 bg-white/10 rounded-xl text-sm font-semibold text-white transition-all">
+        <i class="fa-solid fa-users w-5 text-emerald-400"></i> User Management
+      </a>
+      <a href="settings.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-white/5 rounded-xl text-sm font-medium transition-all">
+        <i class="fa-solid fa-gear w-5"></i> Settings
+      </a>
     </nav>
-    <div class="sidebar-footer">
-      <button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Logout</button>
+
+    <div class="p-6 border-t border-white/5">
+      <button id="logout-btn" class="flex items-center gap-3 text-sm text-slate-400 hover:text-white transition-colors w-full font-medium">
+        <i class="fa-solid fa-right-from-bracket w-5"></i> Logout
+      </button>
     </div>
   </aside>
 
-  <div class="main-content">
-    <header class="top-header">
-      <div class="header-search">🔍 <input id="search-input" placeholder="Search users…" type="text" oninput="filterUsers()"></div>
-      <div class="header-right">
-        <div class="header-user"><div class="header-avatar" style="background:var(--green-800);">S</div><span>Superadmin</span></div>
+  <main class="flex-1 flex flex-col h-full overflow-hidden">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-sage-100 px-8 py-4 flex items-center justify-between shadow-sm">
+      <div class="relative w-80">
+        <input type="text" id="search-input" oninput="filterUsers()" placeholder="Search users by name, email, role..." class="w-full pl-10 pr-4 py-2.5 bg-sage-50 border border-sage-100 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-sage-400 text-xs"></i>
+      </div>
+      <div class="flex items-center gap-6">
+        <span id="current-time" class="text-xs font-bold text-sage-500 uppercase tracking-wide"></span>
+        <div class="flex items-center gap-3 px-3 py-1.5 border border-sage-200 rounded-full cursor-pointer hover:bg-white transition-all">
+          <div class="w-7 h-7 rounded-full bg-admin-800 text-white flex items-center justify-center text-[10px] font-bold">SA</div>
+          <span class="text-sm font-bold text-slate-700 pr-2">Superadmin</span>
+        </div>
       </div>
     </header>
 
-    <div class="page-body">
-      <div class="page-title-row">
+    <div class="flex-1 overflow-auto p-8 relative">
+      
+      <!-- Toast Notification -->
+      <div id="toast" class="fixed top-8 right-8 z-50 hidden bg-white border border-slate-200 shadow-xl rounded-xl px-6 py-4 text-sm font-bold max-w-sm transition-all duration-300"></div>
+
+      <!-- Title Row -->
+      <div class="mb-8 flex items-center justify-between">
         <div>
-          <div class="page-title">User Management</div>
-          <div class="page-subtitle">All registered users across every branch</div>
+          <h2 class="text-3xl font-extrabold text-slate-800">User Management</h2>
+          <p class="text-sage-600 mt-1">All registered users across every branch</p>
         </div>
-        <button onclick="loadUsers()" class="btn btn-secondary">↻ &nbsp;Refresh</button>
+        <button onclick="loadUsers()" class="flex items-center gap-2 bg-white border border-sage-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-sage-50 transition-all shadow-sm">
+          <i class="fa-solid fa-rotate-right"></i> Refresh Data
+        </button>
       </div>
 
       <!-- Stats Row -->
-      <div class="grid-4" style="margin-bottom:24px;">
-        <div class="stat-card"><div class="stat-card-icon icon-blue">👥</div><div class="stat-card-value" id="cnt-total">—</div><div class="stat-card-label">Total Users</div></div>
-        <div class="stat-card"><div class="stat-card-icon icon-green">🎓</div><div class="stat-card-value" id="cnt-students">—</div><div class="stat-card-label">Students</div></div>
-        <div class="stat-card"><div class="stat-card-icon icon-amber">👨‍🏫</div><div class="stat-card-value" id="cnt-teachers">—</div><div class="stat-card-label">Teachers</div></div>
-        <div class="stat-card"><div class="stat-card-icon icon-purple">👨‍👩‍👧</div><div class="stat-card-value" id="cnt-parents">—</div><div class="stat-card-label">Parents</div></div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-3xl border border-sage-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+          <div><p class="text-[10px] font-bold text-sage-500 uppercase tracking-wider mb-1">Total Users</p><h4 id="cnt-total" class="text-2xl font-extrabold text-slate-800">—</h4></div>
+        </div>
+        <div class="bg-white p-6 rounded-3xl border border-sage-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-user-graduate"></i></div>
+          <div><p class="text-[10px] font-bold text-sage-500 uppercase tracking-wider mb-1">Students</p><h4 id="cnt-students" class="text-2xl font-extrabold text-slate-800">—</h4></div>
+        </div>
+        <div class="bg-white p-6 rounded-3xl border border-sage-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-chalkboard-user"></i></div>
+          <div><p class="text-[10px] font-bold text-sage-500 uppercase tracking-wider mb-1">Teachers</p><h4 id="cnt-teachers" class="text-2xl font-extrabold text-slate-800">—</h4></div>
+        </div>
+        <div class="bg-white p-6 rounded-3xl border border-sage-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-people-roof"></i></div>
+          <div><p class="text-[10px] font-bold text-sage-500 uppercase tracking-wider mb-1">Parents</p><h4 id="cnt-parents" class="text-2xl font-extrabold text-slate-800">—</h4></div>
+        </div>
       </div>
 
       <!-- Users Table -->
-      <div class="card">
-        <div class="card-header">All System Users</div>
-        <div style="overflow-x:auto;">
-          <table class="data-table">
-            <thead>
+      <div class="bg-white rounded-3xl border border-sage-100 shadow-sm overflow-hidden">
+        <div class="px-8 py-6 border-b border-sage-100 flex items-center justify-between">
+          <h3 class="text-lg font-extrabold text-slate-800">All System Users</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="bg-sage-50/50">
               <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Branch</th>
-                <th>Joined</th>
+                <th class="px-8 py-4 text-[10px] font-bold text-sage-500 uppercase">Name</th>
+                <th class="px-8 py-4 text-[10px] font-bold text-sage-500 uppercase">Email</th>
+                <th class="px-8 py-4 text-[10px] font-bold text-sage-500 uppercase">Role</th>
+                <th class="px-8 py-4 text-[10px] font-bold text-sage-500 uppercase">Branch</th>
+                <th class="px-8 py-4 text-[10px] font-bold text-sage-500 uppercase">Joined</th>
               </tr>
             </thead>
-            <tbody id="users-tbody">
-              <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">Loading…</td></tr>
+            <tbody id="users-tbody" class="divide-y divide-sage-100 text-sm font-medium text-sage-600">
+              <tr><td colspan="5" class="px-8 py-10 text-center text-slate-400">Loading user data...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
+
     </div>
-  </div>
-</div>
+  </main>
 
-<!-- Toast -->
-<div id="toast" style="position:fixed;top:80px;right:24px;z-index:999;display:none;min-width:280px;padding:14px 18px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.4);"></div>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script>
+    // Auth & Clock Setup
+    const token = localStorage.getItem('access_token');
+    if (!token) window.location.href = '../../login.html';
 
-<script>
-  const token = localStorage.getItem('access_token');
-  if (!token) window.location.href = '../../login.html';
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('access_token');
+      window.location.href = '../../login.html';
+    });
 
-  document.getElementById('logout-btn').onclick = () => {
-    localStorage.removeItem('access_token');
-    window.location.href = '../../login.html';
-  };
-
-  function showToast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.style.display = 'block';
-    t.style.background = type === 'success' ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.15)';
-    t.style.border = type === 'success' ? '1px solid rgba(16,185,129,.4)' : '1px solid rgba(239,68,68,.4)';
-    t.style.color = type === 'success' ? '#34d399' : '#f87171';
-    setTimeout(() => t.style.display = 'none', 4000);
-  }
-
-  const ROLE_BADGE = {
-    student:    { label: 'Student',   color: '#60a5fa', bg: 'rgba(96,165,250,.12)'  },
-    teacher:    { label: 'Teacher',   color: '#34d399', bg: 'rgba(52,211,153,.12)'  },
-    parent:     { label: 'Parent',    color: '#f59e0b', bg: 'rgba(245,158,11,.12)'  },
-    director:   { label: 'Director',  color: '#a78bfa', bg: 'rgba(167,139,250,.12)' },
-    superadmin: { label: 'Superadmin',color: '#f87171', bg: 'rgba(248,113,113,.12)' },
-  };
-
-  let allUsers = [];
-
-  function renderTable(users) {
-    const tbody = document.getElementById('users-tbody');
-    if (!users.length) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">No users found.</td></tr>`;
-      return;
+    function setTime() {
+      document.getElementById('current-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
-    tbody.innerHTML = users.map(u => {
-      const badge = ROLE_BADGE[u.role] || { label: u.role, color: '#94a3b8', bg: 'rgba(148,163,184,.12)' };
-      return `
-        <tr>
-          <td><strong>${u.full_name || '—'}</strong></td>
-          <td style="color:var(--text-muted);font-size:13px;">${u.email}</td>
-          <td>
-            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${badge.bg};color:${badge.color};">
-              ${badge.label}
-            </span>
-          </td>
-          <td>${u.branch_name || '—'}</td>
-          <td style="color:var(--text-muted);font-size:12px;">${u.created_at ? u.created_at.slice(0,10) : '—'}</td>
-        </tr>`;
-    }).join('');
-  }
+    setTime();
+    setInterval(setTime, 60000);
 
-  function filterUsers() {
-    const q = document.getElementById('search-input').value.toLowerCase();
-    renderTable(allUsers.filter(u =>
-      (u.full_name || '').toLowerCase().includes(q) ||
-      (u.email || '').toLowerCase().includes(q) ||
-      (u.role || '').toLowerCase().includes(q) ||
-      (u.branch_name || '').toLowerCase().includes(q)
-    ));
-  }
+    // Toast logic
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.innerHTML = `<div class="flex items-center gap-3">
+        <i class="fa-solid ${type==='success' ? 'fa-circle-check text-emerald-500' : 'fa-circle-exclamation text-red-500'}"></i>
+        <span class="${type==='success' ? 'text-emerald-800' : 'text-red-800'}">${msg}</span>
+      </div>`;
+      t.className = `fixed top-8 right-8 z-50 bg-white border border-slate-200 shadow-xl rounded-xl px-6 py-4 text-sm font-bold max-w-sm transition-all duration-300 transform translate-y-0 opacity-100 ${type === 'success' ? 'border-l-4 border-l-emerald-500' : 'border-l-4 border-l-red-500'}`;
+      t.classList.remove('hidden');
+      setTimeout(() => {
+        t.classList.add('opacity-0', 'translate-y-[-20px]');
+        setTimeout(() => t.classList.add('hidden'), 300);
+      }, 4000);
+    }
 
-  async function loadUsers() {
-    try {
-      const res = await fetch('/api/superadmin/users', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem('access_token');
-        window.location.href = '../../login.html';
+    const ROLE_BADGE = {
+      student:    { label: 'Student',   textClass: 'text-blue-700', bgClass: 'bg-blue-100', borderClass: 'border-blue-200' },
+      teacher:    { label: 'Teacher',   textClass: 'text-emerald-700', bgClass: 'bg-emerald-100', borderClass: 'border-emerald-200' },
+      parent:     { label: 'Parent',    textClass: 'text-amber-700', bgClass: 'bg-amber-100', borderClass: 'border-amber-200' },
+      director:   { label: 'Director',  textClass: 'text-purple-700', bgClass: 'bg-purple-100', borderClass: 'border-purple-200' },
+      superadmin: { label: 'Superadmin',textClass: 'text-red-700', bgClass: 'bg-red-100', borderClass: 'border-red-200' },
+    };
+
+    let allUsers = [];
+
+    function renderTable(users) {
+      const tbody = document.getElementById('users-tbody');
+      if (!users.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-8 py-10 text-center text-slate-400">No users found.</td></tr>`;
         return;
       }
-      if (!res.ok) { showToast('Could not load users.', 'error'); return; }
-      const data = await res.json();
-      allUsers = data.users || [];
-
-      // Update stat cards
-      document.getElementById('cnt-total').textContent    = allUsers.length;
-      document.getElementById('cnt-students').textContent = allUsers.filter(u => u.role === 'student').length;
-      document.getElementById('cnt-teachers').textContent = allUsers.filter(u => u.role === 'teacher').length;
-      document.getElementById('cnt-parents').textContent  = allUsers.filter(u => u.role === 'parent').length;
-
-      renderTable(allUsers);
-    } catch {
-      showToast('Network error loading users.', 'error');
+      tbody.innerHTML = users.map(u => {
+        const badge = ROLE_BADGE[u.role] || { label: u.role, textClass: 'text-slate-700', bgClass: 'bg-slate-100', borderClass: 'border-slate-200' };
+        return `
+          <tr class="hover:bg-sage-50 transition-colors group">
+            <td class="px-8 py-4">
+              <div class="font-extrabold text-slate-800">${u.full_name || '—'}</div>
+            </td>
+            <td class="px-8 py-4 text-slate-600 text-sm">${u.email}</td>
+            <td class="px-8 py-4">
+              <span class="px-3 py-1 rounded-full text-[10px] font-extrabold border ${badge.bgClass} ${badge.textClass} ${badge.borderClass}">
+                ${badge.label}
+              </span>
+            </td>
+            <td class="px-8 py-4 font-bold text-slate-700">${u.branch_name || '—'}</td>
+            <td class="px-8 py-4 text-sage-500 text-xs font-semibold">${u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</td>
+          </tr>`;
+      }).join('');
     }
-  }
 
-  loadUsers();
-</script>
+    function filterUsers() {
+      const q = document.getElementById('search-input').value.toLowerCase();
+      renderTable(allUsers.filter(u =>
+        (u.full_name || '').toLowerCase().includes(q) ||
+        (u.email || '').toLowerCase().includes(q) ||
+        (u.role || '').toLowerCase().includes(q) ||
+        (u.branch_name || '').toLowerCase().includes(q)
+      ));
+    }
+
+    async function loadUsers() {
+      try {
+        const res = await fetch('/api/superadmin/users', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem('access_token');
+          window.location.href = '../../login.html';
+          return;
+        }
+        if (!res.ok) { showToast('Could not load users.', 'error'); return; }
+        const data = await res.json();
+        allUsers = data.users || [];
+
+        document.getElementById('cnt-total').textContent    = allUsers.length;
+        document.getElementById('cnt-students').textContent = allUsers.filter(u => u.role === 'student').length;
+        document.getElementById('cnt-teachers').textContent = allUsers.filter(u => u.role === 'teacher').length;
+        document.getElementById('cnt-parents').textContent  = allUsers.filter(u => u.role === 'parent').length;
+
+        renderTable(allUsers);
+      } catch {
+        showToast('Network error loading users.', 'error');
+      }
+    }
+
+    loadUsers();
+  </script>
 </body>
 </html>
