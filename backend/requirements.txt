@@ -8,4 +8,4 @@ python-dotenv
 mysql-connector-python
 pandas
 reportlab
-psycopg2-binary
+Flask-CORS

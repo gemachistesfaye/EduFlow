@@ -1,10 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Superadmin Dashboard | EduFlow</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/css/theme.css">
+  <style>
+    /* ══ Superadmin Portal – unique dark/violet theme override ══
+       These override theme.css variables ONLY for superadmin pages.
+       Do NOT copy this block to other portals. */
+    :root {
+      --sidebar-bg:    #0d0b1e;
+      --sidebar-hover: #1e1a3a;
+      --sidebar-active:#1e1a3a;
+      --sidebar-text:  #c4b5fd;
+      --sidebar-label: #a78bfa;
+
+      --bg-main:   #0f0e1a;
+      --bg-card:   #16152a;
+      --bg-tertiary:#1e1a3a;
+      --bg-header: #16152a;
+
+      --text-primary:   #e2e0f0;
+      --text-secondary: #9b96c4;
+      --text-muted:     #6b6894;
+
+      --accent:       #7c3aed;
+      --accent-light: rgba(124,58,237,.15);
+      --accent-hover: #6d28d9;
+
+      --border:      rgba(124,58,237,.18);
+      --border-color:rgba(124,58,237,.18);
+      --shadow-card: 0 2px 12px rgba(0,0,0,.4);
+    }
+    body { background: var(--bg-main); color: var(--text-primary); }
+    .sidebar { background: var(--sidebar-bg); border-right: 1px solid rgba(124,58,237,.15); }
+    .sidebar-logo-icon { background: #7c3aed; }
+    .nav-item.active { background: #7c3aed; color: #fff; }
+    .nav-item:hover   { background: var(--sidebar-hover); color: #fff; }
+    .top-header { background: var(--bg-header); border-bottom-color: var(--border); }
+    .header-search { background: #1e1a3a; border-color: var(--border); color: var(--text-muted); }
+    .header-search input { color: var(--text-primary); }
+    .header-user { border-color: var(--border); color: var(--text-primary); }
+    .header-user:hover { background: #1e1a3a; }
+    .card { background: var(--bg-card); border-color: var(--border); }
+    .card-header { background: var(--bg-card); border-bottom-color: var(--border); color: var(--text-primary); }
+    .stat-card { background: var(--bg-card); border-color: var(--border); }
+    .stat-card-value { color: var(--text-primary); }
+    .data-table thead th { background: #1e1a3a; color: var(--text-muted); border-bottom-color: var(--border); }
+    .data-table tbody tr { border-bottom-color: var(--border); }
+    .data-table tbody tr:hover { background: #1e1a3a; }
+    .data-table tbody td { color: var(--text-primary); }
+    .form-input, .form-select { background: #1e1a3a; border-color: var(--border); color: var(--text-primary); }
+    .form-input:focus, .form-select:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.2); }
+    .form-label { color: var(--text-secondary); }
+    .btn-primary { background: #7c3aed; border-color: #7c3aed; }
+    .btn-primary:hover { background: #6d28d9; border-color: #6d28d9; }
+    .btn-secondary, .btn-outline { background: #1e1a3a; border-color: var(--border); color: var(--text-primary); }
+    .icon-blue   { background: rgba(96,165,250,.12);  color: #60a5fa; }
+    .icon-green  { background: rgba(52,211,153,.12);  color: #34d399; }
+    .icon-amber  { background: rgba(251,191,36,.12);  color: #fbbf24; }
+    .icon-purple { background: rgba(167,139,250,.12); color: #a78bfa; }
+    .page-title   { color: var(--text-primary); }
+    .page-subtitle{ color: var(--text-muted); }
+  </style>
 </head>
 <body>
 <div class="app-shell">

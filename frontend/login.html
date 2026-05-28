@@ -18,8 +18,23 @@
       theme: {
         extend: {
           colors: {
-            forest: { 500:'#2D6A4F', 600:'#1B4332', 700:'#132A20', 800:'#0d1d16', 900:'#060e0a' },
-            sage:   { 50:'#F4F6F0', 100:'#E6EAE0', 200:'#D0D8C5', 600:'#5A734E', 800:'#32422C' }
+            forest: { 
+              50: '#F4F7F5',
+              100: '#E9EFEA',
+              200: '#D2DFD6',
+              500: '#2D6A4F', 
+              600: '#1B4332', 
+              700: '#132A20', 
+              800: '#0d1d16', 
+              900: '#060e0a' 
+            },
+            sage: { 
+              50: '#F4F6F0', 
+              100: '#E6EAE0', 
+              200: '#D0D8C5', 
+              600: '#5A734E', 
+              800: '#32422C' 
+            }
           },
           fontFamily: { sans: ['Inter','sans-serif'] }
         }
@@ -28,129 +43,135 @@
   </script>
 
   <style>
-    /* field focus ring */
-    input:focus { outline:none; box-shadow:0 0 0 3px rgba(45,106,79,.2); }
+    /* Premium transition behaviors */
+    .transition-all {
+      transition-property: all;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 350ms;
+    }
   </style>
 </head>
 
-<body class="h-screen flex overflow-hidden font-sans bg-sage-50">
+<body class="h-screen flex flex-col md:flex-row overflow-hidden font-sans bg-sage-50 text-slate-800">
 
   <!-- ══════════════════════════════════
-       LEFT – Branding panel
-  ══════════════════════════════════ -->
-  <div id="left-panel" class="hidden md:flex w-5/12 text-white flex-col justify-between p-12 relative overflow-hidden transition-colors duration-500 bg-forest-700">
-    <!-- subtle grid decoration -->
-    <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle,#fff 1px,transparent 1px);background-size:28px 28px;"></div>
+        LEFT – Branding Panel (Unified Forest Theme)
+       ══════════════════════════════════ -->
+  <div id="left-panel" class="hidden md:flex md:w-5/12 text-white flex-col justify-between p-12 relative overflow-hidden bg-forest-700 transition-colors duration-500">
+    <!-- Grid overlay decorator -->
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 28px 28px;"></div>
     
     <div class="relative z-10 w-full max-w-sm mx-auto flex flex-col h-full justify-center">
-      <!-- logo / icon -->
-      <div id="panel-icon" class="text-6xl mb-6 transition-transform duration-500 opacity-90"><i class="fa-solid fa-graduation-cap"></i></div>
+      <!-- Dynamically updated icon -->
+      <div id="panel-icon" class="text-6xl mb-6 transition-transform duration-500 opacity-95">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
       
-      <p class="text-xs font-bold tracking-widest uppercase opacity-80 mb-1">EduFlow</p>
-      <h1 id="left-title" class="text-4xl font-extrabold leading-snug mb-4">Student Portal</h1>
-      <p id="left-subtitle" class="text-sm opacity-90 mb-8 leading-relaxed">Manage timetable, homework and grades easily.</p>
+      <p class="text-xs font-bold tracking-widest uppercase opacity-75 mb-1">EduFlow Systems</p>
+      <h1 id="left-title" class="text-4xl font-extrabold leading-tight mb-4 tracking-tight">Staff Portal</h1>
+      <p id="left-subtitle" class="text-sm opacity-90 mb-8 leading-relaxed">Manage classes, attendance and grades from one place.</p>
       
-      <div class="w-full h-px bg-white/20 mb-8"></div>
+      <div class="w-full h-px bg-white/15 mb-8"></div>
       
-      <!-- feature bullets -->
-      <ul id="left-features" class="text-left text-sm space-y-4 font-medium opacity-90"></ul>
+      <!-- Feature Bullet Points -->
+      <ul id="left-features" class="text-left text-sm space-y-4 font-medium opacity-90">
+        <!-- Injected dynamically via script -->
+      </ul>
     </div>
     
-    <div class="relative z-10 text-xs font-semibold opacity-60 w-full max-w-sm mx-auto">
+    <!-- Footer Branding -->
+    <div class="relative z-10 text-xs font-semibold opacity-50 w-full max-w-sm mx-auto">
       © 2026 EDUFLOW SYSTEMS
     </div>
   </div>
 
   <!-- ══════════════════════════════════
-       RIGHT – Login card
-  ══════════════════════════════════ -->
+        RIGHT – Floating Login Card Panel
+       ══════════════════════════════════ -->
   <div class="flex flex-col w-full md:w-7/12 items-center justify-center p-6 overflow-y-auto bg-sage-50">
-    <div class="w-full max-w-md relative">
+    <div class="w-full max-w-md relative animate-fade-in">
 
-      <!-- Back to home -->
-      <a href="index.html" class="inline-flex items-center gap-2 text-sm font-semibold text-forest-700 hover:text-forest-900 transition-colors mb-6 ml-2">
-        <i class="fa-solid fa-arrow-left"></i> Back to EduFlow
-      </a>
+      <!-- Navigation links above card -->
+      <div class="flex justify-between items-center mb-6 px-2">
+        <a href="index.html" class="inline-flex items-center gap-2 text-sm font-semibold text-forest-700 hover:text-forest-900 transition-all">
+          <i class="fa-solid fa-arrow-left text-xs"></i> Back to EduFlow
+        </a>
+      </div>
 
-      <!-- ── Login card ── -->
-      <div id="login-card" class="rounded-2xl shadow-xl p-8 space-y-6 transition-colors duration-500">
+      <!-- Login Card wrapper with subtle brand borders -->
+      <div id="login-card" class="bg-white rounded-2xl border border-slate-100 shadow-xl p-8 md:p-10 space-y-6 transition-all duration-300">
 
-        <!-- heading -->
+        <!-- Card Header Text -->
         <div>
-          <h2 id="form-heading" class="text-2xl font-extrabold transition-colors duration-500">Welcome back</h2>
-          <p id="form-subheading" class="text-sm opacity-90 mt-1">Sign in to your account.</p>
+          <h2 id="form-heading" class="text-2xl font-black text-slate-800 tracking-tight">Welcome back</h2>
+          <p id="form-subheading" class="text-sm text-slate-500 mt-1">Sign in to your staff account.</p>
         </div>
 
-        <!-- alert -->
-        <div id="alert-box" class="hidden rounded-lg px-4 py-3 text-sm font-medium"></div>
+        <!-- Custom User-Friendly Alert Messages -->
+        <div id="alert-box" class="hidden rounded-xl px-4 py-3.5 text-sm font-semibold border transition-all duration-300"></div>
 
-        <!-- form -->
+        <!-- HTML5 Standard-Compliant Form -->
         <form id="login-form" novalidate class="space-y-5">
 
-          <!-- email -->
+          <!-- Email Input -->
           <div>
-            <label id="email-label" for="email" class="block text-xs font-bold tracking-wider uppercase mb-2 opacity-90">Email Address</label>
+            <label id="email-label" for="email" class="block text-[11px] font-extrabold tracking-wider text-slate-400 uppercase mb-2">Staff Email Address</label>
             <input type="email" id="email" name="email" required
-                   placeholder="Enter your email"
+                   placeholder="staff@school.edu"
                    autocomplete="email"
-                   class="block w-full rounded-xl border-none bg-sage-50 text-forest-900 px-4 py-3 text-sm transition-all focus:ring-2 focus:ring-sage-200">
+                   class="block w-full rounded-xl border border-slate-200/80 bg-slate-50/50 text-slate-800 px-4 py-3.5 text-sm transition-all focus:bg-white focus:border-forest-500 focus:ring-2 focus:ring-forest-200 focus:outline-none">
           </div>
 
-          <!-- password -->
+          <!-- Password Input with Reveal toggle -->
           <div>
-            <label id="password-label" for="password" class="block text-xs font-bold tracking-wider uppercase mb-2 opacity-90">Password</label>
+            <label id="password-label" for="password" class="block text-[11px] font-extrabold tracking-wider text-slate-400 uppercase mb-2">Password</label>
             <div class="relative">
               <input type="password" id="password" name="password" required
                      placeholder="••••••••"
                      autocomplete="current-password"
-                     class="block w-full rounded-xl border-none bg-sage-50 text-forest-900 px-4 py-3 pr-10 text-sm transition-all focus:ring-2 focus:ring-sage-200">
-              <button type="button" id="toggle-pw"
-                      class="absolute right-3 top-1/2 -translate-y-1/2 text-forest-600 hover:text-forest-800">
+                     class="block w-full rounded-xl border border-slate-200/80 bg-slate-50/50 text-slate-800 px-4 py-3.5 pr-11 text-sm transition-all focus:bg-white focus:border-forest-500 focus:ring-2 focus:ring-forest-200 focus:outline-none">
+              <button type="button" id="toggle-pw" aria-label="Toggle password visibility"
+                      class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-forest-700 transition-colors">
                 <i class="fa-regular fa-eye-slash text-sm"></i>
               </button>
             </div>
           </div>
 
-          <!-- hidden role field – sent with form submission -->
+          <!-- Hidden input representing user role mapping -->
           <input type="hidden" id="role-field" name="role" value="staff">
 
-          <!-- submit -->
+          <!-- Form submit button -->
           <button type="submit" id="submit-btn"
-                  class="w-full py-3.5 rounded-xl text-white font-bold text-sm shadow-md transition-all duration-300 mt-2">
+                  class="w-full py-3.5 rounded-xl text-white font-bold text-sm bg-forest-700 hover:bg-forest-600 active:scale-[0.99] shadow-md shadow-forest-700/10 hover:shadow-lg transition-all duration-200 mt-2">
             Sign In
           </button>
         </form>
 
-        <!-- footer note -->
-        <p id="footer-note" class="text-center text-xs opacity-70 pt-2">
-          Authorised school access only.
+        <!-- Dynamic Disclaimer Footer Note -->
+        <p id="footer-note" class="text-center text-xs text-slate-400 font-medium pt-2">
+          Authorised school staff access only.
         </p>
       </div>
+
     </div>
   </div>
 
   <!-- ══════════════════════════════════
-       JAVASCRIPT – all portal logic
-  ══════════════════════════════════ -->
+        JAVASCRIPT – Cleaned Up & Optimised
+       ══════════════════════════════════ -->
   <script>
-    // ── 1. Portal configuration (replaces Jinja2 PORTAL_CONFIG) ──────────
+    // 1. Unified branding configurations
     const PORTAL_CONFIG = {
       staff: {
-        title:         'Staff Portal',
-        subtitle:      'Manage classes, attendance and grades from one place.',
-        formHeading:   'Welcome back Staff',
-        formSub:       'Sign in to your staff account.',
-        emailLabel:    'STAFF EMAIL ADDRESS',
-        emailPH:       'staff@school.edu',
-        passwordLabel: 'PASSWORD',
-        footerNote:    'Authorised school staff access only.',
-        icon:          '<i class="fa-solid fa-user-tie"></i>',
-        theme: {
-          bg: 'bg-forest-700',
-          cardBg: 'bg-white',
-          text: 'text-forest-900',
-          btn: ['bg-forest-700', 'hover:bg-forest-600']
-        },
+        title: 'Staff Portal',
+        subtitle: 'Manage classes, attendance and grades from one place.',
+        formHeading: 'Welcome back Staff',
+        formSub: 'Sign in to your staff account.',
+        emailLabel: 'Staff Email Address',
+        emailPH: 'staff@school.edu',
+        passwordLabel: 'Password',
+        footerNote: 'Authorised school staff access only.',
+        icon: '<i class="fa-solid fa-user-tie"></i>',
         features: [
           'Class registers & attendance tracking',
           'Homework submission & live grade dashboards',
@@ -160,45 +181,33 @@
         ]
       },
       student: {
-        title:         'Student Portal',
-        subtitle:      'Manage timetable, homework and grades easily.',
-        formHeading:   'Welcome back Student',
-        formSub:       'Sign in to your student account.',
-        emailLabel:    'STUDENT ID / EMAIL ADDRESS',
-        emailPH:       'student@school.edu',
-        passwordLabel: 'PASSWORD',
-        footerNote:    'Authorised school student access only.',
-        icon:          '<i class="fa-solid fa-graduation-cap"></i>',
-        theme: {
-          bg: 'bg-forest-700',
-          cardBg: 'bg-white',
-          text: 'text-forest-900',
-          btn: ['bg-forest-700', 'hover:bg-forest-600']
-        },
+        title: 'Student Portal',
+        subtitle: 'Manage timetable, homework and grades easily.',
+        formHeading: 'Welcome back Student',
+        formSub: 'Sign in to your student account.',
+        emailLabel: 'Student ID / Email Address',
+        emailPH: 'student@school.edu',
+        passwordLabel: 'Password',
+        footerNote: 'Authorised school student access only.',
+        icon: '<i class="fa-solid fa-graduation-cap"></i>', // Standard free graduation cap icon renders correctly
         features: [
-          'Class registers & attendance tracking',
-          'Homework submission & live grade dashboards',
+          'Conflict-free lecture timetables',
+          'Homework delivery & resource drawers',
           'Interactive terminal grade reports',
           'Co-curricular activity registers',
           'Secure student messaging directory'
         ]
       },
       parent: {
-        title:         'Parent Portal',
-        subtitle:      'Stay connected with your child\'s progress.',
-        formHeading:   'Welcome back Parent',
-        formSub:       'Sign in to your parent account.',
-        emailLabel:    'PARENT EMAIL ADDRESS',
-        emailPH:       'parent@school.edu',
-        passwordLabel: 'PASSWORD',
-        footerNote:    'Authorised school parent access only.',
-        icon:          '<i class="fa-solid fa-users"></i>',
-        theme: {
-          bg: 'bg-forest-700',
-          cardBg: 'bg-white',
-          text: 'text-forest-900',
-          btn: ['bg-forest-700', 'hover:bg-forest-600']
-        },
+        title: 'Parent Portal',
+        subtitle: "Stay connected with your child's progress.",
+        formHeading: 'Welcome back Parent',
+        formSub: 'Sign in to your parent account.',
+        emailLabel: 'Parent Email Address',
+        emailPH: 'parent@school.edu',
+        passwordLabel: 'Password',
+        footerNote: 'Authorised school parent access only.',
+        icon: '<i class="fa-solid fa-users"></i>', // Family icon
         features: [
           'Real-time attendance calendars',
           'Digital grade report sheets',
@@ -209,151 +218,165 @@
       }
     };
 
-    // ── 2. State ──────────────────────────────────────────────────────────
     let currentPortal = 'staff';
 
-    // ── 3. Render portal config into the DOM ─────────────────────────────
+    // 2. DOM Rendering Routine
     function renderPortal(portal) {
       const cfg = PORTAL_CONFIG[portal];
       if (!cfg) return;
 
-      // Left panel
-      document.getElementById('left-title').textContent    = cfg.title;
+      currentPortal = portal;
+
+      // Update Left Panel Copy
+      document.getElementById('left-title').textContent = cfg.title;
       document.getElementById('left-subtitle').textContent = cfg.subtitle;
+      document.getElementById('panel-icon').innerHTML = cfg.icon;
+
+      // Update Features List dynamically
       const featList = document.getElementById('left-features');
       featList.innerHTML = '';
       cfg.features.forEach(f => {
         const li = document.createElement('li');
-        li.className = 'flex items-center gap-3';
-        li.innerHTML = `<i class="fa-regular fa-circle-check text-sage-200"></i> <span>${f}</span>`;
+        li.className = 'flex items-center gap-3 transition-all transform translate-x-0';
+        li.innerHTML = `<i class="fa-regular fa-circle-check text-green-300"></i> <span>${f}</span>`;
         featList.appendChild(li);
       });
 
-      // Right card
-      document.getElementById('form-heading').textContent    = cfg.formHeading;
+      // Update Form Labels and Inputs on Right Hand Side
+      document.getElementById('form-heading').textContent = cfg.formHeading;
       document.getElementById('form-subheading').textContent = cfg.formSub;
-      document.getElementById('email-label').textContent     = cfg.emailLabel;
-      document.getElementById('email').placeholder           = cfg.emailPH;
-      document.getElementById('password-label').textContent  = cfg.passwordLabel;
-      document.getElementById('footer-note').textContent     = cfg.footerNote;
-      document.getElementById('role-field').value            = portal;
-      
-      document.getElementById('panel-icon').innerHTML        = cfg.icon;
+      document.getElementById('email-label').textContent = cfg.emailLabel;
+      document.getElementById('email').placeholder = cfg.emailPH;
+      document.getElementById('password-label').textContent = cfg.passwordLabel;
+      document.getElementById('footer-note').textContent = cfg.footerNote;
+      document.getElementById('role-field').value = portal;
 
-      // Update styling
-      const prevCfg = PORTAL_CONFIG[currentPortal];
-      if (prevCfg) {
-        document.getElementById('left-panel').classList.remove(prevCfg.theme.bg);
-        document.getElementById('login-card').classList.remove(prevCfg.theme.cardBg, prevCfg.theme.text);
-        document.getElementById('submit-btn').classList.remove(...prevCfg.theme.btn);
-      }
-      
-      document.getElementById('left-panel').classList.add(cfg.theme.bg);
-      document.getElementById('login-card').classList.add(cfg.theme.cardBg, cfg.theme.text);
-      document.getElementById('submit-btn').classList.add(...cfg.theme.btn);
-
-      // Update browser URL (no page reload)
+      // Maintain active state in browser URL queries
       const url = new URL(window.location);
       url.searchParams.set('portal', portal);
       history.replaceState({}, '', url);
 
-      currentPortal = portal;
       hideAlert();
     }
 
-    function setPortal(portal) { renderPortal(portal); }
-
-    // ── 4. Alerts ─────────────────────────────────────────────────────────
+    // 3. User Feedback Alert Systems
     function showAlert(msg, type = 'error') {
       const box = document.getElementById('alert-box');
       box.textContent = msg;
-      box.className = type === 'success'
-        ? 'rounded-lg px-4 py-3 text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 mb-4'
-        : 'rounded-lg px-4 py-3 text-sm font-medium bg-red-50 text-red-800 border border-red-200 mb-4';
-      box.classList.remove('hidden');
-    }
-    function hideAlert() {
-      document.getElementById('alert-box').classList.add('hidden');
+      if (type === 'success') {
+        box.className = 'rounded-xl px-4 py-3.5 text-sm font-semibold bg-emerald-50 text-emerald-800 border-emerald-200 mb-4 block';
+      } else {
+        box.className = 'rounded-xl px-4 py-3.5 text-sm font-semibold bg-rose-50/80 text-rose-800 border-rose-200 mb-4 block';
+      }
     }
 
-    // ── 5. Password toggle ────────────────────────────────────────────────
+    function hideAlert() {
+      const box = document.getElementById('alert-box');
+      box.className = 'hidden';
+    }
+
+    // 4. Reveal Password Logic
     document.getElementById('toggle-pw').addEventListener('click', () => {
-      const pw  = document.getElementById('password');
-      const ico = document.querySelector('#toggle-pw i');
-      pw.type = pw.type === 'password' ? 'text' : 'password';
-      ico.className = pw.type === 'password' ? 'fa-regular fa-eye text-sm' : 'fa-regular fa-eye-slash text-sm';
+      const pwInput = document.getElementById('password');
+      const icon = document.querySelector('#toggle-pw i');
+      if (pwInput.type === 'password') {
+        pwInput.type = 'text';
+        icon.className = 'fa-regular fa-eye text-sm';
+      } else {
+        pwInput.type = 'password';
+        icon.className = 'fa-regular fa-eye-slash text-sm';
+      }
     });
 
-    // ── 7. Form submit ────────────────────────────────────────────────────
+    // 5. Robust Form Submission Logic
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert();
-      const email    = document.getElementById('email').value.trim();
+
+      const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
-      const role     = document.getElementById('role-field').value;
-      const btn      = document.getElementById('submit-btn');
+      const selectedRole = document.getElementById('role-field').value;
+      const submitBtn = document.getElementById('submit-btn');
 
       if (!email || !password) {
-        showAlert('Please enter your email and password to continue.');
+        showAlert('Please enter your credentials to log in.');
         return;
       }
 
-      btn.disabled = true;
-      btn.textContent = 'Signing in…';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifying credentials...';
 
-      // Quick mock bypass for offline testing
-      const mockMap = {
-        'teacher@eduflow.com': { token:'mock_staff',   role:'teacher',  redirect:'pages/admin/dashboard.html' },
-        'student@eduflow.com': { token:'mock_student', role:'student',  redirect:'pages/student/dashboard.html' },
-        'parent@eduflow.com':  { token:'mock_parent',  role:'parent',   redirect:'pages/parent/dashboard.html' }
+      // Live offline mockup environment mapping for instant preview testing
+      const mockUsers = {
+        'teacher@eduflow.com': { token: 'mock_staff', role: 'staff', redirect: '/pages/teacher/dashboard.html' },
+        'student@eduflow.com': { token: 'mock_student', role: 'student', redirect: '/pages/student/dashboard.html' },
+        'parent@eduflow.com': { token: 'mock_parent', role: 'parent', redirect: '/pages/parent/dashboard.html' }
       };
-      if (mockMap[email]) {
-        const m = mockMap[email];
-        localStorage.setItem('access_token', m.token);
-        localStorage.setItem('user_role',    m.role);
-        showAlert('Credentials accepted – redirecting…', 'success');
-        setTimeout(() => { window.location.href = m.redirect; }, 900);
+
+      if (mockUsers[email]) {
+        const mockData = mockUsers[email];
+        localStorage.setItem('access_token', mockData.token);
+        localStorage.setItem('user_role', mockData.role);
+        showAlert('Sign in successful! Redirecting...', 'success');
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+          window.location.href = mockData.redirect;
+        }, 1000);
         return;
       }
 
+      // Online database fetch operations block (wrapped inside a robust try/catch sequence)
       try {
-        const res  = await fetch('/api/auth/login', {
+        const response = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, role })
+          body: JSON.stringify({ email, password, role: selectedRole })
         });
-        const data = await res.json();
 
-        if (!res.ok) {
-          showAlert(data.error || 'Invalid credentials. Please try again.');
-          btn.disabled = false;
-          btn.textContent = 'Sign In';
-          return;
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Invalid credentials.');
         }
 
+        const data = await response.json();
         localStorage.setItem('access_token', data.access_token);
-        localStorage.setItem('user_role',    data.role);
-
-        const routes = {
-          admin:           'pages/admin/dashboard.html',
-          school_director: 'pages/admin/dashboard.html',
-          teacher:         'pages/teacher/dashboard.html',
-          student:         'pages/student/dashboard.html',
-          parent:          'pages/parent/dashboard.html'
-        };
-        window.location.href = routes[data.role] || 'index.html';
+        localStorage.setItem('user_role', data.role);
+        
+        showAlert('Sign in successful! Redirecting...', 'success');
+        
+        setTimeout(() => {
+          const finalRole = data.role;
+          switch (finalRole) {
+            case 'superadmin':
+              window.location.href = '/pages/superadmin/dashboard.html';
+              break;
+            case 'staff':
+              window.location.href = '/pages/teacher/dashboard.html';
+              break;
+            case 'student':
+              window.location.href = '/pages/student/dashboard.html';
+              break;
+            case 'parent':
+              window.location.href = '/pages/parent/dashboard.html';
+              break;
+            default:
+              window.location.href = '/';
+          }
+        }, 1000);
 
       } catch (err) {
-        showAlert('Network error – using offline demo. Redirecting…', 'success');
-        setTimeout(() => { window.location.href = 'index.html#dashboard'; }, 1200);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+        showAlert(err.message || 'Login failed. Please check connection.');
       }
     });
 
-    // ── 8. Read ?portal= on load and initialise ───────────────────────────
+    // 6. Initialisation phase
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
-      const portal = params.get('portal') || 'staff';
-      renderPortal(['staff','student','parent'].includes(portal) ? portal : 'staff');
+      const activePortal = params.get('portal') || 'staff';
+      renderPortal(['staff', 'student', 'parent'].includes(activePortal) ? activePortal : 'staff');
     });
   </script>
 </body>
