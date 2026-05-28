@@ -79,7 +79,7 @@ class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.String(20), unique=True, nullable=False)
     name = db.Column(db.String(120), nullable=False)
-    gender = db.Column(db.Enum('Male', 'Female', 'Other'), nullable=False)
+    gender = db.Column(db.Enum('Male', 'Female', 'Other', name='gender_enum'), nullable=False)
     date_of_birth = db.Column(db.Date, nullable=False)
     class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
     phone = db.Column(db.String(20))
@@ -110,7 +110,7 @@ class Attendance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
     date = db.Column(db.Date, nullable=False)
-    status = db.Column(db.Enum('Present', 'Absent', 'Late'), nullable=False)
+    status = db.Column(db.Enum('Present', 'Absent', 'Late', name='attendance_status_enum'), nullable=False)
 
     student = db.relationship('Student')
 
@@ -122,7 +122,7 @@ class Grade(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
     subject = db.Column(db.String(80), nullable=False)
-    exam_type = db.Column(db.Enum('Quiz', 'Mid', 'Final'), nullable=False)
+    exam_type = db.Column(db.Enum('Quiz', 'Mid', 'Final', name='exam_type_enum'), nullable=False)
     score = db.Column(db.Float, nullable=False)
     total_marks = db.Column(db.Float, nullable=False)
 
@@ -137,7 +137,7 @@ class Fee(db.Model):
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     paid_amount = db.Column(db.Float, default=0.0)
-    status = db.Column(db.Enum('Paid', 'Pending'), nullable=False, default='Pending')
+    status = db.Column(db.Enum('Paid', 'Pending', name='fee_status_enum'), nullable=False, default='Pending')
     due_date = db.Column(db.Date, nullable=False)
 
     student = db.relationship('Student')

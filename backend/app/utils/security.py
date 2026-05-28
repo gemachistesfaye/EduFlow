@@ -12,7 +12,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 def create_access_token(user_id: int, role: str, level: int) -> str:
     payload = {
-        "sub": user_id,
+        "sub": str(user_id),  # PyJWT 2.x requires sub to be a string
         "role": role,
         "level": level,
         "iat": datetime.datetime.utcnow(),
@@ -22,7 +22,9 @@ def create_access_token(user_id: int, role: str, level: int) -> str:
 
 def decode_token(token: str):
     try:
-        return jwt.decode(token, current_app.config["JWT_SECRET"], algorithms=[current_app.config["JWT_ALGORITHM"]])
+        payload = jwt.decode(token, current_app.config["JWT_SECRET"], algorithms=[current_app.config["JWT_ALGORITHM"]])
+        payload["sub"] = int(payload["sub"])  # convert back to int for DB lookups
+        return payload
     except jwt.ExpiredSignatureError:
         raise PermissionError("Token expired")
     except jwt.InvalidTokenError:
