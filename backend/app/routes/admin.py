@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from ..middleware.auth import rbac
-from ..models import db, Student, Teacher, Profile, Role, School, Class, User
+from ..models import db, Student, Profile, Role, School, Class, User, Course
 from ..utils.security import hash_password
 import pandas as pd
 import time

@@ -76,12 +76,16 @@ class Course(db.Model):
     code = db.Column(db.String(20), unique=True, nullable=False)
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'))
+    # Stream for grade 11 (natural or social). Null for common courses.
+    stream = db.Column(db.Enum('natural', 'social', name='stream_enum'), nullable=True)
 
     school = db.relationship('School')
     teacher = db.relationship('Teacher')
 
     def __repr__(self):
-        return f"<Course {self.code} ({self.name})>"
+        return f"<Course {self.code} ({self.name}) stream={self.stream}>"
+
+class Class(db.Model):
     __tablename__ = "classes"
     id = db.Column(db.Integer, primary_key=True)
     class_name = db.Column(db.String(50), nullable=False)
