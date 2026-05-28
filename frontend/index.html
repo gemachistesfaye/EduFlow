@@ -92,48 +92,61 @@
 
   <!-- -->
   <!-- Navigation Header (Fixed + Premium Glassmorphism) -->
-  <nav id="main-nav" class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-sage-100 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-20">
-        
-        <!-- Brand Logo -->
-        <div class="flex items-center gap-3 cursor-pointer">
-          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-forest-500 to-forest-600 text-white flex items-center justify-center shadow-lg shadow-forest-600/20">
-            <i class="fa-solid fa-graduation-cap text-xl"></i>
-          </div>
-          <div class="flex flex-col">
-            <span class="font-extrabold text-2xl tracking-tight leading-none text-forest-700">EduFlow</span>
-            <span class="text-[10px] text-forest-500 font-semibold tracking-widest uppercase mt-1">Smart System</span>
-          </div>
+<nav id="main-nav" class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-sage-100 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20">
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-3 cursor-pointer">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-forest-500 to-forest-600 flex items-center justify-center text-white shadow-lg">
+          <i class="fa-solid fa-graduation-cap text-xl"></i>
         </div>
-        
-        <!-- Desktop Nav Links -->
-        <div class="hidden md:flex items-center space-x-8">
-          <a href="#features" class="nav-link-underline text-sm font-semibold text-sage-800 hover:text-forest-600 transition-colors">Features</a>
-          <a href="#dashboard" class="nav-link-underline text-sm font-semibold text-sage-800 hover:text-forest-600 transition-colors">Dashboard Preview</a>
-          <a href="#testimonials" class="nav-link-underline text-sm font-semibold text-sage-800 hover:text-forest-600 transition-colors">Testimonials</a>
+        <div class="flex flex-col">
+          <span class="font-extrabold text-2xl text-forest-700">EduFlow</span>
+          <span class="text-[10px] text-forest-500 font-semibold uppercase tracking-widest">SMART SYSTEM</span>
         </div>
-
-        <!-- Right Side Nav Actions -->
-        <div class="hidden md:flex items-center space-x-6">
-          <a href="login.html?portal=parent" class="text-xs font-bold text-forest-600 hover:text-forest-700 transition-colors flex items-center gap-1.5">
-            <i class="fa-solid fa-users-rectangle text-sm"></i> Parent Portal
-          </a>
-          <div class="h-6 w-px bg-sage-200"></div>
-          <a href="login.html?portal=staff" class="inline-flex items-center gap-2 text-sm font-bold text-white bg-forest-600 hover:bg-forest-500 hover:shadow-lg hover:shadow-forest-600/10 px-6 py-2.5 rounded-full transition-all duration-200">
-            <span>Staff Login</span>
-            <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
-          </a>
-        </div>
-
-        <!-- Mobile Menu Toggle Button -->
-        <div class="md:hidden">
-          <button id="mobile-menu-btn" class="p-2 rounded-xl bg-sage-100/50 hover:bg-sage-100 text-forest-700 transition-colors focus:outline-none" aria-label="Toggle Menu">
-            <i class="fa-solid fa-bars-staggered text-xl"></i>
+      </a>
+      <!-- Desktop Nav Links -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="#features" class="nav-link-underline text-sm font-semibold text-sage-800 hover:text-forest-600 transition-colors">Features</a>
+        <a href="#dashboard" class="nav-link-underline text-sm font-semibold text-sage-800 hover:text-forest-600 transition-colors">Dashboard Preview</a>
+        <a href="#testimonials" class="nav-link-underline text-sm font-semibold text-sage-800 hover:text-forest-600 transition-colors">Testimonials</a>
+      </div>
+      <!-- Right Side Nav Actions -->
+      <div class="hidden md:flex items-center space-x-6">
+        <!-- Divider -->
+        <div class="h-6 w-px bg-sage-200" aria-hidden="true"></div>
+        <!-- Portals dropdown -->
+        <div class="relative" id="portals-wrapper">
+          <button id="portals-btn" class="flex items-center gap-1.5 text-xs font-bold text-forest-600 hover:text-forest-700 transition-colors focus:outline-none" aria-haspopup="true" aria-expanded="false">
+            Portals
+            <i id="portals-chevron" class="fa-solid fa-chevron-down transition-transform duration-200"></i>
           </button>
+          <div id="portals-menu" class="hidden absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white border border-sage-100 origin-top-right transition-all duration-150 z-50">
+            <a href="login.html?portal=student" class="flex items-center gap-2 px-4 py-3 text-sm text-sage-800 hover:bg-sage-50 hover:text-forest-600 rounded-t-xl transition-colors">
+              <i class="fa-solid fa-graduation-cap"></i> Student Portal
+            </a>
+            <a href="login.html?portal=parent" class="flex items-center gap-2 px-4 py-3 text-sm text-sage-800 hover:bg-sage-50 hover:text-forest-600 rounded-b-xl transition-colors">
+              <i class="fa-solid fa-users"></i> Parent Portal
+            </a>
+          </div>
         </div>
+        <!-- Divider -->
+        <div class="h-6 w-px bg-sage-200" aria-hidden="true"></div>
+        <!-- Staff Login button -->
+        <a href="login.html?portal=staff" class="inline-flex items-center gap-2 rounded-full bg-forest-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-forest-500 focus:outline-none focus:ring-2 focus:ring-forest-500/50 transition-colors">
+          Staff Login
+          <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+        </a>
+      </div>
+      <!-- Mobile Menu Toggle Button -->
+      <div class="md:hidden">
+        <button id="mobile-menu-btn" class="p-2 rounded-xl bg-sage-100/50 hover:bg-sage-100 text-forest-700 transition-colors focus:outline-none" aria-label="Toggle Menu">
+          <i class="fa-solid fa-bars-staggered text-xl"></i>
+        </button>
       </div>
     </div>
+  </div>
+</nav>
 
     <!-- Mobile Navigation Drawer -->
     <div id="mobile-drawer" class="hidden md:hidden border-t border-sage-100 bg-white/95 backdrop-blur-lg w-full absolute left-0 top-20 shadow-xl transition-all duration-300">
@@ -650,6 +663,41 @@
           nav.classList.remove("shadow-md", "bg-white/95");
           nav.classList.add("bg-white/80");
         }
+      });
+
+      // 3. Portals Dropdown (vanilla JS – no Alpine dependency)
+      const portalsBtn     = document.getElementById('portals-btn');
+      const portalsMenu    = document.getElementById('portals-menu');
+      const portalsChevron = document.getElementById('portals-chevron');
+
+      function openPortals() {
+        portalsMenu.classList.remove('hidden');
+        portalsMenu.classList.add('block');
+        portalsChevron.classList.add('rotate-180');
+        portalsBtn.setAttribute('aria-expanded', 'true');
+      }
+      function closePortals() {
+        portalsMenu.classList.add('hidden');
+        portalsMenu.classList.remove('block');
+        portalsChevron.classList.remove('rotate-180');
+        portalsBtn.setAttribute('aria-expanded', 'false');
+      }
+
+      portalsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        portalsMenu.classList.contains('hidden') ? openPortals() : closePortals();
+      });
+
+      // Close when clicking anywhere outside
+      document.addEventListener('click', (e) => {
+        if (!document.getElementById('portals-wrapper').contains(e.target)) {
+          closePortals();
+        }
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closePortals();
       });
     });
   </script>
