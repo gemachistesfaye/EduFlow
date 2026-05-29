@@ -1,9 +1,10 @@
 from flask import Blueprint, jsonify, request
 from ..middleware.auth import rbac
-from ..models import db, Student, Profile, Role, School, Class, User, Course
+from ..models import db, Student, Profile, Role, School, Class, User, Course, Teacher
 from ..utils.security import hash_password
 import pandas as pd
 import time
+from datetime import datetime
 bp = Blueprint('admin', __name__)
 
 @bp.post('/bulk-import/teachers')
@@ -47,7 +48,8 @@ def bulk_import_teachers():
                 db.session.add(teacher_role)
                 db.session.flush()
 
-            # Temporary password based on first name
+            # Temporary password and email based on requirement
+            email = f"{name.replace(' ', '').lower()}@school.com"
             first_name = name.split()[0].lower()
             temp_password = f"{first_name}123"
             pwd_hash = hash_password(temp_password)
@@ -126,10 +128,13 @@ def bulk_import_students():
                 db.session.flush()
 
             # Create (or fetch) parent user
+            if not parent_email or parent_email == 'nan':
+                 parent_email = f"parent_{int(time.time())}{idx}@school.com"
             parent_user = User.query.filter_by(email=parent_email).first()
             if not parent_user:
                 first_parent = parent_name.split()[0].lower()
-                parent_pwd = f"{first_parent}123"
+                current_year = datetime.utcnow().year
+                parent_pwd = f"{first_parent}{current_year}"
                 parent_user = User(email=parent_email,
                                    password_hash=hash_password(parent_pwd),
                                    role_id=parent_role.id,
@@ -152,9 +157,11 @@ def bulk_import_students():
                     db.session.add(parent_profile)
                     db.session.flush()
 
-            # Temporary password for student
+            # Temporary password and email for student
             first_student = name.split()[0].lower()
             student_pwd = f"{first_student}123"
+            email = f"{name.replace(' ', '').lower()}@school.com"
+            
             student_user = User(email=email,
                                 password_hash=hash_password(student_pwd),
                                 role_id=student_role.id,
@@ -172,22 +179,34 @@ def bulk_import_students():
             db.session.flush()
 
             # Class handling
-            cls = Class.query.filter_by(class_name=class_name, school_id=school.id).first()
+            grade_str = ''.join(filter(str.isdigit, class_name))
+            grade_val = grade_str if grade_str else '1'
+            formatted_class_name = f"Grade {grade_val}"
+            
+            section_val = str(row.get('section')).strip()
+            if not section_val or section_val == 'nan':
+                section_val = 'A'
+            
+            cls = Class.query.filter_by(class_name=formatted_class_name, section=section_val).first()
             if not cls:
-                cls = Class(class_name=class_name, section='A', academic_year='2023/2024')
+                cls = Class(class_name=formatted_class_name, section=section_val, academic_year=f'{datetime.utcnow().year}/{datetime.utcnow().year+1}')
                 db.session.add(cls)
                 db.session.flush()
 
-            # Student record
-            student_id = f"STU{int(time.time())}{idx}"
+            # Student record and ID generation
+            count = Student.query.join(Class).filter(Class.class_name == formatted_class_name).count()
+            new_num = count + 1 # count includes already committed, but what about current transaction?
+            # To be safe for bulk insert without flush every time for count:
+            # We can query max ID or just use a loop counter but since we add one by one, count might be stale if not flushed.
+            # Actually, we can just do flush after each student.
+            student_id = f"{new_num:04d}/{grade_val}"
+
             student = Student(student_id=student_id,
                               name=name,
                               gender=gender,
                               date_of_birth=dob,
                               class_id=cls.id,
-                              school_id=school.id,
-                              parent_id=parent_profile.id,
-                              user_id=student_user.id)
+                              parent_id=parent_profile.id)
             db.session.add(student)
             created_students += 1
         except Exception as e:
@@ -256,3 +275,209 @@ def cascade_register():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
     return jsonify({"message": f"Student {student.name} and parent {parent_profile.full_name} created"}), 201
+
+@bp.get('/students')
+@rbac(80)
+def get_students():
+    students = Student.query.all()
+    res = []
+    for s in students:
+        res.append({
+            "id": s.id,
+            "name": s.name,
+            "student_id": s.student_id,
+            "class_id": s.class_.class_name if s.class_ else s.class_id,
+            "gender": s.gender
+        })
+    return jsonify({"students": res})
+
+@bp.post('/students')
+@rbac(80)
+def add_student():
+    data = request.json
+    name = data.get('name')
+    parent_name = data.get('parent_name')
+    class_id = data.get('class_id')
+    gender = data.get('gender')
+    dob = data.get('date_of_birth')
+    
+    if not all([name, parent_name, class_id]):
+        return jsonify({"error": "Missing name, parent_name, or class"}), 400
+
+    try:
+        current_year = datetime.utcnow().year
+        
+        cls = Class.query.get(class_id)
+        if not cls:
+            return jsonify({"error": "Invalid class selected"}), 400
+        
+        class_name = cls.class_name
+        grade_str = ''.join(filter(str.isdigit, class_name))
+        grade_val = grade_str if grade_str else '1'
+
+        # Generate Student ID: e.g. 0001/9
+        count = Student.query.join(Class).filter(Class.class_name == class_name).count()
+        new_num = count + 1
+        student_id = f"{new_num:04d}/{grade_val}"
+
+        # Parent User & Profile
+        parent_role = Role.query.filter_by(name='parent').first()
+        if not parent_role:
+            parent_role = Role(name='parent', level=10)
+            db.session.add(parent_role)
+            db.session.flush()
+        
+        parent_first = parent_name.split()[0].lower()
+        parent_username = f"{parent_first}_{int(time.time())}@school.com"
+        parent_pwd = hash_password(f"{parent_first}{current_year}")
+
+        parent_user = User(email=parent_username, password_hash=parent_pwd, role_id=parent_role.id, must_change_password=True)
+        db.session.add(parent_user)
+        db.session.flush()
+
+        parent_profile = Profile(user_id=parent_user.id, full_name=parent_name, school_id=1)
+        db.session.add(parent_profile)
+        db.session.flush()
+
+        # Student User & Profile
+        student_role = Role.query.filter_by(name='student').first()
+        if not student_role:
+            student_role = Role(name='student', level=10)
+            db.session.add(student_role)
+            db.session.flush()
+
+        student_first = name.split()[0].lower()
+        student_username = f"{name.replace(' ', '').lower()}@school.com"
+        student_pwd = hash_password(f"{student_first}123")
+
+        student_user = User(email=student_username, password_hash=student_pwd, role_id=student_role.id, must_change_password=True)
+        db.session.add(student_user)
+        db.session.flush()
+
+        student_profile = Profile(user_id=student_user.id, full_name=name, school_id=1, parent_id=parent_profile.id)
+        db.session.add(student_profile)
+        db.session.flush()
+
+        # Student Record
+        student = Student(student_id=student_id, name=name, gender=gender, date_of_birth=dob, class_id=cls.id, parent_id=parent_profile.id)
+        db.session.add(student)
+        db.session.commit()
+
+        return jsonify({"message": "Student created successfully", "student_id": student_id}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+@bp.get('/classes')
+@rbac(80)
+def get_classes():
+    classes = Class.query.all()
+    res = []
+    for c in classes:
+        count = Student.query.filter_by(class_id=c.id).count()
+        res.append({
+            "id": c.id,
+            "class_name": c.class_name,
+            "section": c.section,
+            "academic_year": c.academic_year,
+            "student_count": count
+        })
+    return jsonify({"classes": res})
+
+@bp.post('/classes')
+@rbac(80)
+def add_class():
+    data = request.json
+    c_name = data.get('class_name')
+    c_section = data.get('section')
+    c_year = data.get('academic_year')
+    if not all([c_name, c_section, c_year]):
+        return jsonify({"error": "Missing fields"}), 400
+    try:
+        cls = Class(class_name=c_name, section=c_section, academic_year=c_year)
+        db.session.add(cls)
+        db.session.commit()
+        return jsonify({"message": "Class created"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+@bp.delete('/classes/<int:id>')
+@rbac(80)
+def delete_class(id):
+    cls = Class.query.get(id)
+    if cls:
+        db.session.delete(cls)
+        db.session.commit()
+    return jsonify({"message": "Deleted"}), 200
+
+@bp.get('/teachers')
+@rbac(80)
+def get_teachers():
+    teachers = Teacher.query.all()
+    res = []
+    for t in teachers:
+        res.append({
+            "id": t.id,
+            "name": t.name,
+            "email": t.email,
+            "subject": t.subject,
+            "phone": t.phone,
+            "hire_date": str(t.hire_date) if t.hire_date else None
+        })
+    return jsonify({"teachers": res})
+
+@bp.post('/teachers')
+@rbac(80)
+def add_teacher():
+    data = request.json
+    name = data.get('name')
+    email = data.get('email')
+    subject = data.get('subject')
+    phone = data.get('phone')
+    hire_date = data.get('hire_date')
+
+    if not all([name, email, subject]):
+        return jsonify({"error": "Missing required fields"}), 400
+
+    try:
+        current_year = datetime.utcnow().year
+        
+        teacher_role = Role.query.filter_by(name='teacher').first()
+        if not teacher_role:
+            teacher_role = Role(name='teacher', level=30)
+            db.session.add(teacher_role)
+            db.session.flush()
+        
+        first_name = name.split()[0].lower()
+        email = f"{name.replace(' ', '').lower()}@school.com"
+        teacher_pwd = hash_password(f"{first_name}123")
+
+        teacher_user = User(email=email, password_hash=teacher_pwd, role_id=teacher_role.id, must_change_password=True)
+        db.session.add(teacher_user)
+        db.session.flush()
+
+        teacher_profile = Profile(user_id=teacher_user.id, full_name=name, school_id=1)
+        db.session.add(teacher_profile)
+        db.session.flush()
+
+        t_date = datetime.strptime(hire_date, '%Y-%m-%d').date() if hire_date else datetime.utcnow().date()
+        teacher = Teacher(name=name, email=email, subject=subject, phone=phone, hire_date=t_date)
+        db.session.add(teacher)
+        db.session.commit()
+
+        return jsonify({"message": "Teacher created successfully"}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+@bp.delete('/teachers/<int:id>')
+@rbac(80)
+def delete_teacher(id):
+    t = Teacher.query.get(id)
+    if t:
+        db.session.delete(t)
+        db.session.commit()
+    return jsonify({"message": "Deleted"}), 200

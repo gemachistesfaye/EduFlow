@@ -90,7 +90,7 @@
     <form id="add-student-form">
       <div class="form-row" style="margin-bottom:12px;">
         <div><label class="form-label">Full Name</label><input class="form-input" id="s-name" placeholder="Abebe Girma" required></div>
-        <div><label class="form-label">Student ID</label><input class="form-input" id="s-id" placeholder="STU-001" required></div>
+        <div><label class="form-label">Parent Full Name</label><input class="form-input" id="s-parent" placeholder="Girma Bekele" required></div>
       </div>
       <div class="form-row" style="margin-bottom:12px;">
         <div><label class="form-label">Gender</label>
@@ -101,10 +101,17 @@
         <div><label class="form-label">Date of Birth</label><input type="date" class="form-input" id="s-dob"></div>
       </div>
       <div class="form-row" style="margin-bottom:12px;">
-        <div><label class="form-label">Phone</label><input class="form-input" id="s-phone" placeholder="+251…"></div>
-        <div><label class="form-label">Class ID</label><input class="form-input" id="s-class" placeholder="1" type="number"></div>
+        <div style="grid-column: span 2;"><label class="form-label">Class & Section</label>
+          <select class="form-select" id="s-class" required>
+            <option value="" disabled selected>Select an existing class...</option>
+          </select>
+          <div style="font-size:11px;color:#6b7280;margin-top:4px;">(If your class isn't here, please create it in the Classes tab first)</div>
+        </div>
       </div>
-      <div style="margin-bottom:20px;"><label class="form-label">Address</label><input class="form-input" id="s-address" placeholder="Addis Ababa"></div>
+      <div class="form-row" style="margin-bottom:20px;">
+        <div><label class="form-label">Phone</label><input class="form-input" id="s-phone" placeholder="+251…"></div>
+        <div><label class="form-label">Address</label><input class="form-input" id="s-address" placeholder="Addis Ababa"></div>
+      </div>
       <div style="display:flex;gap:10px;justify-content:flex-end;">
         <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
         <button type="submit" class="btn btn-primary">Save Student</button>
@@ -173,7 +180,7 @@
     e.preventDefault();
     const body = {
       name: document.getElementById('s-name').value,
-      student_id: document.getElementById('s-id').value,
+      parent_name: document.getElementById('s-parent').value,
       gender: document.getElementById('s-gender').value,
       date_of_birth: document.getElementById('s-dob').value,
       phone: document.getElementById('s-phone').value,
@@ -194,6 +201,18 @@
     loadStudents();
   }
 
+  async function loadClassesForDropdown() {
+    try {
+      const res = await fetch('/api/admin/classes', { headers:{ Authorization:'Bearer '+token } });
+      const data = await res.json();
+      const list = data.classes || data || [];
+      const sel = document.getElementById('s-class');
+      sel.innerHTML = '<option value="" disabled selected>Select an existing class...</option>' + 
+        list.map(c => `<option value="${c.id}">${c.class_name} - Section ${c.section}</option>`).join('');
+    } catch(e) { console.error('Failed to load classes', e); }
+  }
+
+  loadClassesForDropdown();
   loadStudents();
 </script>
 </body>

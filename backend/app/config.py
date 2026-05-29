@@ -38,4 +38,4 @@ class Config:
     # JWT settings
     JWT_SECRET = os.getenv('JWT_SECRET', 'change-me-please')
     JWT_ALGORITHM = 'HS256'
-    JWT_ACCESS_EXPIRES = 3600  # seconds
+    JWT_ACCESS_EXPIRES = 86400  # 24 hours
