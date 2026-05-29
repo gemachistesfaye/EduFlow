@@ -1,0 +1,93 @@
+/* admin-theme.css */
+:root {
+  --admin-navy: #0F172A; /* Very dark navy */
+  --admin-gold: #e8ce8a;
+  --admin-gold-dark: #c39a48;
+  --admin-cream: #fdfbf7;
+
+  /* Overrides for sidebar */
+  --sidebar-bg: var(--admin-navy) !important;
+  --sidebar-hover: rgba(195, 154, 72, 0.1) !important;
+  --sidebar-text: var(--admin-gold) !important;
+  --sidebar-label: var(--admin-gold-dark) !important;
+}
+
+/* Sidebar specific overrides */
+.sidebar {
+  border-right: none !important;
+  background: var(--admin-navy) !important;
+}
+
+.sidebar-logo-icon {
+  background: linear-gradient(135deg, #f2d480, #c39a48) !important;
+  color: var(--admin-navy) !important;
+  border-radius: 12px !important;
+}
+
+.sidebar-logo-text {
+  color: #ffffff !important;
+}
+
+.sidebar-logo-sub {
+  color: var(--admin-gold-dark) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+}
+
+.sidebar-section-label {
+  color: var(--admin-gold-dark) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+.nav-item {
+  color: var(--admin-gold) !important;
+  font-weight: 600 !important;
+}
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: #ffffff !important;
+}
+
+.nav-item.active {
+  background: linear-gradient(to right, #c39a48, #e8ce8a, #c39a48) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+}
+.nav-item.active svg, .nav-item.active i {
+  stroke: #ffffff !important;
+  fill: none !important;
+}
+
+/* Logout Button */
+.sidebar-footer button, #logout-btn {
+  background: #3f1a20 !important;
+  color: #ff6b6b !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+.sidebar-footer button:hover, #logout-btn:hover {
+  background: #4a1f26 !important;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--admin-navy);
+  color: #fff;
+  border-color: var(--admin-navy);
+}
+.btn-primary:hover {
+  background: var(--admin-navy-light);
+  border-color: var(--admin-navy-light);
+}
+
+.btn-outline {
+  color: var(--admin-navy);
+  border-color: var(--admin-navy);
+}
+.btn-outline:hover {
+  background: var(--admin-cream);
+}

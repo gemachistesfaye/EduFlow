@@ -510,3 +510,38 @@ def edit_student(id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+@bp.put('/teachers/<int:id>')
+@rbac(80)
+def edit_teacher(id):
+    t = Teacher.query.get(id)
+    if not t: return jsonify({"error": "Not found"}), 404
+    data = request.json
+    if 'name' in data: t.name = data['name']
+    if 'subject' in data: t.subject = data['subject']
+    if 'phone' in data: t.phone = data['phone']
+    if 'email' in data: t.email = data['email']
+    if 'hire_date' in data:
+        t.hire_date = datetime.strptime(data['hire_date'], '%Y-%m-%d').date() if data['hire_date'] else t.hire_date
+    try:
+        db.session.commit()
+        return jsonify({"message": "Teacher updated"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+@bp.put('/classes/<int:id>')
+@rbac(80)
+def edit_class(id):
+    c = Class.query.get(id)
+    if not c: return jsonify({"error": "Not found"}), 404
+    data = request.json
+    if 'class_name' in data: c.class_name = data['class_name']
+    if 'section' in data: c.section = data['section']
+    if 'academic_year' in data: c.academic_year = data['academic_year']
+    try:
+        db.session.commit()
+        return jsonify({"message": "Class updated"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
