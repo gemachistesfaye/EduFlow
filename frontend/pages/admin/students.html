@@ -120,12 +120,36 @@
   </div>
 </div>
 
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirm-modal" style="z-index: 1000;">
+  <div class="modal" style="max-width: 400px; text-align: center; padding: 32px;">
+    <h2 style="font-size: 18px; margin-bottom: 12px;" id="confirm-title">Are you sure?</h2>
+    <p style="color: #6b7280; margin-bottom: 24px;" id="confirm-msg">This action cannot be undone.</p>
+    <div style="display: flex; gap: 12px; justify-content: center;">
+      <button class="btn btn-outline" onclick="closeConfirm()" style="flex: 1;">Cancel</button>
+      <button class="btn btn-primary" id="confirm-btn" style="flex: 1; background: #ef4444; color: white; border-color: #ef4444;">Confirm</button>
+    </div>
+  </div>
+</div>
+
 <script>
   const token = localStorage.getItem('access_token');
   if (!token) window.location.href = '../../login.html';
 
+  let confirmCallback = null;
+  function openConfirm(title, msg, callback) {
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-msg').textContent = msg;
+    confirmCallback = callback;
+    document.getElementById('confirm-modal').classList.add('open');
+  }
+  function closeConfirm() { document.getElementById('confirm-modal').classList.remove('open'); }
+  document.getElementById('confirm-btn').onclick = () => { if(confirmCallback) confirmCallback(); closeConfirm(); };
+
   document.getElementById('logout-btn').onclick = () => {
-    localStorage.removeItem('access_token'); window.location.href = '../../login.html';
+    openConfirm("Log Out", "Are you sure you want to log out of your session?", () => {
+      localStorage.removeItem('access_token'); window.location.href = '../../login.html';
+    });
   };
 
   const COLORS = ['icon-green','icon-blue','icon-purple','icon-amber','icon-red'];
@@ -160,7 +184,10 @@
         <td>Class ${s.class_id}</td>
         <td>${s.gender}</td>
         <td><span class="badge badge-green">Active</span></td>
-        <td><button class="btn btn-outline btn-sm" onclick="deleteStudent(${s.id})">Delete</button></td>
+        <td>
+          <button class="btn btn-outline btn-sm" onclick="openEdit(${s.id})">Edit</button>
+          <button class="btn btn-outline btn-sm" style="border-color:#ef4444;color:#ef4444;" onclick="deleteStudent(${s.id})">Delete</button>
+        </td>
       </tr>`).join('');
   }
 
@@ -173,32 +200,60 @@
     renderTable(allStudents.filter(s => s.name.toLowerCase().includes(q)));
   }
 
-  function openModal()  { document.getElementById('add-modal').classList.add('open'); }
+  let editingId = null;
+  function openModal()  { 
+    editingId = null;
+    document.querySelector('#add-modal h2').textContent = 'Add New Student';
+    document.getElementById('add-student-form').reset();
+    document.getElementById('s-parent').parentElement.style.display = 'block';
+    document.getElementById('s-parent').required = true;
+    document.getElementById('add-modal').classList.add('open'); 
+  }
+  function openEdit(id) {
+    const s = allStudents.find(x => x.id === id);
+    if(!s) return;
+    editingId = s.id;
+    document.querySelector('#add-modal h2').textContent = 'Edit Student';
+    document.getElementById('s-name').value = s.name || '';
+    document.getElementById('s-gender').value = s.gender || 'Male';
+    document.getElementById('s-dob').value = s.date_of_birth || '';
+    document.getElementById('s-phone').value = s.phone || '';
+    document.getElementById('s-class').value = s.class_id || '';
+    document.getElementById('s-address').value = s.address || '';
+    document.getElementById('s-parent').parentElement.style.display = 'none';
+    document.getElementById('s-parent').required = false;
+    document.getElementById('add-modal').classList.add('open');
+  }
   function closeModal() { document.getElementById('add-modal').classList.remove('open'); }
 
   document.getElementById('add-student-form').onsubmit = async (e) => {
     e.preventDefault();
     const body = {
       name: document.getElementById('s-name').value,
-      parent_name: document.getElementById('s-parent').value,
       gender: document.getElementById('s-gender').value,
       date_of_birth: document.getElementById('s-dob').value,
       phone: document.getElementById('s-phone').value,
       class_id: parseInt(document.getElementById('s-class').value),
       address: document.getElementById('s-address').value,
     };
-    const res = await fetch('/api/admin/students', {
-      method: 'POST', headers: { 'Content-Type':'application/json', Authorization:'Bearer '+token },
+    if (!editingId) body.parent_name = document.getElementById('s-parent').value;
+
+    const url = editingId ? \`/api/admin/students/\${editingId}\` : '/api/admin/students';
+    const method = editingId ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method: method, headers: { 'Content-Type':'application/json', Authorization:'Bearer '+token },
       body: JSON.stringify(body)
     });
     if (res.ok) { closeModal(); loadStudents(); }
     else { const d = await res.json(); document.getElementById('modal-alert').textContent = d.error||'Error'; document.getElementById('modal-alert').style.display='block'; }
   };
 
-  async function deleteStudent(id) {
-    if (!confirm('Delete this student?')) return;
-    await fetch(`/api/admin/students/${id}`, { method:'DELETE', headers:{ Authorization:'Bearer '+token } });
-    loadStudents();
+  function deleteStudent(id) {
+    openConfirm("Delete Student", "Are you sure you want to permanently delete this student record?", async () => {
+      await fetch(`/api/admin/students/${id}`, { method:'DELETE', headers:{ Authorization:'Bearer '+token } });
+      loadStudents();
+    });
   }
 
   async function loadClassesForDropdown() {

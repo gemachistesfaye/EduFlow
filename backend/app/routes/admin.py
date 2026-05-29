@@ -481,3 +481,32 @@ def delete_teacher(id):
         db.session.delete(t)
         db.session.commit()
     return jsonify({"message": "Deleted"}), 200
+
+@bp.delete('/students/<int:id>')
+@rbac(80)
+def delete_student(id):
+    s = Student.query.get(id)
+    if s:
+        db.session.delete(s)
+        db.session.commit()
+    return jsonify({"message": "Deleted"}), 200
+
+@bp.put('/students/<int:id>')
+@rbac(80)
+def edit_student(id):
+    s = Student.query.get(id)
+    if not s:
+        return jsonify({"error": "Not found"}), 404
+    data = request.json
+    if 'name' in data: s.name = data['name']
+    if 'phone' in data: s.phone = data['phone']
+    if 'address' in data: s.address = data['address']
+    if 'gender' in data: s.gender = data['gender']
+    if 'date_of_birth' in data: s.date_of_birth = data['date_of_birth']
+    if 'class_id' in data: s.class_id = data['class_id']
+    try:
+        db.session.commit()
+        return jsonify({"message": "Student updated"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
