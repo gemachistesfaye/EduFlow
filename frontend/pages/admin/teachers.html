@@ -22,10 +22,10 @@
       <div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">School Navigator</div></div>
     </div>
     <div class="sidebar-section-label">Main</div>
-    <nav>
+    <nav style="flex: 1; overflow-y: auto; padding-right: 4px;">
       <a href="dashboard.html"  class="nav-item">🏠 &nbsp;Dashboard</a>
       <a href="students.html"   class="nav-item">👥 &nbsp;Students</a>
-      <a href="teachers.html"   class="nav-item active">🧑‍🏫 &nbsp;Teachers</a>
+      <a href="teachers.html"   class="nav-item">🧑‍🏫 &nbsp;Teachers</a>
       <a href="parents.html"    class="nav-item">👨‍👩‍👧 &nbsp;Parents</a>
       <a href="classes.html"    class="nav-item">🏫 &nbsp;Classes</a>
       <a href="subjects.html"   class="nav-item">📚 &nbsp;Subjects</a>
@@ -256,6 +256,19 @@
       alertEl.style.display = 'block';
     }
   };
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const page = location.pathname.split('/').pop().replace('.html', '');
+    document.querySelectorAll('.nav-item').forEach(link => {
+      if (link.getAttribute('href') === page + '.html' || link.getAttribute('href') === page) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  });
 </script>
 </body>
 </html>

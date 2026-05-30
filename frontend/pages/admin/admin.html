@@ -1,94 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>School Admin Dashboard – EduFlow</title>
+  <title>Admin Dashboard – EduFlow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <link rel="stylesheet" href="../../assets/css/admin-theme.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  
-<!-- Confirm Modal -->
-<div class="modal-overlay" id="confirm-modal" style="z-index: 1000;">
-  <div class="modal" style="max-width: 400px; text-align: center; padding: 32px;">
-    <h2 style="font-size: 18px; margin-bottom: 12px;" id="confirm-title">Are you sure?</h2>
-    <p style="color: #6b7280; margin-bottom: 24px;" id="confirm-msg">This action cannot be undone.</p>
-    <div style="display: flex; gap: 12px; justify-content: center;">
-      <button class="btn btn-outline" onclick="closeConfirm()" style="flex: 1;">Cancel</button>
-      <button class="btn btn-primary" id="confirm-btn" style="flex: 1; background: #ef4444; color: white; border-color: #ef4444;">Confirm</button>
-    </div>
-  </div>
-</div>
-
-<script>
-
-  let confirmCallback = null;
-  function openConfirm(title, msg, callback) {
-    document.getElementById('confirm-title').textContent = title;
-    document.getElementById('confirm-msg').textContent = msg;
-    confirmCallback = callback;
-    document.getElementById('confirm-modal').classList.add('open');
-  }
-  function closeConfirm() { document.getElementById('confirm-modal').classList.remove('open'); }
-  document.getElementById('confirm-btn').onclick = () => { if(confirmCallback) confirmCallback(); closeConfirm(); };
-
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: {
-              50: '#eff6ff',
-              100: '#dbeafe',
-              200: '#bfdbfe',
-              300: '#93c5fd',
-              400: '#60a5fa',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-              800: '#1e40af',
-              900: '#1e3a8a',
-            },
-          },
-        },
-      },
-    };
-  </script>
   <style>
-    body {font-family:'Inter',sans-serif;}
-    .card {@apply bg-gray-800 rounded-xl p-6 shadow-lg;}
-    .form-input {@apply w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-primary-600;}
+    body {font-family:'Inter',sans-serif;background:#f8fafc;}
+    .card {@apply bg-white rounded-xl p-6 shadow-sm border border-gray-100;}
+    .form-input {@apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white;}
+    .btn-primary {@apply px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition;}
+    
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+    .modal h2{font-size:17px;font-weight:700;margin-bottom:20px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   </style>
 </head>
-<body class="bg-gray-900 min-h-screen p-8">
-  <h1 class="text-3xl font-bold text-white mb-6">School Admin Dashboard</h1>
+<body class="min-h-screen p-8">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">School Admin Dashboard</h1>
   <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div class="card"><p class="text-gray-400">Students Enrolled</p><p id="student-count" class="text-2xl font-semibold text-primary-500">—</p></div>
-    <div class="card"><p class="text-gray-400">Active Teachers</p><p id="teacher-count" class="text-2xl font-semibold text-primary-500">—</p></div>
-    <div class="card"><p class="text-gray-400">Tuition Collected</p><p id="fee-total" class="text-2xl font-semibold text-primary-500">—</p></div>
+    <div class="card"><p class="text-gray-500 text-sm">Students Enrolled</p><p id="student-count" class="text-2xl font-semibold text-blue-600">—</p></div>
+    <div class="card"><p class="text-gray-500 text-sm">Active Teachers</p><p id="teacher-count" class="text-2xl font-semibold text-blue-600">—</p></div>
+    <div class="card"><p class="text-gray-500 text-sm">Tuition Collected</p><p id="fee-total" class="text-2xl font-semibold text-blue-600">—</p></div>
   </section>
-  <h2 class="text-xl font-semibold text-white mb-4">Student‑Parent Cascading Registration</h2>
+  <h2 class="text-xl font-semibold text-gray-800 mb-4">Student‑Parent Cascading Registration</h2>
   <form id="cascade-form" class="grid gap-4 max-w-2xl">
     <input type="email" id="student-email" placeholder="Student Email" class="form-input" required />
     <input type="text" id="student-name" placeholder="Student Full Name" class="form-input" required />
     <input type="email" id="parent-email" placeholder="Parent Email" class="form-input" required />
     <input type="text" id="parent-name" placeholder="Parent Full Name" class="form-input" required />
-    <button type="submit" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded">Create Student & Parent</button>
+    <button type="submit" class="btn-primary">Create Student & Parent</button>
     <div id="form-msg" class="mt-2 text-sm"></div>
   </form>
-  
+
 <!-- Confirm Modal -->
-<div class="modal-overlay" id="confirm-modal" style="z-index: 1000;">
-  <div class="modal" style="max-width: 400px; text-align: center; padding: 32px;">
-    <h2 style="font-size: 18px; margin-bottom: 12px;" id="confirm-title">Are you sure?</h2>
-    <p style="color: #6b7280; margin-bottom: 24px;" id="confirm-msg">This action cannot be undone.</p>
-    <div style="display: flex; gap: 12px; justify-content: center;">
-      <button class="btn btn-outline" onclick="closeConfirm()" style="flex: 1;">Cancel</button>
-      <button class="btn btn-primary" id="confirm-btn" style="flex: 1; background: #ef4444; color: white; border-color: #ef4444;">Confirm</button>
-    </div>
-  </div>
-</div>
+<div class="modal-overlay" id="confirm-modal" style="z-index:1000;"><div class="modal" style="max-width:400px;text-align:center;padding:32px;"><h2 style="font-size:18px;margin-bottom:12px;" id="confirm-title">Are you sure?</h2><p style="color:#6b7280;margin-bottom:24px;" id="confirm-msg">This action cannot be undone.</p><div style="display:flex;gap:12px;justify-content:center;"><button class="btn btn-outline" onclick="closeConfirm()" style="flex:1;">Cancel</button><button class="btn btn-primary" id="confirm-btn" style="flex:1;background:#ef4444;color:white;border-color:#ef4444;">Confirm</button></div></div></div>
 
 <script>
-
   let confirmCallback = null;
   function openConfirm(title, msg, callback) {
     document.getElementById('confirm-title').textContent = title;
@@ -101,6 +54,7 @@
 
     async function loadMetrics(){
       const token = localStorage.getItem('access_token');
+      if(!token) window.location.href = '../../login.html';
       const res = await fetch('/api/admin/school-metrics', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -121,16 +75,13 @@
       const token = localStorage.getItem('access_token');
       const res = await fetch('/api/admin/cascade-register', {
         method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers:{'Content-Type':'application/json','Authorization': `Bearer ${token}`},
         body:JSON.stringify(payload)
       });
       const msg = await res.json();
       const el = document.getElementById('form-msg');
       el.textContent = msg.message || 'Error';
-      el.className = res.ok ? 'text-green-400' : 'text-red-400';
+      el.className = res.ok ? 'text-green-600' : 'text-red-600';
     });
   </script>
 </body>

@@ -1,18 +1,126 @@
-<!--#include virtual="layout.html" -->
-<meta name="page-title" content="Notifications">
-<div class="page-header flex items-center justify-between mb-6">
-  <h2 class="text-2xl font-semibold text-white">Notifications</h2>
-  <button class="btn-outline flex items-center gap-2">
-    <svg class="w-5 h-5"><use href="#heroicon-outline-check"></use></svg> Mark all as read
-  </button>
-</div>
-<div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
-  <div class="text-center text-gray-500 py-8">
-    <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-    <p>You have no new notifications.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications | EduFlow Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <link rel="stylesheet" href="../../assets/css/admin-theme.css">
+  <style>
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+    .modal h2{font-size:17px;font-weight:700;margin-bottom:20px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .notification-item { display:flex; align-items:flex-start; gap:14px; padding:16px 20px; border-bottom:1px solid var(--border-color); transition:background .15s; }
+    .notification-item:hover { background:var(--bg-subtle); }
+    .notification-item.unread { background:rgba(59,130,246,0.04); border-left:3px solid var(--primary-color); }
+    .notification-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .notification-content { flex:1; min-width:0; }
+    .notification-title { font-size:14px; font-weight:600; color:var(--text-dark); margin-bottom:2px; }
+    .notification-message { font-size:13px; color:var(--text-muted); line-height:1.4; }
+    .notification-time { font-size:11px; color:var(--text-muted); margin-top:4px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="sidebar-logo-icon">🎓</div><div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">School Navigator</div></div></div>
+    <div class="sidebar-section-label">Main</div>
+    <nav style="flex: 1; overflow-y: auto; padding-right: 4px;">
+      <a href="dashboard.html" class="nav-item">🏠 &nbsp;Dashboard</a>
+      <a href="students.html" class="nav-item">👥 &nbsp;Students</a>
+      <a href="teachers.html" class="nav-item">🧑‍🏫 &nbsp;Teachers</a>
+      <a href="parents.html" class="nav-item">👨‍👩‍👧 &nbsp;Parents</a>
+      <a href="classes.html" class="nav-item">🏫 &nbsp;Classes</a>
+      <a href="subjects.html" class="nav-item">📚 &nbsp;Subjects</a>
+      <div class="sidebar-section-label" style="margin-top:16px;">Academics</div>
+      <a href="attendance.html" class="nav-item">📅 &nbsp;Attendance</a>
+      <a href="grades.html" class="nav-item">📈 &nbsp;Grades</a>
+      <a href="exams.html" class="nav-item">📝 &nbsp;Exams</a>
+      <a href="timetable.html" class="nav-item">⏰ &nbsp;Timetable</a>
+      <a href="academic-year.html" class="nav-item">🗓️ &nbsp;Academic Year</a>
+      <div class="sidebar-section-label" style="margin-top:16px;">System</div>
+      <a href="announcements.html" class="nav-item">📢 &nbsp;Announcements</a>
+      <a href="reports.html" class="nav-item">📊 &nbsp;Reports</a>
+      <a href="notifications.html" class="nav-item active">🔔 &nbsp;Notifications</a>
+      <a href="audit-logs.html" class="nav-item">🛡️ &nbsp;Audit Logs</a>
+      <a href="settings.html" class="nav-item">⚙️ &nbsp;Settings</a>
+    </nav>
+    <div class="sidebar-footer"><button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Logout</button></div>
+  </aside>
+  <div class="main-content">
+    <header class="top-header"><div class="header-search">🔍 <input placeholder="Search notifications…" type="text" id="search-input"></div><div class="header-right"><div class="header-user"><div class="header-avatar">A</div><span>Admin</span></div></div></header>
+    <div class="page-body">
+      <div class="page-title-row">
+        <div><div class="page-title">Notifications</div><div class="page-subtitle">Stay updated with system alerts and reminders</div></div>
+        <button class="btn btn-outline" onclick="markAllRead()">✓ Mark all as read</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div id="notifications-list">
+          <div style="text-align:center;padding:40px;color:var(--text-muted);" id="loading-msg">Loading notifications…</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirm-modal" style="z-index:1000;"><div class="modal" style="max-width:400px;text-align:center;padding:32px;"><h2 style="font-size:18px;margin-bottom:12px;" id="confirm-title">Are you sure?</h2><p style="color:#6b7280;margin-bottom:24px;" id="confirm-msg">This action cannot be undone.</p><div style="display:flex;gap:12px;justify-content:center;"><button class="btn btn-outline" onclick="closeConfirm()" style="flex:1;">Cancel</button><button class="btn btn-primary" id="confirm-btn" style="flex:1;background:#ef4444;color:white;border-color:#ef4444;">Confirm</button></div></div></div>
+
 <script>
-  const token = localStorage.getItem('access_token');
-  if (!token) window.location.href = '../../login.html';
+  let confirmCallback=null;
+  function openConfirm(t,m,cb){document.getElementById('confirm-title').textContent=t;document.getElementById('confirm-msg').textContent=m;confirmCallback=cb;document.getElementById('confirm-modal').classList.add('open');}
+  function closeConfirm(){document.getElementById('confirm-modal').classList.remove('open');}
+  document.getElementById('confirm-btn').onclick=()=>{if(confirmCallback)confirmCallback();closeConfirm();};
+  const token=localStorage.getItem('access_token');if(!token)window.location.href='../../login.html';
+  document.getElementById('logout-btn').onclick=()=>{openConfirm("Log Out","Are you sure you want to log out?",()=>{localStorage.removeItem('access_token');window.location.href='../../login.html';});};
+
+  let all=[];
+  async function load(){
+    try{
+      const res=await fetch('/api/admin/notifications',{headers:{Authorization:'Bearer '+token}});
+      const data=await res.json();
+      all=data.notifications||data||[];
+      render(all);
+    }catch{
+      document.getElementById('notifications-list').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-muted);">Could not load notifications.</div>';
+    }
+  }
+  function render(list){
+    const container=document.getElementById('notifications-list');
+    if(!list.length){container.innerHTML='<div style="text-align:center;padding:60px 20px;"><div style="font-size:48px;margin-bottom:12px;">🔔</div><div style="font-weight:600;color:var(--text-dark);">No notifications</div><div style="font-size:13px;color:var(--text-muted);margin-top:4px;">You\'re all caught up!</div></div>';return;}
+    container.innerHTML=list.map(n=>`
+      <div class="notification-item ${n.read?'':'unread'}" onclick="markRead(${n.id})">
+        <div class="notification-icon ${n.icon||'icon-blue'}">${n.icon_emoji||'📌'}</div>
+        <div class="notification-content">
+          <div class="notification-title">${n.title}</div>
+          <div class="notification-message">${n.message||''}</div>
+          <div class="notification-time">${n.created_at||''}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  document.getElementById('search-input').oninput=e=>render(all.filter(n=>n.title.toLowerCase().includes(e.target.value.toLowerCase())||(n.message||'').toLowerCase().includes(e.target.value.toLowerCase())));
+
+  async function markRead(id){
+    try{await fetch('/api/admin/notifications/'+id+'/read',{method:'PATCH',headers:{Authorization:'Bearer '+token}});}catch{}
+  }
+  async function markAllRead(){
+    try{
+      await fetch('/api/admin/notifications/read-all',{method:'PATCH',headers:{Authorization:'Bearer '+token}});
+      all.forEach(n=>n.read=true);
+      render(all);
+    }catch{}
+  }
+  load();
 </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded',()=>{
+    const page=location.pathname.split('/').pop();
+    document.querySelectorAll('.nav-item').forEach(link=>{link.classList.toggle('active',link.getAttribute('href')===page);});
+  });
+</script>
+</body>
+</html>

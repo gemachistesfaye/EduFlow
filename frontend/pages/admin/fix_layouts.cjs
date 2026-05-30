@@ -1,4 +1,9 @@
-<!DOCTYPE html>
+const fs = require('fs');
+const path = require('path');
+
+const dir = 'e:/GitHub Repo/school-management-system/frontend/pages/admin';
+
+const headerTemplate = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +12,6 @@
   <link rel="stylesheet" href="../../assets/css/theme.css">
   <link rel="stylesheet" href="../../assets/css/admin-theme.css">
   <style>
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center;}
-    .modal-overlay.open{display:flex;}
-    .modal{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.15);}
-    .modal h2{font-size:17px;font-weight:700;margin-bottom:20px;}
-    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-    
-    /* Utility classes for dynamically loaded content so they match tailwind used in subjects/etc */
     .mb-6 { margin-bottom: 1.5rem; }
     .flex { display: flex; }
     .items-center { align-items: center; }
@@ -21,6 +19,7 @@
     .gap-2 { gap: 0.5rem; }
     .text-2xl { font-size: 1.5rem; line-height: 2rem; }
     .font-semibold { font-weight: 600; }
+    .text-white { color: var(--text-dark); }
     .w-5 { width: 1.25rem; }
     .h-5 { height: 1.25rem; }
     .p-4 { padding: 1rem; }
@@ -35,15 +34,22 @@
     .font-medium { font-weight: 500; }
     .text-center { text-align: center; }
     .text-gray-500 { color: #6b7280; }
-    .space-y-4 > * + * { margin-top: 1rem; }
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+    .modal h2{font-size:17px;font-weight:700;margin-bottom:20px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .nav-item.active { background: linear-gradient(to right, #c39a48, #e8ce8a, #c39a48); color: #ffffff; font-weight: 700; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
     .grid { display: grid; }
     .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-    .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media(min-width: 768px) { .md\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media(min-width: 1024px) { .lg\\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
     .gap-4 { gap: 1rem; }
     .mt-4 { margin-top: 1rem; }
     .text-danger { color: #ef4444; }
     .bg-success { background-color: #22c55e; }
     .bg-gray-400 { background-color: #9ca3af; }
+    .space-y-4 > * + * { margin-top: 1rem; }
     .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
   </style>
@@ -89,54 +95,53 @@
       </div>
     </header>
 
-    <div class="page-body" id="dynamic-page-body">
-      <!-- Content from the including page will be moved here -->
+    <div class="page-body">
+`;
+
+const footerTemplate = `
     </div>
   </div>
 </div>
-
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Highlight the active link based on current URL
-    const page = location.pathname.split('/').pop();
-    document.querySelectorAll('.nav-item').forEach(link => {
-      if (link.getAttribute('href') === page) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
-    });
-
-    // Logout logic
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        if(confirm("Are you sure you want to log out?")) {
-          localStorage.removeItem('access_token');
-          window.location.href = '../../login.html';
-        }
-      });
-    }
-
-    // Since the page includes layout.html at the top, everything after layout.html 
-    // gets rendered outside the app-shell by the browser. 
-    // This script moves all those sibling elements INTO the .page-body.
-    const appShell = document.querySelector('.app-shell');
-    const pageBody = document.getElementById('dynamic-page-body');
-    
-    // Move all elements that are direct children of body, except the app-shell and script tags
-    Array.from(document.body.childNodes).forEach(node => {
-      if (node !== appShell && node.nodeName !== 'SCRIPT' && node.nodeName !== 'LINK') {
-        pageBody.appendChild(node);
-      }
-    });
-
-    // Update page title if <meta name="page-title"> exists
-    const metaTitle = document.querySelector('meta[name="page-title"]');
-    if (metaTitle) {
-      document.title = metaTitle.content + ' | EduFlow Admin';
-    }
+  // Highlight active link
+  const page = location.pathname.split('/').pop();
+  document.querySelectorAll('.nav-item').forEach(link => {
+    if (link.getAttribute('href') === page) link.classList.add('active');
   });
+  
+  const token = localStorage.getItem('access_token');
+  if (!token) window.location.href = '../../login.html';
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.onclick = () => {
+      if(confirm("Are you sure you want to log out?")) {
+        localStorage.removeItem('access_token');
+        window.location.href = '../../login.html';
+      }
+    };
+  }
 </script>
 </body>
 </html>
+`;
+
+const files = fs.readdirSync(dir).filter(f => f.endsWith('.html'));
+
+files.forEach(file => {
+  if (file === 'dashboard.html' || file === 'teachers.html' || file === 'layout.html' || file === 'admin.html') return;
+  const filePath = path.join(dir, file);
+  let content = fs.readFileSync(filePath, 'utf8');
+  
+  if (content.includes('<!--#include virtual="layout.html" -->')) {
+    // Replace the include and meta tag with the full header
+    content = content.replace(/<!--#include virtual="layout.html" -->\r?\n?(<meta name="page-title"[^>]*>\r?\n?)?/, headerTemplate);
+    
+    // Add the footer
+    if (!content.includes('</body>')) {
+      content += footerTemplate;
+    }
+    
+    fs.writeFileSync(filePath, content);
+    console.log("Updated: " + file);
+  }
+});

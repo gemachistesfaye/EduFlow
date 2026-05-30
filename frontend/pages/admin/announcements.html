@@ -1,28 +1,100 @@
-<!--#include virtual="layout.html" -->
-<meta name="page-title" content="Announcements">
-<div class="page-header flex items-center justify-between mb-6">
-  <h2 class="text-2xl font-semibold text-white">Announcements</h2>
-  <button class="btn-primary flex items-center gap-2">
-    <svg class="w-5 h-5"><use href="#heroicon-outline-plus-circle"></use></svg> New Announcement
-  </button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Announcements | EduFlow Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <link rel="stylesheet" href="../../assets/css/admin-theme.css">
+  <style>
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+    .modal h2{font-size:17px;font-weight:700;margin-bottom:20px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="sidebar-logo-icon">🎓</div><div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">School Navigator</div></div></div>
+    <div class="sidebar-section-label">Main</div>
+    <nav style="flex: 1; overflow-y: auto; padding-right: 4px;">
+      <a href="dashboard.html" class="nav-item">🏠 &nbsp;Dashboard</a>
+      <a href="students.html" class="nav-item">👥 &nbsp;Students</a>
+      <a href="teachers.html" class="nav-item">🧑‍🏫 &nbsp;Teachers</a>
+      <a href="parents.html" class="nav-item">👨‍👩‍👧 &nbsp;Parents</a>
+      <a href="classes.html" class="nav-item">🏫 &nbsp;Classes</a>
+      <a href="subjects.html" class="nav-item">📚 &nbsp;Subjects</a>
+      <div class="sidebar-section-label" style="margin-top:16px;">Academics</div>
+      <a href="attendance.html" class="nav-item">📅 &nbsp;Attendance</a>
+      <a href="grades.html" class="nav-item">📈 &nbsp;Grades</a>
+      <a href="exams.html" class="nav-item">📝 &nbsp;Exams</a>
+      <a href="timetable.html" class="nav-item">⏰ &nbsp;Timetable</a>
+      <a href="academic-year.html" class="nav-item">🗓️ &nbsp;Academic Year</a>
+      <div class="sidebar-section-label" style="margin-top:16px;">System</div>
+      <a href="announcements.html" class="nav-item active">📢 &nbsp;Announcements</a>
+      <a href="reports.html" class="nav-item">📊 &nbsp;Reports</a>
+      <a href="notifications.html" class="nav-item">🔔 &nbsp;Notifications</a>
+      <a href="audit-logs.html" class="nav-item">🛡️ &nbsp;Audit Logs</a>
+      <a href="settings.html" class="nav-item">⚙️ &nbsp;Settings</a>
+    </nav>
+    <div class="sidebar-footer"><button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Logout</button></div>
+  </aside>
+  <div class="main-content">
+    <header class="top-header"><div class="header-search">🔍 <input placeholder="Search announcements…" type="text" id="search-input"></div><div class="header-right"><div class="header-user"><div class="header-avatar">A</div><span>Admin</span></div></div></header>
+    <div class="page-body">
+      <div class="page-title-row">
+        <div><div class="page-title">Announcements</div><div class="page-subtitle">Broadcast messages to students, parents and staff</div></div>
+        <button class="btn btn-primary" onclick="openModal()">+ New Announcement</button>
+      </div>
+      <div class="card"><div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead><tr><th>Title</th><th>Target</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="ann-tbody"><tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">Loading…</td></tr></tbody>
+        </table>
+      </div></div>
+    </div>
+  </div>
 </div>
-<div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm overflow-x-auto">
-  <table class="w-full table-auto text-left">
-    <thead class="bg-gray-100 dark:bg-gray-700">
-      <tr>
-        <th class="p-2 font-medium">Title</th>
-        <th class="p-2 font-medium">Target Audience</th>
-        <th class="p-2 font-medium">Date</th>
-        <th class="p-2 font-medium">Status</th>
-        <th class="p-2 font-medium">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td colspan="5" class="p-4 text-center text-gray-500 dark:text-gray-400">Loading...</td></tr>
-    </tbody>
-  </table>
-</div>
+
+<div class="modal-overlay" id="add-modal"><div class="modal"><h2>New Announcement</h2><div id="modal-alert" class="alert alert-error" style="display:none;"></div>
+  <form id="add-form">
+    <div style="margin-bottom:12px;"><label class="form-label">Title</label><input class="form-input" id="a-title" required></div>
+    <div style="margin-bottom:12px;"><label class="form-label">Message</label><textarea class="form-input" id="a-msg" rows="3" required></textarea></div>
+    <div class="form-row" style="margin-bottom:12px;">
+      <div><label class="form-label">Target Audience</label><select class="form-input" id="a-target"><option>All</option><option>Students</option><option>Teachers</option><option>Parents</option></select></div>
+      <div><label class="form-label">Status</label><select class="form-input" id="a-status"><option>Published</option><option>Draft</option></select></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button type="submit" class="btn btn-primary">Publish</button>
+    </div>
+  </form>
+</div></div>
+
+<div class="modal-overlay" id="confirm-modal" style="z-index:1000;"><div class="modal" style="max-width:400px;text-align:center;padding:32px;"><h2 style="font-size:18px;margin-bottom:12px;" id="confirm-title">Are you sure?</h2><p style="color:#6b7280;margin-bottom:24px;" id="confirm-msg">This action cannot be undone.</p><div style="display:flex;gap:12px;justify-content:center;"><button class="btn btn-outline" onclick="closeConfirm()" style="flex:1;">Cancel</button><button class="btn btn-primary" id="confirm-btn" style="flex:1;background:#ef4444;color:white;border-color:#ef4444;">Confirm</button></div></div></div>
+
 <script>
-  const token = localStorage.getItem('access_token');
-  if (!token) window.location.href = '../../login.html';
+  let confirmCallback=null;
+  function openConfirm(t,m,cb){document.getElementById('confirm-title').textContent=t;document.getElementById('confirm-msg').textContent=m;confirmCallback=cb;document.getElementById('confirm-modal').classList.add('open');}
+  function closeConfirm(){document.getElementById('confirm-modal').classList.remove('open');}
+  document.getElementById('confirm-btn').onclick=()=>{if(confirmCallback)confirmCallback();closeConfirm();};
+  const token=localStorage.getItem('access_token');if(!token)window.location.href='../../login.html';
+  document.getElementById('logout-btn').onclick=()=>{openConfirm("Log Out","Are you sure?",()=>{localStorage.removeItem('access_token');window.location.href='../../login.html';});};
+
+  let all=[];
+  async function load(){try{const res=await fetch('/api/admin/announcements',{headers:{Authorization:'Bearer '+token}});const data=await res.json();all=data.announcements||data||[];render(all);}catch{document.getElementById('ann-tbody').innerHTML='<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">Could not load.</td></tr>';}}
+  function render(list){const tb=document.getElementById('ann-tbody');if(!list.length){tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:40px;">No announcements found.</td></tr>';return;}tb.innerHTML=list.map(a=>`<tr><td style="font-weight:500;">${a.title}</td><td><span class="badge badge-blue">${a.target||'All'}</span></td><td>${a.created_at||'—'}</td><td><span class="badge badge-${a.status==='Published'?'green':'amber'}">${a.status}</span></td><td><button class="btn btn-outline btn-sm" onclick="openEdit(${a.id})">Edit</button> <button class="btn btn-outline btn-sm" style="border-color:#ef4444;color:#ef4444;" onclick="del(${a.id})">Delete</button></td></tr>`).join('');}
+  document.getElementById('search-input').oninput=e=>render(all.filter(a=>a.title.toLowerCase().includes(e.target.value.toLowerCase())));
+
+  let editingId=null;
+  function openModal(){editingId=null;document.querySelector('#add-modal h2').textContent='New Announcement';document.getElementById('add-form').reset();document.getElementById('add-modal').classList.add('open');}
+  function openEdit(id){const a=all.find(x=>x.id===id);if(!a)return;editingId=a.id;document.querySelector('#add-modal h2').textContent='Edit Announcement';document.getElementById('a-title').value=a.title||'';document.getElementById('a-msg').value=a.message||'';document.getElementById('a-target').value=a.target||'All';document.getElementById('a-status').value=a.status||'Published';document.getElementById('add-modal').classList.add('open');}
+  function closeModal(){document.getElementById('add-modal').classList.remove('open');}
+  document.getElementById('add-form').onsubmit=async(e)=>{e.preventDefault();const body={title:document.getElementById('a-title').value,message:document.getElementById('a-msg').value,target:document.getElementById('a-target').value,status:document.getElementById('a-status').value};const url=editingId?`/api/admin/announcements/${editingId}`:'/api/admin/announcements';const method=editingId?'PUT':'POST';const res=await fetch(url,{method,headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body)});if(res.ok){closeModal();load();}else{const d=await res.json();const a=document.getElementById('modal-alert');a.textContent=d.error||'Error';a.style.display='block';}};
+  function del(id){openConfirm("Delete Announcement","Are you sure?",async()=>{await fetch(`/api/admin/announcements/${id}`,{method:'DELETE',headers:{Authorization:'Bearer '+token}});load();});}
+  load();
 </script>
+</body>
+</html>

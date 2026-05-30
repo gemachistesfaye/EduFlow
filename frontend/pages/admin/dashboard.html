@@ -28,8 +28,8 @@
       <div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">School Navigator</div></div>
     </div>
     <div class="sidebar-section-label">Main</div>
-    <nav>
-      <a href="dashboard.html"  class="nav-item active">🏠 &nbsp;Dashboard</a>
+    <nav style="flex: 1; overflow-y: auto; padding-right: 4px;">
+      <a href="dashboard.html"  class="nav-item">🏠 &nbsp;Dashboard</a>
       <a href="students.html"   class="nav-item">👥 &nbsp;Students</a>
       <a href="teachers.html"   class="nav-item">🧑‍🏫 &nbsp;Teachers</a>
       <a href="parents.html"    class="nav-item">👨‍👩‍👧 &nbsp;Parents</a>
@@ -191,6 +191,19 @@
       datasets: [{ data: [92, 5, 3], backgroundColor: ['#22c55e','#ef4444','#f59e0b'], hoverOffset: 4, borderWidth: 0 }]
     },
     options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const page = location.pathname.split('/').pop().replace('.html', '');
+    document.querySelectorAll('.nav-item').forEach(link => {
+      if (link.getAttribute('href') === page + '.html' || link.getAttribute('href') === page) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
   });
 </script>
 </body>

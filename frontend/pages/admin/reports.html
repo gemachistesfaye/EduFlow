@@ -1,27 +1,149 @@
-<!--#include virtual="layout.html" -->
-<meta name="page-title" content="Reports">
-<div class="page-header flex items-center justify-between mb-6">
-  <h2 class="text-2xl font-semibold text-white">Reports Center</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports | EduFlow Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <link rel="stylesheet" href="../../assets/css/admin-theme.css">
+  <style>
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+    .modal h2{font-size:17px;font-weight:700;margin-bottom:20px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .report-card { background:#fff; border:1px solid var(--border-color); border-radius:12px; padding:24px; box-shadow:0 1px 3px rgba(0,0,0,0.05); transition:box-shadow .2s, transform .2s; }
+    .report-card:hover { box-shadow:0 4px 12px rgba(0,0,0,0.08); transform:translateY(-2px); }
+    .report-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:14px; }
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:16px; margin-bottom:24px; }
+    .stat-box { background:#fff; border:1px solid var(--border-color); border-radius:10px; padding:16px; text-align:center; }
+    .stat-value { font-size:22px; font-weight:700; color:var(--text-dark); }
+    .stat-label { font-size:12px; color:var(--text-muted); margin-top:2px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="sidebar-logo-icon">🎓</div><div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">School Navigator</div></div></div>
+    <div class="sidebar-section-label">Main</div>
+    <nav style="flex: 1; overflow-y: auto; padding-right: 4px;">
+      <a href="dashboard.html" class="nav-item">🏠 &nbsp;Dashboard</a>
+      <a href="students.html" class="nav-item">👥 &nbsp;Students</a>
+      <a href="teachers.html" class="nav-item">🧑‍🏫 &nbsp;Teachers</a>
+      <a href="parents.html" class="nav-item">👨‍👩‍👧 &nbsp;Parents</a>
+      <a href="classes.html" class="nav-item">🏫 &nbsp;Classes</a>
+      <a href="subjects.html" class="nav-item">📚 &nbsp;Subjects</a>
+      <div class="sidebar-section-label" style="margin-top:16px;">Academics</div>
+      <a href="attendance.html" class="nav-item">📅 &nbsp;Attendance</a>
+      <a href="grades.html" class="nav-item">📈 &nbsp;Grades</a>
+      <a href="exams.html" class="nav-item">📝 &nbsp;Exams</a>
+      <a href="timetable.html" class="nav-item">⏰ &nbsp;Timetable</a>
+      <a href="academic-year.html" class="nav-item">🗓️ &nbsp;Academic Year</a>
+      <div class="sidebar-section-label" style="margin-top:16px;">System</div>
+      <a href="announcements.html" class="nav-item">📢 &nbsp;Announcements</a>
+      <a href="reports.html" class="nav-item active">📊 &nbsp;Reports</a>
+      <a href="notifications.html" class="nav-item">🔔 &nbsp;Notifications</a>
+      <a href="audit-logs.html" class="nav-item">🛡️ &nbsp;Audit Logs</a>
+      <a href="settings.html" class="nav-item">⚙️ &nbsp;Settings</a>
+    </nav>
+    <div class="sidebar-footer"><button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Logout</button></div>
+  </aside>
+  <div class="main-content">
+    <header class="top-header"><div class="header-search">🔍 <input placeholder="Search reports…" type="text" id="search-input"></div><div class="header-right"><div class="header-user"><div class="header-avatar">A</div><span>Admin</span></div></div></header>
+    <div class="page-body">
+      <div class="page-title-row">
+        <div><div class="page-title">Reports Center</div><div class="page-subtitle">Generate and download system reports</div></div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-box"><div class="stat-value" id="rpt-students">—</div><div class="stat-label">Total Students</div></div>
+        <div class="stat-box"><div class="stat-value" id="rpt-teachers">—</div><div class="stat-label">Total Teachers</div></div>
+        <div class="stat-box"><div class="stat-value" id="rpt-classes">—</div><div class="stat-label">Total Classes</div></div>
+        <div class="stat-box"><div class="stat-value" id="rpt-attendance">—</div><div class="stat-label">Avg Attendance</div></div>
+      </div>
+
+      <!-- Report Cards -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;">
+        <div class="report-card">
+          <div class="report-icon icon-blue">👥</div>
+          <h3 style="font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:6px;">Student Report</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Demographics, enrollment trends, and performance summaries.</p>
+          <button class="btn btn-primary w-full" onclick="generateReport('students')">Generate</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon icon-green">📅</div>
+          <h3 style="font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:6px;">Attendance Report</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Monthly attendance statistics and absence patterns.</p>
+          <button class="btn btn-primary w-full" onclick="generateReport('attendance')">Generate</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon icon-purple">📝</div>
+          <h3 style="font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:6px;">Academic Report</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Grade distributions, exam results, and subject performance.</p>
+          <button class="btn btn-primary w-full" onclick="generateReport('academic')">Generate</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon icon-amber">💰</div>
+          <h3 style="font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:6px;">Financial Report</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Fee collection, outstanding balances, and revenue summaries.</p>
+          <button class="btn btn-primary w-full" onclick="generateReport('financial')">Generate</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon icon-blue">🧑‍🏫</div>
+          <h3 style="font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:6px;">Teacher Report</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Staff records, subject assignments, and workload analysis.</p>
+          <button class="btn btn-primary w-full" onclick="generateReport('teachers')">Generate</button>
+        </div>
+        <div class="report-card">
+          <div class="report-icon icon-green">🏫</div>
+          <h3 style="font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:6px;">Class Report</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Class size, section allocation, and capacity utilization.</p>
+          <button class="btn btn-primary w-full" onclick="generateReport('classes')">Generate</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  <!-- Report Cards Placeholder -->
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-    <h3 class="text-lg font-semibold mb-2">Student Reports</h3>
-    <p class="text-gray-500 text-sm mb-4">Generate comprehensive reports on student demographics and performance.</p>
-    <button class="btn-primary w-full">Generate</button>
-  </div>
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-    <h3 class="text-lg font-semibold mb-2">Attendance Reports</h3>
-    <p class="text-gray-500 text-sm mb-4">Detailed attendance statistics and trends over time.</p>
-    <button class="btn-primary w-full">Generate</button>
-  </div>
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-    <h3 class="text-lg font-semibold mb-2">Financial Reports</h3>
-    <p class="text-gray-500 text-sm mb-4">Fee collection, outstanding balances, and financial summaries.</p>
-    <button class="btn-primary w-full">Generate</button>
-  </div>
-</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirm-modal" style="z-index:1000;"><div class="modal" style="max-width:400px;text-align:center;padding:32px;"><h2 style="font-size:18px;margin-bottom:12px;" id="confirm-title">Are you sure?</h2><p style="color:#6b7280;margin-bottom:24px;" id="confirm-msg">This action cannot be undone.</p><div style="display:flex;gap:12px;justify-content:center;"><button class="btn btn-outline" onclick="closeConfirm()" style="flex:1;">Cancel</button><button class="btn btn-primary" id="confirm-btn" style="flex:1;background:#ef4444;color:white;border-color:#ef4444;">Confirm</button></div></div></div>
+
 <script>
-  const token = localStorage.getItem('access_token');
-  if (!token) window.location.href = '../../login.html';
+  let confirmCallback=null;
+  function openConfirm(t,m,cb){document.getElementById('confirm-title').textContent=t;document.getElementById('confirm-msg').textContent=m;confirmCallback=cb;document.getElementById('confirm-modal').classList.add('open');}
+  function closeConfirm(){document.getElementById('confirm-modal').classList.remove('open');}
+  document.getElementById('confirm-btn').onclick=()=>{if(confirmCallback)confirmCallback();closeConfirm();};
+  const token=localStorage.getItem('access_token');if(!token)window.location.href='../../login.html';
+  document.getElementById('logout-btn').onclick=()=>{openConfirm("Log Out","Are you sure you want to log out?",()=>{localStorage.removeItem('access_token');window.location.href='../../login.html';});};
+
+  async function loadStats(){
+    try{
+      const res=await fetch('/api/admin/school-metrics',{headers:{Authorization:'Bearer '+token}});
+      const d=await res.json();
+      document.getElementById('rpt-students').textContent=d.students||'—';
+      document.getElementById('rpt-teachers').textContent=d.teachers||'—';
+      document.getElementById('rpt-classes').textContent=d.classes||'—';
+      document.getElementById('rpt-attendance').textContent=d.attendance_rate||'—';
+    }catch{}
+  }
+
+  async function generateReport(type){
+    try{
+      const res=await fetch('/api/admin/reports/'+type,{headers:{Authorization:'Bearer '+token}});
+      if(!res.ok){alert('Failed to generate report');return;}
+      const blob=await res.blob();
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=type+'-report.csv';a.click();
+    }catch{alert('Network error generating report');}
+  }
+  loadStats();
 </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded',()=>{
+    const page=location.pathname.split('/').pop();
+    document.querySelectorAll('.nav-item').forEach(link=>{link.classList.toggle('active',link.getAttribute('href')===page);});
+  });
+</script>
+</body>
+</html>

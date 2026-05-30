@@ -1,135 +1,140 @@
-<!--#include virtual="layout.html" -->
-<meta name="page-title" content="Timetable">
-<div class="page-header flex items-center justify-between mb-6">
-  <h2 class="text-2xl font-semibold text-white">Timetable Management</h2>
-  <button id="btn-add-timetable" class="btn-primary flex items-center gap-2">
-    <svg class="w-5 h-5"><use href="#heroicon-outline-plus-circle"></use></svg>
-    Add Entry
-  </button>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timetable | EduFlow Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <link rel="stylesheet" href="../../assets/css/admin-theme.css">
+  <style>
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff;border-radius:14px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+    .modal h2{font-size:17px;font-weight:700;margin-bottom:20px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">🎓</div>
+      <div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">School Navigator</div></div>
+    </div>
+    <div class="sidebar-section-label">Main</div>
+    <nav style="flex: 1; overflow-y: auto; padding-right: 4px;">
+      <a href="dashboard.html"  class="nav-item">🏠 &nbsp;Dashboard</a>
+      <a href="students.html"   class="nav-item">👥 &nbsp;Students</a>
+      <a href="teachers.html"   class="nav-item">🧑‍🏫 &nbsp;Teachers</a>
+      <a href="parents.html"    class="nav-item">👨‍👩‍👧 &nbsp;Parents</a>
+      <a href="classes.html"    class="nav-item">🏫 &nbsp;Classes</a>
+      <a href="subjects.html"   class="nav-item">📚 &nbsp;Subjects</a>
+      <div class="sidebar-section-label" style="margin-top:16px;">Academics</div>
+      <a href="attendance.html" class="nav-item">📅 &nbsp;Attendance</a>
+      <a href="grades.html"     class="nav-item">📈 &nbsp;Grades</a>
+      <a href="exams.html"      class="nav-item">📝 &nbsp;Exams</a>
+      <a href="timetable.html"  class="nav-item active">⏰ &nbsp;Timetable</a>
+      <a href="academic-year.html" class="nav-item">🗓️ &nbsp;Academic Year</a>
+      <div class="sidebar-section-label" style="margin-top:16px;">System</div>
+      <a href="announcements.html" class="nav-item">📢 &nbsp;Announcements</a>
+      <a href="reports.html"    class="nav-item">📊 &nbsp;Reports</a>
+      <a href="notifications.html" class="nav-item">🔔 &nbsp;Notifications</a>
+      <a href="audit-logs.html" class="nav-item">🛡️ &nbsp;Audit Logs</a>
+      <a href="settings.html"   class="nav-item">⚙️ &nbsp;Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Logout</button>
+    </div>
+  </aside>
 
-<div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm overflow-x-auto">
-  <table class="w-full table-auto text-left">
-    <thead class="bg-gray-100 dark:bg-gray-700">
-      <tr>
-        <th class="p-2 font-medium">Grade</th>
-        <th class="p-2 font-medium">Section</th>
-        <th class="p-2 font-medium">Subject</th>
-        <th class="p-2 font-medium">Teacher</th>
-        <th class="p-2 font-medium">Classroom</th>
-        <th class="p-2 font-medium">Day</th>
-        <th class="p-2 font-medium">Start</th>
-        <th class="p-2 font-medium">End</th>
-        <th class="p-2 font-medium">Actions</th>
-      </tr>
-    </thead>
-    <tbody id="timetable-tbody">
-      <tr class="animate-pulse"><td colspan="9" class="p-4 text-center text-gray-500 dark:text-gray-400">Loading…</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="modal-overlay hidden" id="timetable-modal">
-  <div class="modal w-full max-w-2xl">
-    <h2 class="text-xl font-semibold mb-4" id="timetable-modal-title">Add Timetable Entry</h2>
-    <form id="timetable-form" class="space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="form-group"><label class="form-label">Grade</label><input class="form-input" name="grade" required></div>
-        <div class="form-group"><label class="form-label">Section</label><input class="form-input" name="section" required></div>
-        <div class="form-group"><label class="form-label">Subject</label><input class="form-input" name="subject" required></div>
-        <div class="form-group"><label class="form-label">Teacher</label><input class="form-input" name="teacher" required></div>
-        <div class="form-group"><label class="form-label">Classroom</label><input class="form-input" name="classroom" required></div>
-        <div class="form-group"><label class="form-label">Day</label><select class="form-select" name="day" required><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select></div>
-        <div class="form-group"><label class="form-label">Start Time</label><input type="time" class="form-input" name="start_time" required></div>
-        <div class="form-group"><label class="form-label">End Time</label><input type="time" class="form-input" name="end_time" required></div>
+  <div class="main-content">
+    <header class="top-header">
+      <div class="header-search">🔍 <input placeholder="Search timetable…" type="text" id="search-input"></div>
+      <div class="header-right">
+        <div class="header-user"><div class="header-avatar">A</div><span>Admin</span></div>
       </div>
-      <div class="flex justify-end gap-3 mt-4">
-        <button type="button" class="btn-outline" onclick="closeModal('timetable-modal')">Cancel</button>
-        <button type="submit" class="btn-primary">Save</button>
+    </header>
+
+    <div class="page-body">
+      <div class="page-title-row">
+        <div><div class="page-title">Timetable</div><div class="page-subtitle">Manage class schedules and time slots</div></div>
+        <button class="btn btn-primary" onclick="openModal()">+ Add Entry</button>
+      </div>
+
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead><tr><th>Day</th><th>Time</th><th>Subject</th><th>Teacher</th><th>Class</th><th>Room</th><th>Actions</th></tr></thead>
+            <tbody id="timetable-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted);">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <h2>Add Timetable Entry</h2>
+    <div id="modal-alert" class="alert alert-error" style="display:none;"></div>
+    <form id="add-form">
+      <div class="form-row" style="margin-bottom:12px;">
+        <div><label class="form-label">Day</label>
+          <select class="form-input" id="tt-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select>
+        </div>
+        <div><label class="form-label">Time Slot</label><input class="form-input" id="tt-time" placeholder="08:00 - 09:00" required></div>
+      </div>
+      <div class="form-row" style="margin-bottom:12px;">
+        <div><label class="form-label">Subject</label><input class="form-input" id="tt-subject" required></div>
+        <div><label class="form-label">Teacher</label><input class="form-input" id="tt-teacher" required></div>
+      </div>
+      <div class="form-row" style="margin-bottom:12px;">
+        <div><label class="form-label">Class</label><input class="form-input" id="tt-class" required></div>
+        <div><label class="form-label">Room</label><input class="form-input" id="tt-room"></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </div>
     </form>
   </div>
 </div>
 
+<div class="modal-overlay" id="confirm-modal" style="z-index: 1000;">
+  <div class="modal" style="max-width: 400px; text-align: center; padding: 32px;">
+    <h2 style="font-size: 18px; margin-bottom: 12px;" id="confirm-title">Are you sure?</h2>
+    <p style="color: #6b7280; margin-bottom: 24px;" id="confirm-msg">This action cannot be undone.</p>
+    <div style="display: flex; gap: 12px; justify-content: center;">
+      <button class="btn btn-outline" onclick="closeConfirm()" style="flex: 1;">Cancel</button>
+      <button class="btn btn-primary" id="confirm-btn" style="flex: 1; background: #ef4444; color: white; border-color: #ef4444;">Confirm</button>
+    </div>
+  </div>
+</div>
+
 <script>
+  let confirmCallback=null;
+  function openConfirm(title,msg,callback){document.getElementById('confirm-title').textContent=title;document.getElementById('confirm-msg').textContent=msg;confirmCallback=callback;document.getElementById('confirm-modal').classList.add('open');}
+  function closeConfirm(){document.getElementById('confirm-modal').classList.remove('open');}
+  document.getElementById('confirm-btn').onclick=()=>{if(confirmCallback)confirmCallback();closeConfirm();};
+
   const token = localStorage.getItem('access_token');
   if (!token) window.location.href = '../../login.html';
-  const { toast, openModal, closeModal } = window.App;
+  document.getElementById('logout-btn').onclick=()=>{openConfirm("Log Out","Are you sure you want to log out?",()=>{localStorage.removeItem('access_token');window.location.href='../../login.html';});};
 
-  async function loadTimetable() {
-    const tbody = document.getElementById('timetable-tbody');
-    tbody.innerHTML = `<tr class="animate-pulse"><td colspan="9" class="p-4 text-center text-gray-500 dark:text-gray-400">Loading…</td></tr>`;
-    try {
-      const res = await fetch('/api/admin/timetable', { headers: { Authorization: 'Bearer ' + token } });
-      const data = await res.json();
-      const list = data.timetable || data;
-      if (!list.length) {
-        tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center">No entries found.</td></tr>`;
-        return;
-      }
-      tbody.innerHTML = list.map(e => `
-        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-          <td class="p-2">${e.grade}</td>
-          <td class="p-2">${e.section}</td>
-          <td class="p-2">${e.subject}</td>
-          <td class="p-2">${e.teacher}</td>
-          <td class="p-2">${e.classroom}</td>
-          <td class="p-2">${e.day}</td>
-          <td class="p-2">${e.start_time}</td>
-          <td class="p-2">${e.end_time}</td>
-          <td class="p-2 space-x-1"><button class="btn-sm btn-outline" onclick="editTimetable(${e.id})">Edit</button><button class="btn-sm btn-outline text-danger" onclick="deleteTimetable(${e.id})">Delete</button></td>
-        </tr>`).join('');
-    } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-red-600">Failed to load.</td></tr>`;
-    }
-  }
+  let all=[];
+  async function load(){try{const res=await fetch('/api/admin/timetable',{headers:{Authorization:'Bearer '+token}});const data=await res.json();all=data.entries||data||[];render(all);}catch{document.getElementById('timetable-tbody').innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted);">Could not load.</td></tr>';}}
+  function render(list){const tb=document.getElementById('timetable-tbody');if(!list.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;">No entries found.</td></tr>';return;}tb.innerHTML=list.map(t=>`<tr><td style="font-weight:500;">${t.day}</td><td>${t.time||'—'}</td><td>${t.subject||'—'}</td><td>${t.teacher||'—'}</td><td>${t.class_name||'—'}</td><td>${t.room||'—'}</td><td><button class="btn btn-outline btn-sm" onclick="openEdit(${t.id})">Edit</button> <button class="btn btn-outline btn-sm" style="border-color:#ef4444;color:#ef4444;" onclick="del(${t.id})">Delete</button></td></tr>`).join('');}
+  document.getElementById('search-input').oninput=e=>render(all.filter(t=>(t.subject||'').toLowerCase().includes(e.target.value.toLowerCase())));
 
-  let editEntry = null;
-  window.openTimetableModal = () => {
-    editEntry = null;
-    document.getElementById('timetable-modal-title').textContent = 'Add Timetable Entry';
-    document.getElementById('timetable-form').reset();
-    openModal('timetable-modal');
-  };
-  document.getElementById('btn-add-timetable').addEventListener('click', openTimetableModal);
-
-  window.editTimetable = async (id) => {
-    editEntry = id;
-    document.getElementById('timetable-modal-title').textContent = 'Edit Timetable Entry';
-    const res = await fetch(`/api/admin/timetable/${id}`, { headers: { Authorization: 'Bearer ' + token } });
-    const e = await res.json();
-    const f = document.getElementById('timetable-form');
-    f.grade.value = e.grade; f.section.value = e.section; f.subject.value = e.subject; f.teacher.value = e.teacher; f.classroom.value = e.classroom; f.day.value = e.day; f.start_time.value = e.start_time; f.end_time.value = e.end_time;
-    openModal('timetable-modal');
-  };
-
-  document.getElementById('timetable-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const method = editEntry ? 'PUT' : 'POST';
-    const url = editEntry ? `/api/admin/timetable/${editEntry}` : '/api/admin/timetable';
-    try {
-      const res = await fetch(url, { method, headers: { Authorization: 'Bearer ' + token }, body: fd });
-      if (!res.ok) throw new Error(await res.text());
-      toast('Timetable saved', 'success');
-      closeModal('timetable-modal');
-      loadTimetable();
-    } catch (err) {
-      toast('Save failed', 'error');
-    }
-  });
-
-  window.deleteTimetable = async (id) => {
-    if (!confirm('Delete this entry?')) return;
-    try {
-      const res = await fetch(`/api/admin/timetable/${id}`, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
-      if (!res.ok) throw new Error(await res.text());
-      toast('Entry deleted', 'success');
-      loadTimetable();
-    } catch (e) {
-      toast('Delete failed', 'error');
-    }
-  };
-
-  loadTimetable();
+  let editingId=null;
+  function openModal(){editingId=null;document.querySelector('#add-modal h2').textContent='Add Timetable Entry';document.getElementById('add-form').reset();document.getElementById('add-modal').classList.add('open');}
+  function openEdit(id){const t=all.find(x=>x.id===id);if(!t)return;editingId=t.id;document.querySelector('#add-modal h2').textContent='Edit Entry';document.getElementById('tt-day').value=t.day||'Monday';document.getElementById('tt-time').value=t.time||'';document.getElementById('tt-subject').value=t.subject||'';document.getElementById('tt-teacher').value=t.teacher||'';document.getElementById('tt-class').value=t.class_name||'';document.getElementById('tt-room').value=t.room||'';document.getElementById('add-modal').classList.add('open');}
+  function closeModal(){document.getElementById('add-modal').classList.remove('open');}
+  document.getElementById('add-form').onsubmit=async(e)=>{e.preventDefault();const body={day:document.getElementById('tt-day').value,time:document.getElementById('tt-time').value,subject:document.getElementById('tt-subject').value,teacher:document.getElementById('tt-teacher').value,class_name:document.getElementById('tt-class').value,room:document.getElementById('tt-room').value};const url=editingId?`/api/admin/timetable/${editingId}`:'/api/admin/timetable';const method=editingId?'PUT':'POST';const res=await fetch(url,{method,headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body)});if(res.ok){closeModal();load();}else{const d=await res.json();const a=document.getElementById('modal-alert');a.textContent=d.error||'Error';a.style.display='block';}};
+  function del(id){openConfirm("Delete Entry","Are you sure?",async()=>{await fetch(`/api/admin/timetable/${id}`,{method:'DELETE',headers:{Authorization:'Bearer '+token}});load();});}
+  load();
 </script>
+</body>
+</html>
