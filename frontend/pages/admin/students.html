@@ -1,134 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Students | EduFlow Admin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../assets/css/theme.css">
-  <link rel="stylesheet" href="../../assets/css/admin-theme.css">
-  <style>
-    .avatar-circle { width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px; }
-    .modal-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center; }
-    .modal-overlay.open { display:flex; }
-    .modal { background:#fff;border-radius:14px;padding:28px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.15); }
-    .modal h2 { font-size:17px;font-weight:700;margin-bottom:20px;color:var(--text-primary); }
-    .form-row { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
-  </style>
-</head>
-<body>
-<div class="app-shell">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="sidebar-logo-icon">🎓</div>
-      <div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">School Navigator</div></div>
+<!--#include virtual="layout.html" -->
+<div id="CONTENT_PLACEHOLDER">
+  <header class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-semibold text-white">Student Management</h2>
+    <div class="flex gap-2">
+      <button id="btn-add-student" class="btn-primary flex items-center gap-2"><svg class="w-5 h-5"><use href="#heroicon-outline-plus-circle"></use></svg> Add Student</button>
+      <button id="btn-import-students" class="btn-outline flex items-center gap-2"><svg class="w-5 h-5"><use href="#heroicon-outline-arrow-up-tray"></use></svg> Import CSV/Excel</button>
     </div>
-    <div class="sidebar-section-label">Main</div>
-    <nav>
-      <a href="dashboard.html"  class="nav-item">🏠 &nbsp;Dashboard</a>
-      <a href="students.html"   class="nav-item active">👥 &nbsp;Students</a>
-      <a href="teachers.html"   class="nav-item">🧑‍🏫 &nbsp;Teachers</a>
-      <a href="classes.html"    class="nav-item">🏫 &nbsp;Classes</a>
-      <a href="attendance.html" class="nav-item">📅 &nbsp;Attendance</a>
-      <a href="grades.html"     class="nav-item">📈 &nbsp;Grades</a>
-      <div class="sidebar-section-label">System</div>
-      <a href="settings.html"   class="nav-item">⚙️ &nbsp;Settings</a>
-    </nav>
-    <div class="sidebar-footer">
-      <button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Logout</button>
-    </div>
-  </aside>
+  </header>
 
-  <!-- MAIN -->
-  <div class="main-content">
-    <header class="top-header">
-      <div class="header-search">
-        🔍 <input placeholder="Search students…" type="text" id="search-input">
-      </div>
-      <div class="header-right">
-        <div class="header-user"><div class="header-avatar">A</div><span>Admin</span></div>
-      </div>
-    </header>
+  <!-- Filters -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+    <input type="text" id="search-students" placeholder="Search students…" class="input-base">
+    <select id="filter-grade" class="select-base"><option value="">All Grades</option></select>
+    <select id="filter-status" class="select-base"><option value="">All Statuses</option><option value="Active">Active</option><option value="Inactive">Inactive</option></select>
+  </section>
 
-    <div class="page-body">
-      <div class="page-title-row">
-        <div><div class="page-title">Students</div><div class="page-subtitle">Manage all enrolled students</div></div>
-        <button class="btn btn-primary" onclick="openModal()">+ Add Student</button>
-      </div>
+  <!-- Table -->
+  <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm overflow-x-auto">
+    <table class="w-full table-auto text-left">
+      <thead class="bg-gray-100 dark:bg-gray-700">
+        <tr>
+          <th class="p-2 font-medium">Student</th>
+          <th class="p-2 font-medium">ID</th>
+          <th class="p-2 font-medium">Class</th>
+          <th class="p-2 font-medium">Gender</th>
+          <th class="p-2 font-medium">Status</th>
+          <th class="p-2 font-medium">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="students-tbody">
+        <tr class="animate-pulse"><td colspan="6" class="p-4 text-center text-gray-500 dark:text-gray-400">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-      <!-- Filters -->
-      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-        <select class="form-select" style="width:auto;" id="filter-class">
-          <option value="">All Classes</option>
-          <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
-        </select>
-        <select class="form-select" style="width:auto;" id="filter-status">
-          <option value="">All Status</option>
-          <option>Active</option><option>Pending</option><option>Inactive</option>
-        </select>
-      </div>
+  <div class="flex justify-end mt-4" id="students-pagination"></div>
 
-      <!-- Table -->
-      <div class="card">
-        <div style="overflow-x:auto;">
-          <table class="data-table">
-            <thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Gender</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="students-tbody">
-              <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);">Loading students…</td></tr>
-            </tbody>
-          </table>
+  <!-- Add/Edit Modal -->
+  <div class="modal-overlay hidden" id="student-modal">
+    <div class="modal w-full max-w-2xl">
+      <h2 class="text-xl font-semibold mb-4" id="student-modal-title">Add Student</h2>
+      <form id="student-form">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group"><label class="form-label">First Name</label><input class="form-input" name="first_name" required></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" name="last_name" required></div>
+          <div class="form-group"><label class="form-label">Gender</label><select class="form-select" name="gender" required><option>Male</option><option>Female</option><option>Other</option></select></div>
+          <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-input" name="dob" required></div>
+          <div class="form-group"><label class="form-label">Photo</label><input type="file" accept="image/*" class="form-input" name="photo"></div>
+          <div class="form-group"><label class="form-label">Status</label><select class="form-select" name="status" required><option>Active</option><option>Inactive</option></select></div>
         </div>
-      </div>
+        <hr class="my-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="form-group"><label class="form-label">Grade</label><select class="form-select" name="grade" required></select></div>
+          <div class="form-group"><label class="form-label">Section</label><input class="form-input" name="section" required></div>
+          <div class="form-group"><label class="form-label">Academic Year</label><input class="form-input" name="year" placeholder="2023/2024" required></div>
+        </div>
+        <hr class="my-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group"><label class="form-label">Parent Name</label><input class="form-input" name="parent_name" required></div>
+          <div class="form-group"><label class="form-label">Parent Phone</label><input type="tel" class="form-input" name="parent_phone" required></div>
+          <div class="form-group"><label class="form-label">Parent Email</label><input type="email" class="form-input" name="parent_email" required></div>
+        </div>
+        <hr class="my-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group"><label class="form-label">Username</label><input class="form-input" name="username" required></div>
+          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" name="password" required></div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" class="btn-outline" onclick="closeModal('student-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </form>
     </div>
   </div>
-</div>
 
-<!-- Add Student Modal -->
-<div class="modal-overlay" id="add-modal">
-  <div class="modal">
-    <h2>Add New Student</h2>
-    <div id="modal-alert" class="alert alert-error" style="display:none;"></div>
-    <form id="add-student-form">
-      <div class="form-row" style="margin-bottom:12px;">
-        <div><label class="form-label">Full Name</label><input class="form-input" id="s-name" placeholder="Abebe Girma" required></div>
-        <div><label class="form-label">Parent Full Name</label><input class="form-input" id="s-parent" placeholder="Girma Bekele" required></div>
-      </div>
-      <div class="form-row" style="margin-bottom:12px;">
-        <div><label class="form-label">Gender</label>
-          <select class="form-select" id="s-gender">
-            <option>Male</option><option>Female</option><option>Other</option>
-          </select>
+  <!-- Import Modal -->
+  <div class="modal-overlay hidden" id="import-modal">
+    <div class="modal w-full max-w-md">
+      <h2 class="text-xl font-semibold mb-4">Import Students</h2>
+      <form id="import-form" class="space-y-4">
+        <div><label class="form-label">Select CSV / Excel</label><input type="file" accept=".xlsx,.xls,.csv" class="form-input" name="excel" required></div>
+        <div class="flex justify-end gap-2">
+          <button type="button" class="btn-outline" onclick="closeModal('import-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">Upload</button>
         </div>
-        <div><label class="form-label">Date of Birth</label><input type="date" class="form-input" id="s-dob"></div>
-      </div>
-      <div class="form-row" style="margin-bottom:12px;">
-        <div style="grid-column: span 2;"><label class="form-label">Class & Section</label>
-          <select class="form-select" id="s-class" required>
-            <option value="" disabled selected>Select an existing class...</option>
-          </select>
-          <div style="font-size:11px;color:#6b7280;margin-top:4px;">(If your class isn't here, please create it in the Classes tab first)</div>
-        </div>
-      </div>
-      <div class="form-row" style="margin-bottom:20px;">
-        <div><label class="form-label">Phone</label><input class="form-input" id="s-phone" placeholder="+251…"></div>
-        <div><label class="form-label">Address</label><input class="form-input" id="s-address" placeholder="Addis Ababa"></div>
-      </div>
-      <div style="display:flex;gap:10px;justify-content:flex-end;">
-        <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save Student</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Confirm Modal -->
-<div class="modal-overlay" id="confirm-modal" style="z-index: 1000;">
-  <div class="modal" style="max-width: 400px; text-align: center; padding: 32px;">
-    <h2 style="font-size: 18px; margin-bottom: 12px;" id="confirm-title">Are you sure?</h2>
-    <p style="color: #6b7280; margin-bottom: 24px;" id="confirm-msg">This action cannot be undone.</p>
-    <div style="display: flex; gap: 12px; justify-content: center;">
-      <button class="btn btn-outline" onclick="closeConfirm()" style="flex: 1;">Cancel</button>
-      <button class="btn btn-primary" id="confirm-btn" style="flex: 1; background: #ef4444; color: white; border-color: #ef4444;">Confirm</button>
+        <div id="import-alert" class="alert alert-error hidden"></div>
+      </form>
     </div>
   </div>
 </div>
@@ -136,140 +93,107 @@
 <script>
   const token = localStorage.getItem('access_token');
   if (!token) window.location.href = '../../login.html';
+  const { toast, openModal, closeModal } = window.App;
 
-  let confirmCallback = null;
-  function openConfirm(title, msg, callback) {
-    document.getElementById('confirm-title').textContent = title;
-    document.getElementById('confirm-msg').textContent = msg;
-    confirmCallback = callback;
-    document.getElementById('confirm-modal').classList.add('open');
-  }
-  function closeConfirm() { document.getElementById('confirm-modal').classList.remove('open'); }
-  document.getElementById('confirm-btn').onclick = () => { if(confirmCallback) confirmCallback(); closeConfirm(); };
-
-  document.getElementById('logout-btn').onclick = () => {
-    openConfirm("Log Out", "Are you sure you want to log out of your session?", () => {
-      localStorage.removeItem('access_token'); window.location.href = '../../login.html';
-    });
-  };
-
-  const COLORS = ['icon-green','icon-blue','icon-purple','icon-amber','icon-red'];
-  function initials(name) { return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
-  function colorFor(id) { return COLORS[id % COLORS.length]; }
-
-  let allStudents = [];
-
-  async function loadStudents() {
+  // Load students
+  async function loadStudents(page = 1, query = '') {
+    const tbody = document.getElementById('students-tbody');
+    tbody.innerHTML = `<tr class="animate-pulse"><td colspan="6" class="p-4 text-center text-gray-500 dark:text-gray-400">Loading…</td></tr>`;
     try {
-      const res = await fetch('/api/admin/students', { headers: { Authorization: 'Bearer ' + token } });
-      if (!res.ok) throw new Error();
+      const res = await fetch(`/api/admin/students?page=${page}&search=${encodeURIComponent(query)}`,{ headers:{ Authorization:'Bearer '+token } });
       const data = await res.json();
-      allStudents = data.students || data;
-      renderTable(allStudents);
-    } catch {
-      document.getElementById('students-tbody').innerHTML =
-        '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);">Could not load students.</td></tr>';
+      const list = data.students || data;
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center">No students found.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(s => `
+        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+          <td class="p-2 flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-${s.gender==='Male'?'blue':'pink'}-500 flex items-center justify-center text-white text-xs">${s.first_name[0]}${s.last_name[0]}</div>
+            ${s.first_name} ${s.last_name}
+          </td>
+          <td class="p-2">${s.student_id}</td>
+          <td class="p-2">${s.class_name||'—'}</td>
+          <td class="p-2">${s.gender}</td>
+          <td class="p-2"><span class="badge ${s.status==='Active'?'bg-success':'bg-gray-400'}">${s.status}</span></td>
+          <td class="p-2 space-x-1">
+            <button class="btn-sm btn-outline" onclick="editStudent(${s.id})">Edit</button>
+            <button class="btn-sm btn-outline text-danger" onclick="deleteStudent(${s.id})">Delete</button>
+          </td>
+        </tr>`).join('');
+      renderPagination(data.totalPages||1, page);
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-600">Failed to load.</td></tr>`;
     }
   }
 
-  function renderTable(students) {
-    const tbody = document.getElementById('students-tbody');
-    if (!students.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);">No students found.</td></tr>'; return; }
-    tbody.innerHTML = students.map(s => `
-      <tr>
-        <td><div style="display:flex;align-items:center;gap:10px;">
-          <div class="avatar-circle ${colorFor(s.id)}">${initials(s.name)}</div>
-          <span style="font-weight:500;">${s.name}</span>
-        </div></td>
-        <td>${s.student_id}</td>
-        <td>Class ${s.class_id}</td>
-        <td>${s.gender}</td>
-        <td><span class="badge badge-green">Active</span></td>
-        <td>
-          <button class="btn btn-outline btn-sm" onclick="openEdit(${s.id})">Edit</button>
-          <button class="btn btn-outline btn-sm" style="border-color:#ef4444;color:#ef4444;" onclick="deleteStudent(${s.id})">Delete</button>
-        </td>
-      </tr>`).join('');
+  function renderPagination(total, current) {
+    const container = document.getElementById('students-pagination');
+    container.innerHTML = '';
+    for (let i=1;i<=total;i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = i===current ? 'btn-primary' : 'btn-outline';
+      btn.onclick = () => loadStudents(i, document.getElementById('search-students').value);
+      container.appendChild(btn);
+    }
   }
 
-  // Search / filter
-  document.getElementById('search-input').oninput = filter;
-  document.getElementById('filter-class').onchange = filter;
-  document.getElementById('filter-status').onchange = filter;
-  function filter() {
-    const q = document.getElementById('search-input').value.toLowerCase();
-    renderTable(allStudents.filter(s => s.name.toLowerCase().includes(q)));
-  }
+  document.getElementById('search-students').addEventListener('input', e => loadStudents(1, e.target.value));
 
-  let editingId = null;
-  function openModal()  { 
-    editingId = null;
-    document.querySelector('#add-modal h2').textContent = 'Add New Student';
-    document.getElementById('add-student-form').reset();
-    document.getElementById('s-parent').parentElement.style.display = 'block';
-    document.getElementById('s-parent').required = true;
-    document.getElementById('add-modal').classList.add('open'); 
-  }
-  function openEdit(id) {
-    const s = allStudents.find(x => x.id === id);
-    if(!s) return;
-    editingId = s.id;
-    document.querySelector('#add-modal h2').textContent = 'Edit Student';
-    document.getElementById('s-name').value = s.name || '';
-    document.getElementById('s-gender').value = s.gender || 'Male';
-    document.getElementById('s-dob').value = s.date_of_birth || '';
-    document.getElementById('s-phone').value = s.phone || '';
-    document.getElementById('s-class').value = s.class_id || '';
-    document.getElementById('s-address').value = s.address || '';
-    document.getElementById('s-parent').parentElement.style.display = 'none';
-    document.getElementById('s-parent').required = false;
-    document.getElementById('add-modal').classList.add('open');
-  }
-  function closeModal() { document.getElementById('add-modal').classList.remove('open'); }
-
-  document.getElementById('add-student-form').onsubmit = async (e) => {
+  // Add / Edit logic
+  let editId = null;
+  window.openStudentModal = () => { editId = null; document.getElementById('student-modal-title').textContent='Add Student'; document.getElementById('student-form').reset(); openModal('student-modal'); };
+  window.editStudent = async (id) => {
+    editId = id;
+    document.getElementById('student-modal-title').textContent='Edit Student';
+    const res = await fetch(`/api/admin/students/${id}`,{ headers:{ Authorization:'Bearer '+token } });
+    const s = await res.json();
+    const f = document.getElementById('student-form');
+    f.first_name.value = s.first_name; f.last_name.value=s.last_name; f.gender.value=s.gender; f.dob.value=s.dob?.split('T')[0]; f.status.value=s.status; f.grade.value=s.grade; f.section.value=s.section; f.year.value=s.year; f.parent_name.value=s.parent_name; f.parent_phone.value=s.parent_phone; f.parent_email.value=s.parent_email; f.username.value=s.username; // password left blank intentionally
+    openModal('student-modal');
+  };
+  document.getElementById('student-form').addEventListener('submit', async e => {
     e.preventDefault();
-    const body = {
-      name: document.getElementById('s-name').value,
-      gender: document.getElementById('s-gender').value,
-      date_of_birth: document.getElementById('s-dob').value,
-      phone: document.getElementById('s-phone').value,
-      class_id: parseInt(document.getElementById('s-class').value),
-      address: document.getElementById('s-address').value,
-    };
-    if (!editingId) body.parent_name = document.getElementById('s-parent').value;
+    const fd = new FormData(e.target);
+    const method = editId ? 'PUT' : 'POST';
+    const url = editId ? `/api/admin/students/${editId}` : '/api/admin/students';
+    try {
+      const res = await fetch(url,{ method, headers:{ Authorization:'Bearer '+token }, body:fd });
+      if (!res.ok) throw new Error(await res.text());
+      toast('Student saved','success');
+      closeModal('student-modal');
+      loadStudents();
+    } catch (err) { toast('Save failed','error'); }
+  });
 
-    const url = editingId ? \`/api/admin/students/\${editingId}\` : '/api/admin/students';
-    const method = editingId ? 'PUT' : 'POST';
-
-    const res = await fetch(url, {
-      method: method, headers: { 'Content-Type':'application/json', Authorization:'Bearer '+token },
-      body: JSON.stringify(body)
-    });
-    if (res.ok) { closeModal(); loadStudents(); }
-    else { const d = await res.json(); document.getElementById('modal-alert').textContent = d.error||'Error'; document.getElementById('modal-alert').style.display='block'; }
+  // Delete
+  window.deleteStudent = async (id) => {
+    if (!confirm('Delete this student?')) return;
+    try {
+      const res = await fetch(`/api/admin/students/${id}`,{ method:'DELETE', headers:{ Authorization:'Bearer '+token } });
+      if (!res.ok) throw new Error(await res.text());
+      toast('Student deleted','success');
+      loadStudents();
+    } catch (e) { toast('Delete failed','error'); }
   };
 
-  function deleteStudent(id) {
-    openConfirm("Delete Student", "Are you sure you want to permanently delete this student record?", async () => {
-      await fetch(`/api/admin/students/${id}`, { method:'DELETE', headers:{ Authorization:'Bearer '+token } });
-      loadStudents();
-    });
-  }
-
-  async function loadClassesForDropdown() {
+  // Import
+  window.openImportModal = () => openModal('import-modal');
+  document.getElementById('import-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
     try {
-      const res = await fetch('/api/admin/classes', { headers:{ Authorization:'Bearer '+token } });
+      const res = await fetch('/admin/bulk-import/students',{ method:'POST', headers:{ Authorization:'Bearer '+token }, body:fd });
       const data = await res.json();
-      const list = data.classes || data || [];
-      const sel = document.getElementById('s-class');
-      sel.innerHTML = '<option value="" disabled selected>Select an existing class...</option>' + 
-        list.map(c => `<option value="${c.id}">${c.class_name} - Section ${c.section}</option>`).join('');
-    } catch(e) { console.error('Failed to load classes', e); }
-  }
+      if (res.ok) { toast(`✅ Created ${data.created_students} students`,'success'); closeModal('import-modal'); loadStudents(); }
+      else { const a=document.getElementById('import-alert'); a.textContent=data.error||'Upload failed'; a.classList.remove('hidden'); }
+    } catch (err) { const a=document.getElementById('import-alert'); a.textContent='Network error'; a.classList.remove('hidden'); }
+  });
 
-  loadClassesForDropdown();
+  // Init
   loadStudents();
+  document.getElementById('btn-add-student').addEventListener('click', openStudentModal);
+  document.getElementById('btn-import-students').addEventListener('click', openImportModal);
 </script>
-</body>
-</html>

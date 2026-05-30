@@ -1,0 +1,135 @@
+<!--#include virtual="layout.html" -->
+<meta name="page-title" content="Timetable">
+<div class="page-header flex items-center justify-between mb-6">
+  <h2 class="text-2xl font-semibold text-white">Timetable Management</h2>
+  <button id="btn-add-timetable" class="btn-primary flex items-center gap-2">
+    <svg class="w-5 h-5"><use href="#heroicon-outline-plus-circle"></use></svg>
+    Add Entry
+  </button>
+</div>
+
+<div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm overflow-x-auto">
+  <table class="w-full table-auto text-left">
+    <thead class="bg-gray-100 dark:bg-gray-700">
+      <tr>
+        <th class="p-2 font-medium">Grade</th>
+        <th class="p-2 font-medium">Section</th>
+        <th class="p-2 font-medium">Subject</th>
+        <th class="p-2 font-medium">Teacher</th>
+        <th class="p-2 font-medium">Classroom</th>
+        <th class="p-2 font-medium">Day</th>
+        <th class="p-2 font-medium">Start</th>
+        <th class="p-2 font-medium">End</th>
+        <th class="p-2 font-medium">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="timetable-tbody">
+      <tr class="animate-pulse"><td colspan="9" class="p-4 text-center text-gray-500 dark:text-gray-400">Loading…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-overlay hidden" id="timetable-modal">
+  <div class="modal w-full max-w-2xl">
+    <h2 class="text-xl font-semibold mb-4" id="timetable-modal-title">Add Timetable Entry</h2>
+    <form id="timetable-form" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group"><label class="form-label">Grade</label><input class="form-input" name="grade" required></div>
+        <div class="form-group"><label class="form-label">Section</label><input class="form-input" name="section" required></div>
+        <div class="form-group"><label class="form-label">Subject</label><input class="form-input" name="subject" required></div>
+        <div class="form-group"><label class="form-label">Teacher</label><input class="form-input" name="teacher" required></div>
+        <div class="form-group"><label class="form-label">Classroom</label><input class="form-input" name="classroom" required></div>
+        <div class="form-group"><label class="form-label">Day</label><select class="form-select" name="day" required><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select></div>
+        <div class="form-group"><label class="form-label">Start Time</label><input type="time" class="form-input" name="start_time" required></div>
+        <div class="form-group"><label class="form-label">End Time</label><input type="time" class="form-input" name="end_time" required></div>
+      </div>
+      <div class="flex justify-end gap-3 mt-4">
+        <button type="button" class="btn-outline" onclick="closeModal('timetable-modal')">Cancel</button>
+        <button type="submit" class="btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const token = localStorage.getItem('access_token');
+  if (!token) window.location.href = '../../login.html';
+  const { toast, openModal, closeModal } = window.App;
+
+  async function loadTimetable() {
+    const tbody = document.getElementById('timetable-tbody');
+    tbody.innerHTML = `<tr class="animate-pulse"><td colspan="9" class="p-4 text-center text-gray-500 dark:text-gray-400">Loading…</td></tr>`;
+    try {
+      const res = await fetch('/api/admin/timetable', { headers: { Authorization: 'Bearer ' + token } });
+      const data = await res.json();
+      const list = data.timetable || data;
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center">No entries found.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(e => `
+        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+          <td class="p-2">${e.grade}</td>
+          <td class="p-2">${e.section}</td>
+          <td class="p-2">${e.subject}</td>
+          <td class="p-2">${e.teacher}</td>
+          <td class="p-2">${e.classroom}</td>
+          <td class="p-2">${e.day}</td>
+          <td class="p-2">${e.start_time}</td>
+          <td class="p-2">${e.end_time}</td>
+          <td class="p-2 space-x-1"><button class="btn-sm btn-outline" onclick="editTimetable(${e.id})">Edit</button><button class="btn-sm btn-outline text-danger" onclick="deleteTimetable(${e.id})">Delete</button></td>
+        </tr>`).join('');
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-red-600">Failed to load.</td></tr>`;
+    }
+  }
+
+  let editEntry = null;
+  window.openTimetableModal = () => {
+    editEntry = null;
+    document.getElementById('timetable-modal-title').textContent = 'Add Timetable Entry';
+    document.getElementById('timetable-form').reset();
+    openModal('timetable-modal');
+  };
+  document.getElementById('btn-add-timetable').addEventListener('click', openTimetableModal);
+
+  window.editTimetable = async (id) => {
+    editEntry = id;
+    document.getElementById('timetable-modal-title').textContent = 'Edit Timetable Entry';
+    const res = await fetch(`/api/admin/timetable/${id}`, { headers: { Authorization: 'Bearer ' + token } });
+    const e = await res.json();
+    const f = document.getElementById('timetable-form');
+    f.grade.value = e.grade; f.section.value = e.section; f.subject.value = e.subject; f.teacher.value = e.teacher; f.classroom.value = e.classroom; f.day.value = e.day; f.start_time.value = e.start_time; f.end_time.value = e.end_time;
+    openModal('timetable-modal');
+  };
+
+  document.getElementById('timetable-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const method = editEntry ? 'PUT' : 'POST';
+    const url = editEntry ? `/api/admin/timetable/${editEntry}` : '/api/admin/timetable';
+    try {
+      const res = await fetch(url, { method, headers: { Authorization: 'Bearer ' + token }, body: fd });
+      if (!res.ok) throw new Error(await res.text());
+      toast('Timetable saved', 'success');
+      closeModal('timetable-modal');
+      loadTimetable();
+    } catch (err) {
+      toast('Save failed', 'error');
+    }
+  });
+
+  window.deleteTimetable = async (id) => {
+    if (!confirm('Delete this entry?')) return;
+    try {
+      const res = await fetch(`/api/admin/timetable/${id}`, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
+      if (!res.ok) throw new Error(await res.text());
+      toast('Entry deleted', 'success');
+      loadTimetable();
+    } catch (e) {
+      toast('Delete failed', 'error');
+    }
+  };
+
+  loadTimetable();
+</script>

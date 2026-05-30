@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EduFlow Admin • <span id="page-title">Dashboard</span></title>
+
+  <!-- Tailwind CDN (class‑based dark mode) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {
+        colors: {
+          primary: '#0d6efd',
+          success: '#28a745',
+          danger:  '#dc3545',
+          warning: '#ffc107',
+          info:    '#17a2b8',
+        },
+        fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
+      } },
+    };
+  </script>
+
+  <!-- Heroicons (SVG sprite) -->
+  <script src="https://unpkg.com/heroicons@2.0.13/dist/heroicons.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS (utility overrides) -->
+  <link rel="stylesheet" href="../../assets/css/tailwind.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans antialiased">
+
+<div class="flex h-screen overflow-hidden">
+  <!-- Sidebar -->
+  <aside class="bg-white dark:bg-gray-800 w-64 flex flex-col transition-width duration-300 shrink-0">
+    <div class="flex items-center h-16 px-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-center gap-2">
+        <svg class="w-6 h-6 text-primary"><use href="#heroicon-outline-academic-cap"></use></svg>
+        <span class="font-semibold text-lg text-gray-900 dark:text-gray-100">EduFlow</span>
+      </div>
+      <button id="sidebar-toggle" class="ml-auto lg:hidden p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-bars-3"></use></svg>
+      </button>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-4 space-y-1">
+      <a href="dashboard.html"   class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg bg-primary/10 text-primary" data-page="dashboard">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-home"></use></svg>Dashboard
+      </a>
+      <a href="students.html"    class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-page="students">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-user-group"></use></svg>Students
+      </a>
+      <a href="teachers.html"    class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-page="teachers">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-user"></use></svg>Teachers
+      </a>
+      <a href="parents.html"     class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-page="parents">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-briefcase"></use></svg>Parents
+      </a>
+      <a href="classes.html"     class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-page="classes">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-building-library"></use></svg>Classes
+      </a>
+      <a href="subjects.html"    class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-page="subjects">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-clipboard-list"></use></svg>Subjects
+      </a>
+      <a href="attendance.html"  class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-page="attendance">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-calendar"></use></svg>Attendance
+      </a>
+      <a href="grades.html"      class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-page="grades">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-chart-bar"></use></svg>Grades
+      </a>
+      <a href="announcements.html" class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-page="announcements">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-bell"></use></svg>Announcements
+      </a>
+      <a href="reports.html"     class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-page="reports">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-document-report"></use></svg>Reports
+      </a>
+      <a href="settings.html"    class="nav-link flex items-center gap-3 py-2.5 px-4 text-sm font-medium rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700" data-page="settings">
+        <svg class="w-5 h-5"><use href="#heroicon-outline-cog-6-tooth"></use></svg>Settings
+      </a>
+    </nav>
+    <div class="border-t border-gray-200 dark:border-gray-700 p-4">
+      <button id="theme-toggle" class="w-full flex items-center justify-center gap-2 text-sm font-medium py-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+        <svg id="theme-icon" class="w-5 h-5"></svg>
+        <span id="theme-label">Dark Mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col overflow-y-auto bg-gray-50 dark:bg-gray-900">
+    <!--#include virtual="components/navbar.html" -->
+    <main class="flex-1 p-6 overflow-auto">
+      <!--#include virtual="components/content.html" -->
+    </main>
+  </div>
+</div>
+<!--#include virtual="components/footer.html" -->
+<!-- Toast container -->
+<div id="toast-container" class="fixed bottom-4 right-4 flex flex-col gap-2 z-50"></div>
+
+<script src="../../assets/js/main.js"></script>
+</body>
+</html>

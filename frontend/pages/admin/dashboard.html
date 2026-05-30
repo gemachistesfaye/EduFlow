@@ -1,279 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | EduFlow School Management</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | EduFlow Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/css/theme.css">
   <link rel="stylesheet" href="../../assets/css/admin-theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ── inline page-specific overrides ── */
-    .quick-action-btn {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 11px 14px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: #fff;
-      cursor: pointer;
-      transition: background .13s, border-color .13s;
-      text-decoration: none;
-      color: var(--text-primary);
-      font-size: 13.5px;
-      font-weight: 500;
-    }
-    .quick-action-btn:hover { background: var(--green-50); border-color: var(--green-400); color: var(--green-800); }
-    .quick-action-icon { width: 32px; height: 32px; border-radius: 8px; display:flex;align-items:center;justify-content:center; font-size: 15px; }
-
-    .progress-bar-wrap { background: var(--border); border-radius: 99px; height: 7px; overflow: hidden; }
-    .progress-bar-fill { height: 100%; border-radius: 99px; background: var(--green-700); transition: width .4s; }
-
-    /* chart mock */
-    .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 80px; }
-    .bar-chart-bar { flex: 1; border-radius: 4px 4px 0 0; background: var(--green-400); opacity: .75; transition: opacity .15s; }
-    .bar-chart-bar:hover { opacity: 1; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    .stat-card-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px; }
+    .icon-blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+    .icon-green { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+    .icon-purple { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+    .icon-amber { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    .stat-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .stat-card-value { font-size: 28px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+    .stat-card-label { font-size: 14px; color: var(--text-muted); font-weight: 500; }
   </style>
 </head>
 <body>
 <div class="app-shell">
-
-  <!-- ═══ SIDEBAR ═══════════════════════════════════════════ -->
-  <aside class="sidebar" id="sidebar">
-    <!-- Logo -->
+  <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-icon">🎓</div>
-      <div>
-        <div class="sidebar-logo-text">EduFlow</div>
-        <div class="sidebar-logo-sub">School Navigator</div>
-      </div>
+      <div><div class="sidebar-logo-text">EduFlow</div><div class="sidebar-logo-sub">School Navigator</div></div>
     </div>
-
-    <!-- Nav -->
     <div class="sidebar-section-label">Main</div>
     <nav>
-      <a href="dashboard.html" class="nav-item active" data-page="dashboard">
-        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-        Dashboard
-      </a>
-      <a href="students.html" class="nav-item" data-page="students">
-        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Students
-      </a>
-      <a href="teachers.html" class="nav-item" data-page="teachers">
-        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Teachers
-      </a>
-      <a href="classes.html" class="nav-item" data-page="classes">
-        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Classes
-      </a>
-      <a href="attendance.html" class="nav-item" data-page="attendance">
-        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg>
-        Attendance
-      </a>
-      <a href="grades.html" class="nav-item" data-page="grades">
-        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Grades
-      </a>
-
-      <div class="sidebar-section-label">System</div>
-      <a href="settings.html" class="nav-item" data-page="settings">
-        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        Settings
-      </a>
+      <a href="dashboard.html"  class="nav-item active">🏠 &nbsp;Dashboard</a>
+      <a href="students.html"   class="nav-item">👥 &nbsp;Students</a>
+      <a href="teachers.html"   class="nav-item">🧑‍🏫 &nbsp;Teachers</a>
+      <a href="parents.html"    class="nav-item">👨‍👩‍👧 &nbsp;Parents</a>
+      <a href="classes.html"    class="nav-item">🏫 &nbsp;Classes</a>
+      <a href="subjects.html"   class="nav-item">📚 &nbsp;Subjects</a>
+      <div class="sidebar-section-label" style="margin-top:16px;">Academics</div>
+      <a href="attendance.html" class="nav-item">📅 &nbsp;Attendance</a>
+      <a href="grades.html"     class="nav-item">📈 &nbsp;Grades</a>
+      <a href="exams.html"      class="nav-item">📝 &nbsp;Exams</a>
+      <a href="timetable.html"  class="nav-item">⏰ &nbsp;Timetable</a>
+      <a href="academic-year.html" class="nav-item">🗓️ &nbsp;Academic Year</a>
+      <div class="sidebar-section-label" style="margin-top:16px;">System</div>
+      <a href="announcements.html" class="nav-item">📢 &nbsp;Announcements</a>
+      <a href="reports.html"    class="nav-item">📊 &nbsp;Reports</a>
+      <a href="notifications.html" class="nav-item">🔔 &nbsp;Notifications</a>
+      <a href="audit-logs.html" class="nav-item">🛡️ &nbsp;Audit Logs</a>
+      <a href="settings.html"   class="nav-item">⚙️ &nbsp;Settings</a>
     </nav>
-
-    <!-- Logout -->
     <div class="sidebar-footer">
-      <button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;transition:background .13s;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Logout
-      </button>
+      <button id="logout-btn" style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:none;background:rgba(239,68,68,.12);color:#f87171;font-size:13px;font-weight:600;cursor:pointer;width:100%;">🚪 &nbsp;Logout</button>
     </div>
   </aside>
 
-  <!-- ═══ MAIN ═══════════════════════════════════════════════ -->
   <div class="main-content">
-
-    <!-- Top Header -->
     <header class="top-header">
-      <div class="header-search">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input placeholder="Search students, teachers…" type="text">
-      </div>
+      <div class="header-search">🔍 <input placeholder="Search anything…" type="text" id="search-input"></div>
       <div class="header-right">
-        <button class="header-icon-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <span class="header-badge">3</span>
-        </button>
-        <div class="header-user" id="user-display">
-          <div class="header-avatar" id="user-avatar">A</div>
-          <span id="user-name">Admin</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
+        <div class="header-user"><div class="header-avatar">A</div><span>Admin</span></div>
       </div>
     </header>
 
-    <!-- Page Body -->
     <div class="page-body">
-
-      <!-- Title -->
       <div class="page-title-row">
-        <div>
-          <div class="page-title">Overview</div>
-          <div class="page-subtitle">Welcome back! Here is what's happening today.</div>
-        </div>
-        <a href="grades.html" class="btn btn-outline btn-sm">View Reports</a>
+        <div><div class="page-title">Dashboard Overview</div><div class="page-subtitle">Welcome back, Admin. Here's what's happening today.</div></div>
       </div>
 
-      <!-- Stat Cards -->
+      <!-- Quick Actions -->
       <div class="grid-4" style="margin-bottom:24px;">
-        <div class="stat-card">
-          <div class="stat-card-icon icon-blue">👥</div>
-          <div class="stat-card-value" id="stat-students">—</div>
-          <div class="stat-card-label">Total Students</div>
+        <a href="students.html" class="stat-card hover-card" style="text-decoration:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+           <div class="stat-card-icon icon-blue">👥</div>
+           <div class="stat-card-label" style="color:var(--primary-color); font-weight:600;">Add Student</div>
+        </a>
+        <a href="teachers.html" class="stat-card hover-card" style="text-decoration:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+           <div class="stat-card-icon icon-green">🧑‍🏫</div>
+           <div class="stat-card-label" style="color:var(--success-color); font-weight:600;">Add Teacher</div>
+        </a>
+        <a href="attendance.html" class="stat-card hover-card" style="text-decoration:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+           <div class="stat-card-icon icon-amber">📅</div>
+           <div class="stat-card-label" style="color:#f59e0b; font-weight:600;">Attendance</div>
+        </a>
+        <a href="announcements.html" class="stat-card hover-card" style="text-decoration:none; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+           <div class="stat-card-icon icon-purple">📢</div>
+           <div class="stat-card-label" style="color:#8b5cf6; font-weight:600;">Announce</div>
+        </a>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="grid-4" style="margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-card-icon icon-blue">👥</div><div class="stat-card-value" id="stat-students">1,245</div><div class="stat-card-label">Total Students</div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-green">🧑‍🏫</div><div class="stat-card-value" id="stat-teachers">78</div><div class="stat-card-label">Total Teachers</div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-purple">👨‍👩‍👧</div><div class="stat-card-value" id="stat-parents">540</div><div class="stat-card-label">Total Parents</div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-amber">🏫</div><div class="stat-card-value" id="stat-classes">32</div><div class="stat-card-label">Total Classes</div></div>
+      </div>
+
+      <!-- Secondary KPIs -->
+      <div class="grid-3" style="margin-bottom:24px;">
+        <div class="card">
+          <div style="color:var(--text-muted);font-size:13px;margin-bottom:4px;font-weight:600;">Attendance Rate</div>
+          <div style="font-size:24px;font-weight:700;color:var(--success-color);">92.4%</div>
+          <div style="margin-top:12px;background:var(--bg-subtle);border-radius:4px;height:6px;"><div style="background:var(--success-color);height:6px;border-radius:4px;width:92.4%;"></div></div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-icon icon-green">🧑‍🏫</div>
-          <div class="stat-card-value" id="stat-teachers">—</div>
-          <div class="stat-card-label">Teachers</div>
+        <div class="card">
+          <div style="color:var(--text-muted);font-size:13px;margin-bottom:4px;font-weight:600;">Avg Academic Score</div>
+          <div style="font-size:24px;font-weight:700;color:var(--primary-color);">78.5%</div>
+          <div style="margin-top:12px;background:var(--bg-subtle);border-radius:4px;height:6px;"><div style="background:var(--primary-color);height:6px;border-radius:4px;width:78.5%;"></div></div>
         </div>
-        <div class="stat-card">
-          <div class="stat-card-icon icon-purple">🏫</div>
-          <div class="stat-card-value" id="stat-classes">—</div>
-          <div class="stat-card-label">Classes</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-icon icon-amber">📚</div>
-          <div class="stat-card-value" id="stat-subjects">—</div>
-          <div class="stat-card-label">Subjects</div>
+        <div class="card">
+          <div style="color:var(--text-muted);font-size:13px;margin-bottom:4px;font-weight:600;">Active Announcements</div>
+          <div style="font-size:24px;font-weight:700;color:#f59e0b;">7</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:8px;">3 expiring this week</div>
         </div>
       </div>
 
-      <!-- Main Grid -->
-      <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;">
-
-        <!-- Left – Recent Enrolments -->
+      <!-- Charts -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;">
         <div class="card">
-          <div class="card-header">
-            Recent Enrollments
-            <a href="students.html" class="link-action">View All</a>
-          </div>
-          <div style="overflow-x:auto;">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Student</th>
-                  <th>Class</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="enrollment-tbody">
-                <tr>
-                  <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--green-100);color:var(--green-800);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">SM</div> Sarah Miller</div></td>
-                  <td>Grade 10-A</td>
-                  <td>Oct 24, 2023</td>
-                  <td><span class="badge badge-green">Active</span></td>
-                </tr>
-                <tr>
-                  <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:50%;background:#dbeafe;color:#1e40af;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">JW</div> James Wilson</div></td>
-                  <td>Grade 11-B</td>
-                  <td>Oct 22, 2023</td>
-                  <td><span class="badge badge-green">Active</span></td>
-                </tr>
-                <tr>
-                  <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:50%;background:#fef3c7;color:#92400e;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">EC</div> Emily Chen</div></td>
-                  <td>Grade 9-C</td>
-                  <td>Oct 20, 2023</td>
-                  <td><span class="badge badge-amber">Pending</span></td>
-                </tr>
-                <tr>
-                  <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--green-100);color:var(--green-800);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">AM</div> Alex Mamo</div></td>
-                  <td>Grade 12-A</td>
-                  <td>Oct 18, 2023</td>
-                  <td><span class="badge badge-green">Active</span></td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="card-header" style="font-weight:600;font-size:16px;margin-bottom:16px;">Enrollment Trends</div>
+          <div style="position: relative; height: 250px; width: 100%;">
+            <canvas id="enrollmentChart"></canvas>
           </div>
         </div>
-
-        <!-- Right Column -->
-        <div style="display:flex;flex-direction:column;gap:16px;">
-
-          <!-- Quick Actions -->
-          <div class="card">
-            <div class="card-header">Quick Actions</div>
-            <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
-              <a href="students.html" class="quick-action-btn">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div class="quick-action-icon icon-blue">➕</div> Add New Student
-                </div>
-                <span style="color:var(--text-muted);font-size:12px;">›</span>
-              </a>
-              <a href="grades.html" class="quick-action-btn">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div class="quick-action-icon icon-green">📋</div> Generate Report
-                </div>
-                <span style="color:var(--text-muted);font-size:12px;">›</span>
-              </a>
-              <a href="attendance.html" class="quick-action-btn">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div class="quick-action-icon icon-amber">📣</div> Send Announcement
-                </div>
-                <span style="color:var(--text-muted);font-size:12px;">›</span>
-              </a>
-              <a href="teachers.html" class="quick-action-btn">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div class="quick-action-icon icon-purple">🧑‍🏫</div> Add Teacher
-                </div>
-                <span style="color:var(--text-muted);font-size:12px;">›</span>
-              </a>
-            </div>
+        <div class="card">
+          <div class="card-header" style="font-weight:600;font-size:16px;margin-bottom:16px;">Attendance Analytics</div>
+          <div style="position: relative; height: 250px; width: 100%;">
+            <canvas id="attendanceChart"></canvas>
           </div>
-
-          <!-- Attendance Rate -->
-          <div class="card">
-            <div class="card-header">Attendance Rate</div>
-            <div class="card-body" style="display:flex;flex-direction:column;gap:14px;">
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
-                  <span style="color:var(--text-secondary);">Overall</span>
-                  <span style="font-weight:700;color:var(--green-800);">92%</span>
-                </div>
-                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:92%"></div></div>
-              </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
-                  <span style="color:var(--text-secondary);">Grade 9</span>
-                  <span style="font-weight:700;color:var(--green-800);">88%</span>
-                </div>
-                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:88%"></div></div>
-              </div>
-              <div>
-                <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;">
-                  <span style="color:var(--text-secondary);">Grade 12</span>
-                  <span style="font-weight:700;color:var(--green-800);">95%</span>
-                </div>
-                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:95%"></div></div>
-              </div>
-            </div>
-          </div>
-
-        </div><!-- /right col -->
-      </div><!-- /main grid -->
-
-    </div><!-- /page-body -->
-  </div><!-- /main-content -->
-</div><!-- /app-shell -->
-
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
 
 <!-- Confirm Modal -->
-<div class="modal-overlay" id="confirm-modal" style="z-index: 1000;">
-  <div class="modal" style="max-width: 400px; text-align: center; padding: 32px;">
-    <h2 style="font-size: 18px; margin-bottom: 12px;" id="confirm-title">Are you sure?</h2>
+<div class="modal-overlay" id="confirm-modal" style="z-index: 1000; display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); align-items:center; justify-content:center;">
+  <div class="modal" style="background:#fff; border-radius:14px; padding:32px; max-width: 400px; text-align: center; box-shadow:0 20px 60px rgba(0,0,0,.15);">
+    <h2 style="font-size: 18px; margin-bottom: 12px; font-weight:700; color:var(--text-dark);" id="confirm-title">Are you sure?</h2>
     <p style="color: #6b7280; margin-bottom: 24px;" id="confirm-msg">This action cannot be undone.</p>
     <div style="display: flex; gap: 12px; justify-content: center;">
       <button class="btn btn-outline" onclick="closeConfirm()" style="flex: 1;">Cancel</button>
@@ -283,45 +146,52 @@
 </div>
 
 <script>
-
   let confirmCallback = null;
   function openConfirm(title, msg, callback) {
     document.getElementById('confirm-title').textContent = title;
     document.getElementById('confirm-msg').textContent = msg;
     confirmCallback = callback;
-    document.getElementById('confirm-modal').classList.add('open');
+    document.getElementById('confirm-modal').style.display = 'flex';
   }
-  function closeConfirm() { document.getElementById('confirm-modal').classList.remove('open'); }
+  function closeConfirm() { document.getElementById('confirm-modal').style.display = 'none'; }
   document.getElementById('confirm-btn').onclick = () => { if(confirmCallback) confirmCallback(); closeConfirm(); };
 
   const token = localStorage.getItem('access_token');
-  if (!token) { window.location.href = '../../login.html'; return; }
-  // Logout with confirmation
-  document.getElementById('logout-btn').addEventListener('click', () => {
-    if (confirm('Logout?')) {
-      localStorage.removeItem('access_token');
-      window.location.href = '../../login.html';
-    }
+  if (!token) window.location.href = '../../login.html';
+  document.getElementById('logout-btn').onclick = () => {
+    openConfirm("Log Out", "Are you sure you want to log out of your session?", () => {
+      localStorage.removeItem('access_token'); window.location.href = '../../login.html';
+    });
+  };
+
+  // Charts
+  const chartDefaults = { color: '#6b7280', borderColor: '#e5e7eb' };
+  Chart.defaults.color = chartDefaults.color;
+  Chart.defaults.borderColor = chartDefaults.borderColor;
+
+  new Chart(document.getElementById('enrollmentChart'), {
+    type: 'line',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      datasets: [{
+        label: 'Students Enrolled',
+        data: [120,150,170,180,220,260,300,340,380,400,420,460],
+        borderColor: '#4f46e5',
+        backgroundColor: 'rgba(79,70,229,0.1)',
+        tension: 0.4, fill: true
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } } } }
   });
 
-  // Load stats from API
-  async function loadStats() {
-    try {
-      const headers = { 'Authorization': 'Bearer ' + token };
-      const [sRes, tRes, cRes] = await Promise.all([
-        fetch('/api/admin/students', { headers }),
-        fetch('/api/admin/teachers',  { headers }),
-        fetch('/api/admin/classes',   { headers }),
-      ]);
-      if (sRes.ok) { const d = await sRes.json(); document.getElementById('stat-students').textContent = (d.students||d).length ?? '—'; }
-      if (tRes.ok) { const d = await tRes.json(); document.getElementById('stat-teachers').textContent = (d.teachers||d).length ?? '—'; }
-      if (cRes.ok) { const d = await cRes.json(); document.getElementById('stat-classes').textContent  = (d.classes||d).length  ?? '—'; }
-      document.getElementById('stat-subjects').textContent = '18';
-    } catch(e) {
-      // Keep placeholders
-    }
-  }
-  loadStats();
+  new Chart(document.getElementById('attendanceChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Present','Absent','Late'],
+      datasets: [{ data: [92, 5, 3], backgroundColor: ['#22c55e','#ef4444','#f59e0b'], hoverOffset: 4, borderWidth: 0 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+  });
 </script>
 </body>
 </html>

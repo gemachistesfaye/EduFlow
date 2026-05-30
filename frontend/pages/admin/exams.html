@@ -1,0 +1,157 @@
+<!--#include virtual="layout.html" -->
+<meta name="page-title" content="Exams">
+<div id="CONTENT_PLACEHOLDER">
+  <header class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-semibold text-white">Examination Management</h2>
+    <button id="btn-add-exam" class="btn-primary flex items-center gap-2">
+      <svg class="w-5 h-5"><use href="#heroicon-outline-plus-circle"></use></svg>
+      Add Exam
+    </button>
+  </header>
+
+  <!-- Table -->
+  <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm overflow-x-auto">
+    <table class="w-full table-auto text-left">
+      <thead class="bg-gray-100 dark:bg-gray-700">
+        <tr>
+          <th class="p-2 font-medium">Name</th>
+          <th class="p-2 font-medium">Type</th>
+          <th class="p-2 font-medium">Academic Year</th>
+          <th class="p-2 font-medium">Semester</th>
+          <th class="p-2 font-medium">Grade Level</th>
+          <th class="p-2 font-medium">Subject</th>
+          <th class="p-2 font-medium">Start</th>
+          <th class="p-2 font-medium">End</th>
+          <th class="p-2 font-medium">Status</th>
+          <th class="p-2 font-medium">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="exams-tbody">
+        <tr class="animate-pulse"><td colspan="10" class="p-4 text-center text-gray-500 dark:text-gray-400">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-overlay hidden" id="exam-modal">
+    <div class="modal w-full max-w-2xl">
+      <h2 class="text-xl font-semibold mb-4" id="exam-modal-title">Add Exam</h2>
+      <form id="exam-form">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group"><label class="form-label">Exam Name</label><input class="form-input" name="name" required></div>
+          <div class="form-group"><label class="form-label">Exam Type</label><select class="form-select" name="type" required><option>Quiz</option><option>Assignment</option><option>Mid Exam</option><option>Final Exam</option><option>Practical Exam</option><option>Entrance Exam</option></select></div>
+          <div class="form-group"><label class="form-label">Academic Year</label><input class="form-input" name="year" required></div>
+          <div class="form-group"><label class="form-label">Semester</label><input class="form-input" name="semester" required></div>
+          <div class="form-group"><label class="form-label">Grade Level</label><input class="form-input" name="grade" required></div>
+          <div class="form-group"><label class="form-label">Subject</label><select class="form-select" name="subject_id" required></select></div>
+          <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-input" name="start_date" required></div>
+          <div class="form-group"><label class="form-label">End Date</label><input type="date" class="form-input" name="end_date" required></div>
+          <div class="form-group"><label class="form-label">Total Marks</label><input type="number" class="form-input" name="total_marks" required></div>
+          <div class="form-group"><label class="form-label">Passing Marks</label><input type="number" class="form-input" name="passing_marks" required></div>
+          <div class="form-group col-span-2"><label class="form-label">Description</label><textarea class="form-input" name="description"></textarea></div>
+          <div class="form-group"><label class="form-label">Status</label><select class="form-select" name="status" required><option>Active</option><option>Inactive</option></select></div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" class="btn-outline" onclick="closeModal('exam-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  const token = localStorage.getItem('access_token');
+  if (!token) window.location.href = '../../login.html';
+  const { toast, openModal, closeModal } = window.App;
+
+  async function loadExams(search = '') {
+    const tbody = document.getElementById('exams-tbody');
+    tbody.innerHTML = `<tr class="animate-pulse"><td colspan="10" class="p-4 text-center text-gray-500 dark:text-gray-400">Loading…</td></tr>`;
+    try {
+      const res = await fetch(`/api/admin/exams?search=${encodeURIComponent(search)}`, { headers: { Authorization: 'Bearer ' + token } });
+      const data = await res.json();
+      const list = data.exams || data;
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center">No exams found.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(e => `
+        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+          <td class="p-2">${e.name}</td>
+          <td class="p-2">${e.type}</td>
+          <td class="p-2">${e.year}</td>
+          <td class="p-2">${e.semester}</td>
+          <td class="p-2">${e.grade}</td>
+          <td class="p-2">${e.subject_name||'—'}</td>
+          <td class="p-2">${e.start_date}</td>
+          <td class="p-2">${e.end_date}</td>
+          <td class="p-2"><span class="badge ${e.status==='Active'?'bg-success':'bg-gray-400'}">${e.status}</span></td>
+          <td class="p-2 space-x-1">
+            <button class="btn-sm btn-outline" onclick="editExam(${e.id})">Edit</button>
+            <button class="btn-sm btn-outline text-danger" onclick="deleteExam(${e.id})">Delete</button>
+          </td>
+        </tr>`).join('');
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-red-600">Failed to load.</td></tr>`;
+    }
+  }
+
+  window.openExamModal = () => {
+    document.getElementById('exam-modal-title').textContent = 'Add Exam';
+    document.getElementById('exam-form').reset();
+    openModal('exam-modal');
+    window.editExamId = null;
+  };
+
+  window.editExam = async (id) => {
+    const res = await fetch(`/api/admin/exams/${id}`, { headers: { Authorization: 'Bearer ' + token } });
+    const e = await res.json();
+    const f = document.getElementById('exam-form');
+    f.name.value = e.name;
+    f.type.value = e.type;
+    f.year.value = e.year;
+    f.semester.value = e.semester;
+    f.grade.value = e.grade;
+    f.subject_id.value = e.subject_id || '';
+    f.start_date.value = e.start_date;
+    f.end_date.value = e.end_date;
+    f.total_marks.value = e.total_marks;
+    f.passing_marks.value = e.passing_marks;
+    f.description.value = e.description;
+    f.status.value = e.status;
+    document.getElementById('exam-modal-title').textContent = 'Edit Exam';
+    openModal('exam-modal');
+    window.editExamId = id;
+  };
+
+  document.getElementById('exam-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const method = window.editExamId ? 'PUT' : 'POST';
+    const url = window.editExamId ? `/api/admin/exams/${window.editExamId}` : '/api/admin/exams';
+    try {
+      const res = await fetch(url, { method, headers: { Authorization: 'Bearer ' + token }, body: fd });
+      if (!res.ok) throw new Error(await res.text());
+      toast('Exam saved', 'success');
+      closeModal('exam-modal');
+      loadExams();
+    } catch (err) {
+      toast('Save failed', 'error');
+    }
+  });
+
+  window.deleteExam = async (id) => {
+    if (!confirm('Delete this exam?')) return;
+    try {
+      const res = await fetch(`/api/admin/exams/${id}`, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
+      if (!res.ok) throw new Error(await res.text());
+      toast('Exam deleted', 'success');
+      loadExams();
+    } catch (e) {
+      toast('Delete failed', 'error');
+    }
+  };
+
+  document.getElementById('btn-add-exam').addEventListener('click', openExamModal);
+  loadExams();
+</script>

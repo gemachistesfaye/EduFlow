@@ -1,0 +1,28 @@
+<!--#include virtual="layout.html" -->
+<meta name="page-title" content="Announcements">
+<div class="page-header flex items-center justify-between mb-6">
+  <h2 class="text-2xl font-semibold text-white">Announcements</h2>
+  <button class="btn-primary flex items-center gap-2">
+    <svg class="w-5 h-5"><use href="#heroicon-outline-plus-circle"></use></svg> New Announcement
+  </button>
+</div>
+<div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm overflow-x-auto">
+  <table class="w-full table-auto text-left">
+    <thead class="bg-gray-100 dark:bg-gray-700">
+      <tr>
+        <th class="p-2 font-medium">Title</th>
+        <th class="p-2 font-medium">Target Audience</th>
+        <th class="p-2 font-medium">Date</th>
+        <th class="p-2 font-medium">Status</th>
+        <th class="p-2 font-medium">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="5" class="p-4 text-center text-gray-500 dark:text-gray-400">Loading...</td></tr>
+    </tbody>
+  </table>
+</div>
+<script>
+  const token = localStorage.getItem('access_token');
+  if (!token) window.location.href = '../../login.html';
+</script>
