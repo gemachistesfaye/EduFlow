@@ -294,15 +294,12 @@
   function closeConfirm() { document.getElementById('confirm-modal').classList.remove('open'); }
   document.getElementById('confirm-btn').onclick = () => { if(confirmCallback) confirmCallback(); closeConfirm(); };
 
-  // Auth check
   const token = localStorage.getItem('access_token');
-  if (!token) window.location.href = '../../login.html';
-
-  // Logout
+  if (!token) { window.location.href = '../../login.html'; return; }
+  // Logout with confirmation
   document.getElementById('logout-btn').addEventListener('click', () => {
     if (confirm('Logout?')) {
       localStorage.removeItem('access_token');
-      localStorage.removeItem('user_role');
       window.location.href = '../../login.html';
     }
   });

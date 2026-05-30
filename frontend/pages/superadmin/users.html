@@ -138,16 +138,35 @@
     </div>
   </main>
 
+  <!-- Logout Confirm Modal -->
+  <div id="logout-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
+      <div class="w-16 h-16 bg-sage-100 text-sage-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-800 mb-2">Sign Out</h3>
+      <p class="text-sm text-slate-500 mb-6">Are you sure you want to log out of your session?</p>
+      <div class="flex gap-3">
+        <button onclick="toggleLogoutModal(false)" class="flex-1 py-3 text-sm font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-xl transition-all">Cancel</button>
+        <button onclick="confirmLogout()" class="flex-1 py-3 text-sm font-bold bg-admin-800 text-white rounded-xl hover:bg-slate-900 transition-all">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <script>
     // Auth & Clock Setup
     const token = localStorage.getItem('access_token');
     if (!token) window.location.href = '../../login.html';
 
-    document.getElementById('logout-btn').addEventListener('click', () => {
+    function toggleLogoutModal(show) {
+      document.getElementById('logout-modal').classList.toggle('hidden', !show);
+    }
+    function confirmLogout() {
       localStorage.removeItem('access_token');
       window.location.href = '../../login.html';
-    });
+    }
+    document.getElementById('logout-btn').addEventListener('click', () => toggleLogoutModal(true));
 
     function setTime() {
       document.getElementById('current-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -171,12 +190,30 @@
     }
 
     const ROLE_BADGE = {
+      admin: { label: 'Admin', textClass: 'text-indigo-700', bgClass: 'bg-indigo-100', borderClass: 'border-indigo-200' },
+      school_director: { label: 'Director', textClass: 'text-purple-700', bgClass: 'bg-purple-100', borderClass: 'border-purple-200' },
+      student: { label: 'Student', textClass: 'text-blue-700', bgClass: 'bg-blue-100', borderClass: 'border-blue-200' },
+      teacher: { label: 'Teacher', textClass: 'text-emerald-700', bgClass: 'bg-emerald-100', borderClass: 'border-emerald-200' },
+      parent: { label: 'Parent', textClass: 'text-amber-700', bgClass: 'bg-amber-100', borderClass: 'border-amber-200' },
+      director: { label: 'Director', textClass: 'text-purple-700', bgClass: 'bg-purple-100', borderClass: 'border-purple-200' },
+      superadmin: { label: 'Superadmin', textClass: 'text-red-700', bgClass: 'bg-red-100', borderClass: 'border-red-200' }
+    };
+      admin: { label: 'Admin', textClass: 'text-indigo-700', bgClass: 'bg-indigo-100', borderClass: 'border-indigo-200' },
+      school_director: { label: 'Director', textClass: 'text-purple-700', bgClass: 'bg-purple-100', borderClass: 'border-purple-200' },
+      student: { label: 'Student', textClass: 'text-blue-700', bgClass: 'bg-blue-100', borderClass: 'border-blue-200' },
+      teacher: { label: 'Teacher', textClass: 'text-emerald-700', bgClass: 'bg-emerald-100', borderClass: 'border-emerald-200' },
+      parent: { label: 'Parent', textClass: 'text-amber-700', bgClass: 'bg-amber-100', borderClass: 'border-amber-200' },
+      director: { label: 'Director', textClass: 'text-purple-700', bgClass: 'bg-purple-100', borderClass: 'border-purple-200' },
+      superadmin: { label: 'Superadmin', textClass: 'text-red-700', bgClass: 'bg-red-100', borderClass: 'border-red-200' }
+    };
+
+      school_director: { label: 'Director', textClass: 'text-purple-700', bgClass: 'bg-purple-100', borderClass: 'border-purple-200' },
+      superadmin: { label: 'Superadmin',textClass: 'text-red-700', bgClass: 'bg-red-100', borderClass: 'border-red-200' },
+      // Existing mappings
       student:    { label: 'Student',   textClass: 'text-blue-700', bgClass: 'bg-blue-100', borderClass: 'border-blue-200' },
       teacher:    { label: 'Teacher',   textClass: 'text-emerald-700', bgClass: 'bg-emerald-100', borderClass: 'border-emerald-200' },
       parent:     { label: 'Parent',    textClass: 'text-amber-700', bgClass: 'bg-amber-100', borderClass: 'border-amber-200' },
-      director:   { label: 'Director',  textClass: 'text-purple-700', bgClass: 'bg-purple-100', borderClass: 'border-purple-200' },
-      superadmin: { label: 'Superadmin',textClass: 'text-red-700', bgClass: 'bg-red-100', borderClass: 'border-red-200' },
-    };
+      director:   { label: 'Director',  textClass: 'text-purple-700', bgClass: 'bg-purple-100', borderClass: 'border-purple-200' }
 
     let allUsers = [];
 

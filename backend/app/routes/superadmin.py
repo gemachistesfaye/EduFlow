@@ -39,12 +39,35 @@ def system_overview():
                 "students": student_count
             })
             
+        total_user_count = User.query.join(Role).filter(Role.name != 'superadmin').count()
         return jsonify({
             "total_schools": len(schools),
+            "total_users": total_user_count,
             "revenue": "24,500.00",
             "uptime": "99.9%",
             "branches": branches_data
         }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@bp.get('/users')
+@rbac(100)
+def list_all_users():
+    try:
+        users = User.query.join(Role).filter(Role.name != 'superadmin').all()
+        result = []
+        for u in users:
+            school_name = u.school.name if u.school else None
+            full_name = u.profile.full_name if u.profile else None
+            result.append({
+                "id": u.id,
+                "email": u.email,
+                "role": u.role.name,
+                "full_name": full_name,
+                "branch_name": school_name,
+                "created_at": u.created_at.isoformat() if hasattr(u, 'created_at') and u.created_at else None
+            })
+        return jsonify({"users": result}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
